@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "909193162517",
+    "project_id": "girdharidb",
+    "storage_bucket": "girdharidb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:909193162517:android:3c159d9c6145f1860e831c",
+        "android_client_info": {
+          "package_name": "com.example.girdhari"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBbjJ4t5xlVrqO0qafkMOS30g2YhzbtRqk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
