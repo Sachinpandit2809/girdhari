@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:girdhari/re_usable_widgets/flexiable_rectangular_button.dart';
-import 'package:girdhari/re_usable_widgets/k_text_form_field.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/get_navigation.dart';
+import 'package:girdhari/widgets/flexiable_rectangular_button.dart';
+import 'package:girdhari/widgets/k_text_form_field.dart';
 import 'package:girdhari/resource/app_color.dart';
 import 'package:girdhari/resource/k_text_style.dart';
-import 'package:girdhari/screens/product/edit_product_screen.dart';
+import 'package:girdhari/features/product/screens/edit_product_screen.dart';
 
 class AddProductScreen extends StatefulWidget {
   const AddProductScreen({super.key});
@@ -23,7 +25,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
   TextEditingController mrpController = TextEditingController();
   TextEditingController packageController = TextEditingController();
 
-@override
+  @override
   void dispose() {
     // TODO: implement dispose
     mrpController.dispose();
@@ -84,10 +86,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   height: 44,
                   color: AppColor.brown,
                   onPress: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const EditProductScreen()));
+                   
+                    Get.to(const EditProductScreen());
                   },
                 ),
               )

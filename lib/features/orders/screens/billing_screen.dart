@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:girdhari/re_usable_widgets/flexiable_rectangular_button.dart';
-import 'package:girdhari/re_usable_widgets/k_text_form_field.dart';
-import 'package:girdhari/re_usable_widgets/rectangular_button.dart';
-import 'package:girdhari/re_usable_widgets/small_square_button.dart';
-import 'package:girdhari/re_usable_widgets/squre_icon_button.dart';
+import 'package:get/get_core/get_core.dart';
+import 'package:get/get_navigation/get_navigation.dart';
+import 'package:girdhari/widgets/flexiable_rectangular_button.dart';
+import 'package:girdhari/widgets/k_text_form_field.dart';
+import 'package:girdhari/widgets/rectangular_button.dart';
+import 'package:girdhari/widgets/small_square_button.dart';
+import 'package:girdhari/widgets/squre_icon_button.dart';
 import 'package:girdhari/resource/app_color.dart';
 import 'package:girdhari/resource/k_text_style.dart';
-import 'package:girdhari/screens/orders/orders_screen.dart';
+import 'package:girdhari/features/orders/screens/orders_screen.dart';
 
 class BillingScreen extends StatefulWidget {
   const BillingScreen({super.key});
@@ -21,12 +23,11 @@ class _BillingScreenState extends State<BillingScreen> {
   // ignore: non_constant_identifier_names
   TextEditingController SearchProductController = TextEditingController();
 
-    @override
+  @override
   void dispose() {
- 
     SearchClientController.dispose();
     SearchProductController.dispose();
-   
+
     super.dispose();
   }
 
@@ -34,7 +35,7 @@ class _BillingScreenState extends State<BillingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title:const Text(
+        title: const Text(
           "Billing",
           style: KTextStyle.K_20,
         ),
@@ -50,8 +51,8 @@ class _BillingScreenState extends State<BillingScreen> {
             color: AppColor.brown,
             textColor: AppColor.white,
             onPress: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) =>const OrdersScreen()));
+              
+              Get.to(const OrdersScreen());
             },
           )
         ],

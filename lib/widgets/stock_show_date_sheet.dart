@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:girdhari/re_usable_widgets/rectangular_button.dart';
+import 'package:girdhari/widgets/rectangular_button.dart';
 import 'package:girdhari/resource/app_color.dart';
 import 'package:girdhari/resource/k_text_style.dart';
 

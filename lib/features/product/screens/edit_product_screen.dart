@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:girdhari/re_usable_widgets/flexiable_rectangular_button.dart';
-import 'package:girdhari/re_usable_widgets/k_text_form_field.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/get_navigation.dart';
+import 'package:girdhari/widgets/flexiable_rectangular_button.dart';
+import 'package:girdhari/widgets/k_text_form_field.dart';
 import 'package:girdhari/resource/app_color.dart';
 import 'package:girdhari/resource/k_text_style.dart';
-import 'package:girdhari/screens/client/client_screen.dart';
+import 'package:girdhari/features/client/screens/client_screen.dart';
 
 class EditProductScreen extends StatefulWidget {
   const EditProductScreen({super.key});
@@ -83,10 +85,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
                   height: 44,
                   color: AppColor.brown,
                   onPress: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ClientScreen()));
+                   
+                     Get.to(const ClientScreen());
                   },
                 ),
               )

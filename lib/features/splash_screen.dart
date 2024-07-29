@@ -1,8 +1,10 @@
 import "dart:async";
 
 import "package:flutter/material.dart";
+import "package:get/get_core/src/get_main.dart";
+import "package:get/get_navigation/get_navigation.dart";
 
-import "package:girdhari/screens/product/stock_record_screen.dart";
+import "package:girdhari/features/product/screens/stock_record_screen.dart";
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -16,10 +18,8 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     Timer(
         const Duration(seconds: 3),
-        () => Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => const StockRecordScreen())));
+       
+        () => Get.to(const StockRecordScreen()));
 
     super.initState();
   }

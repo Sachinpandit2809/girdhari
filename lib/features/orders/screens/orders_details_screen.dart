@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:girdhari/re_usable_widgets/flexiable_rectangular_button.dart';
-import 'package:girdhari/re_usable_widgets/rectangular_button.dart';
-import 'package:girdhari/re_usable_widgets/small_square_button.dart';
-import 'package:girdhari/re_usable_widgets/squre_icon_button.dart';
+import 'package:girdhari/widgets/flexiable_rectangular_button.dart';
+import 'package:girdhari/widgets/rectangular_button.dart';
+import 'package:girdhari/widgets/small_square_button.dart';
+import 'package:girdhari/widgets/squre_icon_button.dart';
 import 'package:girdhari/resource/app_color.dart';
 import 'package:girdhari/resource/k_text_style.dart';
 
@@ -37,17 +37,17 @@ class _OrdersDetailsScreenState extends State<OrdersDetailsScreen> {
           child: Column(
             children: [
               Container(
-                padding: EdgeInsets.all(8),
+                padding: const EdgeInsets.all(8),
                 margin: const EdgeInsets.symmetric(vertical: 15, horizontal: 4),
                 decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.secondary,
-                    borderRadius: BorderRadius.all(Radius.circular(8)),
+                    borderRadius: const BorderRadius.all(Radius.circular(8)),
                     boxShadow: [
                       BoxShadow(
                         color: Theme.of(context)
                             .colorScheme
                             .primary, // Adjust opacity for a blush effect
-                        offset: Offset(0, 0), // Move the shadow downwards
+                        offset: const Offset(0, 0), // Move the shadow downwards
                         blurRadius: 5, // Adjust blur radius as needed
                         spreadRadius: 0, // Adjust spread radius as needed
                         blurStyle: BlurStyle.outer,
@@ -146,7 +146,7 @@ class _OrdersDetailsScreenState extends State<OrdersDetailsScreen> {
                           ),
                         );
                       })),
-              Container(
+              SizedBox(
                 height: 60,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,

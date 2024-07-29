@@ -1,23 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:girdhari/re_usable_widgets/flexiable_rectangular_button.dart';
-import 'package:girdhari/re_usable_widgets/k_text_form_field.dart';
+import 'package:get/get_core/get_core.dart';
+import 'package:get/get_navigation/get_navigation.dart';
+import 'package:girdhari/widgets/flexiable_rectangular_button.dart';
+import 'package:girdhari/widgets/k_text_form_field.dart';
 import 'package:girdhari/resource/app_color.dart';
 import 'package:girdhari/resource/k_text_style.dart';
-import 'package:girdhari/screens/client/edit_client_screen.dart';
+import 'package:girdhari/features/orders/screens/billing_screen.dart';
+// ignore: unused_import
+import 'package:girdhari/features/product/screens/edit_product_screen.dart';
 
-class AddClientScreen extends StatefulWidget {
-  const AddClientScreen({super.key});
+class EditClientScreen extends StatefulWidget {
+  const EditClientScreen({super.key});
 
   @override
-  State<AddClientScreen> createState() => _AddClientScreenState();
+  State<EditClientScreen> createState() => _EditClientScreenState();
 }
 
-class _AddClientScreenState extends State<AddClientScreen> {
+class _EditClientScreenState extends State<EditClientScreen> {
   TextEditingController clientNameController = TextEditingController();
   TextEditingController phoneNumberController = TextEditingController();
-
   TextEditingController addressController = TextEditingController();
-
   TextEditingController refferedByController = TextEditingController();
 
   @override
@@ -36,7 +38,7 @@ class _AddClientScreenState extends State<AddClientScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          "Add Client",
+          "Edit Client",
           style: KTextStyle.K_20,
         ),
       ),
@@ -72,10 +74,8 @@ class _AddClientScreenState extends State<AddClientScreen> {
                   height: 44,
                   color: AppColor.brown,
                   onPress: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const EditClientScreen()));
+                    
+                    Get.to( const BillingScreen());
                   },
                 ),
               )

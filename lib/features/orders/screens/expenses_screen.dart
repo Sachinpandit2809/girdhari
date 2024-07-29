@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:girdhari/re_usable_widgets/flexiable_rectangular_button.dart';
-import 'package:girdhari/re_usable_widgets/k_text_form_field.dart';
-import 'package:girdhari/re_usable_widgets/rectangular_button.dart';
+import 'package:get/get_core/get_core.dart';
+import 'package:get/get_navigation/get_navigation.dart';
+import 'package:girdhari/widgets/flexiable_rectangular_button.dart';
+import 'package:girdhari/widgets/k_text_form_field.dart';
+import 'package:girdhari/widgets/rectangular_button.dart';
 import 'package:girdhari/resource/app_color.dart';
 import 'package:girdhari/resource/k_text_style.dart';
-import 'package:girdhari/screens/orders/orders_details_screen.dart';
+import 'package:girdhari/features/orders/screens/orders_details_screen.dart';
 
 class ExpensesScreen extends StatefulWidget {
   const ExpensesScreen({super.key});
@@ -164,10 +166,8 @@ class _ExpensesScreenState extends State<ExpensesScreen>
             borderRadius: BorderRadius.circular(40.0),
           ),
           onPressed: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const OrdersDetailsScreen()));
+          
+            Get.to(const OrdersDetailsScreen());
           },
           child: const Icon(
             Icons.add,
@@ -260,7 +260,7 @@ class _ExpensesScreenState extends State<ExpensesScreen>
                       height: 44,
                       color: AppColor.brown,
                       onPress: () {
-                        Navigator.pop(context);
+                        Get.back();
                       },
                     )
                   ]),

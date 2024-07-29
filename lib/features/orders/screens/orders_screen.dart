@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:girdhari/re_usable_widgets/flexiable_rectangular_button.dart';
-import 'package:girdhari/re_usable_widgets/k_text_form_field.dart';
-import 'package:girdhari/re_usable_widgets/rectangular_button.dart';
-// import 'package:girdhari/re_usable_widgets/squre_icon_button.dart'; 
+import 'package:get/get_core/get_core.dart';
+import 'package:get/get_navigation/get_navigation.dart';
+import 'package:girdhari/widgets/flexiable_rectangular_button.dart';
+import 'package:girdhari/widgets/k_text_form_field.dart';
+import 'package:girdhari/widgets/rectangular_button.dart';
+// import 'package:girdhari/re_usable_widgets/squre_icon_button.dart';
 import 'package:girdhari/resource/app_color.dart';
 import 'package:girdhari/resource/k_text_style.dart';
-import 'package:girdhari/screens/orders/expenses_screen.dart';
+import 'package:girdhari/features/orders/screens/expenses_screen.dart';
 
 class OrdersScreen extends StatefulWidget {
   const OrdersScreen({super.key});
@@ -17,12 +19,10 @@ class OrdersScreen extends StatefulWidget {
 class _OrdersScreenState extends State<OrdersScreen> {
   // ignore: non_constant_identifier_names
   TextEditingController SearchClientController = TextEditingController();
-    @override
+  @override
   void dispose() {
-
     SearchClientController.dispose();
-   
-   
+
     super.dispose();
   }
 
@@ -30,7 +30,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title:const Text(
+        title: const Text(
           "Order",
           style: KTextStyle.K_20,
         ),
@@ -55,7 +55,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                     itemCount: 10,
                     itemBuilder: (context, index) {
                       return Container(
-                        padding:const EdgeInsets.all(8),
+                        padding: const EdgeInsets.all(8),
                         margin: const EdgeInsets.symmetric(
                             vertical: 15, horizontal: 4),
                         decoration: BoxDecoration(
@@ -67,8 +67,8 @@ class _OrdersScreenState extends State<OrdersScreen> {
                                 color: Theme.of(context)
                                     .colorScheme
                                     .primary, // Adjust opacity for a blush effect
-                                offset:
-                                   const Offset(0,1 ), // Move the shadow downwards
+                                offset: const Offset(
+                                    0, 1), // Move the shadow downwards
                                 blurRadius: 6, // Adjust blur radius as needed
                                 spreadRadius:
                                     0, // Adjust spread radius as needed
@@ -119,8 +119,8 @@ class _OrdersScreenState extends State<OrdersScreen> {
           borderRadius: BorderRadius.circular(40.0),
         ),
         onPressed: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const ExpensesScreen()));
+         
+          Get.to(const ExpensesScreen());
         },
         child: const Icon(
           Icons.add,

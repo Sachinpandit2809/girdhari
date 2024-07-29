@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/get_navigation.dart';
 
-import 'package:girdhari/re_usable_widgets/flexiable_rectangular_button.dart';
-import 'package:girdhari/re_usable_widgets/k_text_form_field.dart';
-import 'package:girdhari/re_usable_widgets/rectangular_button.dart';
-import 'package:girdhari/re_usable_widgets/small_square_button.dart';
-import 'package:girdhari/re_usable_widgets/stock_show_date_sheet.dart';
+import 'package:girdhari/widgets/flexiable_rectangular_button.dart';
+import 'package:girdhari/widgets/k_text_form_field.dart';
+import 'package:girdhari/widgets/rectangular_button.dart';
+import 'package:girdhari/widgets/small_square_button.dart';
+import 'package:girdhari/widgets/stock_show_date_sheet.dart';
 import 'package:girdhari/resource/app_color.dart';
 import 'package:girdhari/resource/k_text_style.dart';
-import 'package:girdhari/screens/product/add_product_screen.dart';
+import 'package:girdhari/features/product/screens/add_product_screen.dart';
 
 class StockRecordScreen extends StatefulWidget {
   const StockRecordScreen({super.key});
@@ -162,10 +164,8 @@ class _StockRecordScreenState extends State<StockRecordScreen>
             borderRadius: BorderRadius.circular(40.0),
           ),
           onPressed: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const AddProductScreen()));
+          
+            Get.to(const AddProductScreen());
           },
           child: const Icon(
             Icons.add,
@@ -239,7 +239,8 @@ class _StockRecordScreenState extends State<StockRecordScreen>
                             height: 44,
                             color: AppColor.brown,
                             onPress: () {
-                              Navigator.pop(context);
+                             
+                              Get.back();
                             },
                           ),
                         ],
@@ -316,7 +317,8 @@ class _StockRecordScreenState extends State<StockRecordScreen>
                             height: 44,
                             color: AppColor.brown,
                             onPress: () {
-                              Navigator.pop(context);
+                              
+                              Get.back();
                             },
                           ),
                         ],

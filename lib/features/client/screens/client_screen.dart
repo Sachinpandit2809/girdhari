@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:get/get_core/get_core.dart';
+import 'package:get/get_navigation/get_navigation.dart';
 
-import 'package:girdhari/re_usable_widgets/k_text_form_field.dart';
-import 'package:girdhari/re_usable_widgets/rectangular_button.dart';
-import 'package:girdhari/re_usable_widgets/squre_icon_button.dart';
+import 'package:girdhari/widgets/k_text_form_field.dart';
+import 'package:girdhari/widgets/rectangular_button.dart';
+import 'package:girdhari/widgets/squre_icon_button.dart';
 import 'package:girdhari/resource/app_color.dart';
 import 'package:girdhari/resource/k_text_style.dart';
-import 'package:girdhari/screens/client/add_client_screen.dart';
+import 'package:girdhari/features/client/screens/add_client_screen.dart';
 
 class ClientScreen extends StatefulWidget {
   const ClientScreen({super.key});
@@ -120,8 +122,8 @@ class _ClientScreenState extends State<ClientScreen> {
           borderRadius: BorderRadius.circular(40.0),
         ),
         onPressed: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const AddClientScreen()));
+         
+          Get.to(const AddClientScreen());
         },
         child: const Icon(
           Icons.add,
