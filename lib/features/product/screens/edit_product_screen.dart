@@ -1,14 +1,121 @@
+// import 'package:flutter/material.dart';
+// import 'package:get/get_navigation/get_navigation.dart';
+// import 'package:girdhari/widgets/flexiable_rectangular_button.dart';
+// import 'package:girdhari/widgets/k_text_form_field.dart';
+// import 'package:girdhari/resource/app_color.dart';
+// import 'package:girdhari/resource/k_text_style.dart';
+// import 'package:girdhari/features/client/screens/client_screen.dart';
+
+// class EditProductScreen extends StatefulWidget {
+//   const EditProductScreen({super.key});
+
+//   @override
+//   State<EditProductScreen> createState() => _EditProductScreenState();
+// }
+
+// class _EditProductScreenState extends State<EditProductScreen> {
+//   TextEditingController productNameController = TextEditingController();
+//   TextEditingController squCodeController = TextEditingController();
+//   TextEditingController weightController = TextEditingController();
+//   TextEditingController packagingController = TextEditingController();
+//   TextEditingController costController = TextEditingController();
+//   TextEditingController wholesalePriceController = TextEditingController();
+//   TextEditingController mrpController = TextEditingController();
+//   TextEditingController packageController = TextEditingController();
+
+//   @override
+//   void dispose() {
+//     // TODO: implement dispose
+//     mrpController.dispose();
+//     packageController.dispose();
+//     wholesalePriceController.dispose();
+//     costController.dispose();
+//     packagingController.dispose();
+//     weightController.dispose();
+//     squCodeController.dispose();
+//     productNameController.dispose();
+//     super.dispose();
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: const Text(
+//           "Edit Product",
+//           style: KTextStyle.K_20,
+//         ),
+//       ),
+//       body: SingleChildScrollView(
+//         child: Padding(
+//           padding: const EdgeInsets.symmetric(horizontal: 16.0),
+//           child: Column(
+//             crossAxisAlignment: CrossAxisAlignment.start,
+//             children: [
+//               const Padding(
+//                 padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
+//                 child: Text(
+//                   "Enter details",
+//                   style: KTextStyle.K_14,
+//                 ),
+//               ),
+//               KTextFormField(
+//                   controller: productNameController, hintText: "Product"),
+//               KTextFormField(
+//                   controller: squCodeController, hintText: "SKU Code"),
+//               KTextFormField(
+//                   controller: weightController, hintText: "Weight/Qty"),
+//               KTextFormField(
+//                   controller: packagingController, hintText: "Packaging"),
+//               KTextFormField(controller: costController, hintText: "Cost"),
+//               KTextFormField(
+//                   controller: wholesalePriceController,
+//                   hintText: "Wholesale Price"),
+//               KTextFormField(controller: mrpController, hintText: "MRP"),
+//               KTextFormField(
+//                   controller: packageController, hintText: "Packaging"),
+//               const SizedBox(
+//                 height: 20,
+//               ),
+//               Center(
+//                 child: FlexiableRectangularButton(
+//                   title: "SUBMIT",
+//                   width: 120,
+//                   height: 44,
+//                   color: AppColor.brown,
+//                   onPress: () {
+
+//                     //  Get.to(const ClientScreen());
+//                   },
+//                 ),
+//               )
+//             ],
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }
+
 import 'package:flutter/material.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/get_navigation.dart';
+import 'package:get/get.dart';
+import 'package:girdhari/features/product/controller/edit_product_controller.dart';
+import 'package:girdhari/features/product/model/add_product_model.dart';
+import 'package:girdhari/features/product/screens/stock_record_screen.dart';
+import 'package:girdhari/utils/utils.dart';
+import 'package:girdhari/widgets/drop_down_text_form_field.dart';
 import 'package:girdhari/widgets/flexiable_rectangular_button.dart';
 import 'package:girdhari/widgets/k_text_form_field.dart';
 import 'package:girdhari/resource/app_color.dart';
 import 'package:girdhari/resource/k_text_style.dart';
-import 'package:girdhari/features/client/screens/client_screen.dart';
 
 class EditProductScreen extends StatefulWidget {
-  const EditProductScreen({super.key});
+  final ProductModel data;
+
+  const EditProductScreen({
+    super.key,
+    required this.data,
+  });
 
   @override
   State<EditProductScreen> createState() => _EditProductScreenState();
@@ -16,24 +123,72 @@ class EditProductScreen extends StatefulWidget {
 
 class _EditProductScreenState extends State<EditProductScreen> {
   TextEditingController productNameController = TextEditingController();
-  TextEditingController squCodeController = TextEditingController();
+  TextEditingController skuCodeController = TextEditingController();
   TextEditingController weightController = TextEditingController();
   TextEditingController packagingController = TextEditingController();
   TextEditingController costController = TextEditingController();
   TextEditingController wholesalePriceController = TextEditingController();
   TextEditingController mrpController = TextEditingController();
   TextEditingController packageController = TextEditingController();
+  bool loading = false;
+
+  final EditProductController _editProductController = EditProductController();
+
+  @override
+  void initState() {
+    super.initState();
+    productNameController.text = widget.data.productName;
+    skuCodeController.text = widget.data.skuCode;
+    weightController.text = widget.data.weight;
+    packagingController.text = widget.data.packaging;
+    costController.text = widget.data.cost.toString();
+    wholesalePriceController.text = widget.data.wholesalePrice.toString();
+    mrpController.text = widget.data.mrp.toString();
+    // packageController.text = widget.data.containsKey('package') ? widget.data['package'] ?? '' : '';
+  }
+
+  void _editProduct() async {
+    setState(() {
+      loading = true;
+    });
+
+    String id = widget.data.id;
+    ProductModel product = ProductModel(
+      id: id,
+      productName: productNameController.text,
+      skuCode: skuCodeController.text,
+      weight: weightController.text,
+      packaging: packagingController.text,
+      cost: double.parse(costController.text),
+      wholesalePrice: double.parse(wholesalePriceController.text),
+      mrp: double.parse(mrpController.text),
+    );
+
+    await _editProductController.editProduct(product).then((value) {
+      setState(() {
+        loading = false;
+      });
+            Utils().toastSuccessMessage('Product Edited Successfully!');
+
+      Get.to(const StockRecordScreen());
+    }).catchError((error) {
+      setState(() {
+        loading = false;
+      });
+            Utils().toastErrorMessage('Failed to Edit Product!');
+
+    });
+  }
 
   @override
   void dispose() {
-    // TODO: implement dispose
     mrpController.dispose();
     packageController.dispose();
     wholesalePriceController.dispose();
     costController.dispose();
     packagingController.dispose();
     weightController.dispose();
-    squCodeController.dispose();
+    skuCodeController.dispose();
     productNameController.dispose();
     super.dispose();
   }
@@ -52,7 +207,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [ 
+            children: [
               const Padding(
                 padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
                 child: Text(
@@ -63,32 +218,27 @@ class _EditProductScreenState extends State<EditProductScreen> {
               KTextFormField(
                   controller: productNameController, hintText: "Product"),
               KTextFormField(
-                  controller: squCodeController, hintText: "SKU Code"),
+                  controller: skuCodeController, hintText: "SKU Code"),
               KTextFormField(
                   controller: weightController, hintText: "Weight/Qty"),
-              KTextFormField(
+              DropDownTextFormField(
                   controller: packagingController, hintText: "Packaging"),
               KTextFormField(controller: costController, hintText: "Cost"),
               KTextFormField(
                   controller: wholesalePriceController,
                   hintText: "Wholesale Price"),
               KTextFormField(controller: mrpController, hintText: "MRP"),
-              KTextFormField(
-                  controller: packageController, hintText: "Packaging"),
               const SizedBox(
                 height: 20,
               ),
               Center(
                 child: FlexiableRectangularButton(
-                  title: "SUBMIT",
-                  width: 120,
-                  height: 44,
-                  color: AppColor.brown,
-                  onPress: () {
-                   
-                     Get.to(const ClientScreen());
-                  },
-                ),
+                    title: "SUBMIT",
+                    loading: loading,
+                    width: 120,
+                    height: 44,
+                    color: AppColor.brown,
+                    onPress: _editProduct),
               )
             ],
           ),

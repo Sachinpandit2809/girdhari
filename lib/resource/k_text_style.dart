@@ -1,6 +1,9 @@
+// ignore_for_file: constant_identifier_names
+
 import 'package:flutter/material.dart';
 
 class KTextStyle {
+  
   static const TextStyle K_8 = TextStyle(
       // color: Colors.black,
       fontSize: 8,

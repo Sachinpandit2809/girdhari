@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+
 import 'package:get/get_core/get_core.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 
@@ -85,7 +85,7 @@ class _ClientScreenState extends State<ClientScreen> {
                             Column(
                               children: [
                                 const RectangularButton(
-                                    title: "\u{20B9}" + "15420",
+                                    title: "\u{20B9}" "15420",
                                     color: AppColor.skyBlueButton),
                                 Row(
                                   children: [

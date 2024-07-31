@@ -51,7 +51,6 @@ class _BillingScreenState extends State<BillingScreen> {
             color: AppColor.brown,
             textColor: AppColor.white,
             onPress: () {
-              
               Get.to(const OrdersScreen());
             },
           )
@@ -112,6 +111,9 @@ class _BillingScreenState extends State<BillingScreen> {
                         onPress: () {})
                   ],
                 ),
+              ),
+              const SizedBox(
+                height: 20,
               ),
               KTextFormField(
                   controller: SearchProductController,

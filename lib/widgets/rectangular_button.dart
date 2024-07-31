@@ -20,7 +20,7 @@ class RectangularButton extends StatelessWidget {
     return InkWell(
       onTap: onPress,
       child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 2),
+        margin: const EdgeInsets.symmetric(horizontal: 2),
         height: 22,
         width: 71,
         decoration: BoxDecoration(

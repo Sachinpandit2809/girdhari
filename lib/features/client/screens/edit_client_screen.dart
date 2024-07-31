@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:get/get_core/get_core.dart';
-import 'package:get/get_navigation/get_navigation.dart';
+
+
 import 'package:girdhari/widgets/flexiable_rectangular_button.dart';
 import 'package:girdhari/widgets/k_text_form_field.dart';
 import 'package:girdhari/resource/app_color.dart';
 import 'package:girdhari/resource/k_text_style.dart';
-import 'package:girdhari/features/orders/screens/billing_screen.dart';
+
 // ignore: unused_import
 import 'package:girdhari/features/product/screens/edit_product_screen.dart';
 
@@ -24,7 +24,7 @@ class _EditClientScreenState extends State<EditClientScreen> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
+  
     clientNameController.dispose();
     phoneNumberController.dispose();
     refferedByController.dispose();
@@ -75,7 +75,7 @@ class _EditClientScreenState extends State<EditClientScreen> {
                   color: AppColor.brown,
                   onPress: () {
                     
-                    Get.to( const BillingScreen());
+                    // Get.to( const BillingScreen());
                   },
                 ),
               )

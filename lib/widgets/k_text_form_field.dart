@@ -13,7 +13,7 @@ class KTextFormField extends StatelessWidget {
       child: TextFormField(
         controller: controller,
         decoration: InputDecoration(
-          contentPadding: EdgeInsets.fromLTRB(25, 0, 10, 0),
+          contentPadding: const EdgeInsets.fromLTRB(25, 0, 10, 0),
           border: const OutlineInputBorder(
               borderSide: BorderSide(color: Color(0xFFD9D9D9)),
               borderRadius: BorderRadius.all(Radius.circular(12))),

@@ -1,11 +1,16 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/get_navigation.dart';
+import 'package:girdhari/features/product/model/add_product_model.dart';
+import 'package:girdhari/features/product/screens/edit_product_screen.dart';
+import 'package:girdhari/utils/utils.dart';
 
 import 'package:girdhari/widgets/flexiable_rectangular_button.dart';
 import 'package:girdhari/widgets/k_text_form_field.dart';
 import 'package:girdhari/widgets/rectangular_button.dart';
+import 'package:girdhari/widgets/search_k_textformfield.dart';
 import 'package:girdhari/widgets/small_square_button.dart';
 import 'package:girdhari/widgets/stock_show_date_sheet.dart';
 import 'package:girdhari/resource/app_color.dart';
@@ -27,8 +32,11 @@ class _StockRecordScreenState extends State<StockRecordScreen>
 
   TextEditingController addQuantiyController = TextEditingController();
   TextEditingController removeQuantiyController = TextEditingController();
-
   DateTime selectedDate = DateTime.now();
+  final productsCollectionRef =
+      FirebaseFirestore.instance.collection('productStock');
+  final fireStore =
+      FirebaseFirestore.instance.collection('productStock').snapshots();
 
   @override
   void initState() {
@@ -51,127 +59,230 @@ class _StockRecordScreenState extends State<StockRecordScreen>
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        SystemNavigator.pop();
-        return true;
-      },
-      child: Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          title: const Text(
-            "Stock Report",
-            style: KTextStyle.K_20,
-          ),
+    return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: const Text(
+          "Stock Report",
+          style: KTextStyle.K_20,
         ),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                      child: KTextFormField(
-                          controller: searchProductController,
-                          hintText: "Search product")),
-                  IconButton(
-                    icon: Image.asset('assets/images/png/icon_filter.png'),
-                    onPressed: () {
-                      //function
-                    },
-                  )
-                ],
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Expanded(
-                  child: ListView.builder(
-                      itemCount: 5,
-                      itemBuilder: (context, index) {
-                        return InkWell(
-                          onLongPress: () {
-                            showDateSheet();
-                          },
-                          onTap: () {
-                            addBottomSheet();
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 10, horizontal: 3),
-                            margin: const EdgeInsets.only(top: 15),
-                            decoration: BoxDecoration(
-                                color: Theme.of(context).colorScheme.secondary,
-                                borderRadius: BorderRadius.circular(8)),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Expanded(
+                    child: SearchKTextformfield(
+                  controller: searchProductController,
+                  hintText: "Search Product",
+                  onChange: (String value) {
+                    setState(() {});
+                  },
+                )),
+                IconButton(
+                  icon: Image.asset('assets/images/png/icon_filter.png'),
+                  onPressed: () {
+                    //function
+                  },
+                )
+              ],
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            StreamBuilder<QuerySnapshot>(
+              stream: fireStore,
+              builder: (BuildContext context,
+                  AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+                if (snapshot.hasError) {
+                  Utils().toastErrorMessage("error during communication");
+                }
+                return Expanded(
+                    child: ListView.builder(
+                        itemCount: snapshot.data!.docs.length,
+                        itemBuilder: (context, index) {
+                          // ProductModel myData = ProductModel.fromJson(snapshot.data!.docs[index].data());
+                          ProductModel myData = ProductModel.fromJson(
+                              snapshot.data!.docs[index].data()
+                                  as Map<String, dynamic>);
+                          //dynamic myData = snapshot.data!.docs[index];
+                          if (searchProductController.text.isEmpty) {
+                            return InkWell(
+                              onLongPress: () {
+                                showDateSheet();
+                              },
+                              onTap: () {
+                                // addBottomSheet();
+                                Get.to(EditProductScreen(data: myData));
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 3),
+                                margin: const EdgeInsets.only(top: 15),
+                                decoration: BoxDecoration(
+                                    color:
+                                        Theme.of(context).colorScheme.secondary,
+                                    borderRadius: BorderRadius.circular(8)),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Padding(
-                                      padding:
-                                          EdgeInsets.symmetric(vertical: 2.0),
-                                      child: Text(
-                                        "Roli / KumKum Powder",
-                                        style: KTextStyle.K_16,
-                                      ),
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                    Column(
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.end,
+                                          CrossAxisAlignment.start,
                                       children: [
-                                        RectangularButton(
-                                            title: "Bottle",
-                                            color: AppColor.skyBlue),
-                                        RectangularButton(
-                                            title: "25 GM",
-                                            color: AppColor.yellowButton),
-                                        SmallSquareButton(
-                                            title: "10",
-                                            color: AppColor.skyBlue),
-                                        SmallSquareButton(
-                                            title: "10",
-                                            color: AppColor.yellow),
-                                        SmallSquareButton(
-                                            title: "10",
-                                            color: AppColor.brownRed),
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 2.0),
+                                          child: Text(
+                                            // "Roli / KumKum Powder",
+                                            // snapshot.data!.docs[index][""],
+                                            myData.productName,
+                                            style: KTextStyle.K_16,
+                                          ),
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.end,
+                                          children: [
+                                            RectangularButton(
+                                                title: myData.packaging,
+                                                color: AppColor.skyBlue),
+                                            RectangularButton(
+                                                title: myData.weight,
+                                                color: AppColor.yellowButton),
+                                            SmallSquareButton(
+                                                title: myData.cost.toString(),
+                                                color: AppColor.skyBlue),
+                                            SmallSquareButton(
+                                                title: myData.wholesalePrice
+                                                    .toString(),
+                                                color: AppColor.yellow),
+                                            SmallSquareButton(
+                                                title: myData.mrp.toString(),
+                                                color: AppColor.brownRed),
+                                          ],
+                                        )
                                       ],
-                                    )
+                                    ),
+                                    FlexiableRectangularButton(
+                                        textColor: Colors.black,
+                                        title: "12",
+                                        width: 51,
+                                        height: 46,
+                                        onPress: () {},
+                                        color: AppColor.skyBlue)
                                   ],
                                 ),
-                                FlexiableRectangularButton(
-                                    textColor: Colors.black,
-                                    title: "12",
-                                    width: 51,
-                                    height: 46,
-                                    onPress: () {},
-                                    color: AppColor.skyBlue)
-                              ],
-                            ),
-                          ),
-                        );
-                      }))
-            ],
-          ),
+                              ),
+                            );
+                          }
+                          if (myData.productName
+                              .toString()
+                              .toLowerCase()
+                              .contains(
+                                  searchProductController.text.toLowerCase())) {
+                            return InkWell(
+                              onLongPress: () {
+                                showDateSheet();
+                              },
+                              onTap: () {
+                                addBottomSheet();
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 3),
+                                margin: const EdgeInsets.only(top: 15),
+                                decoration: BoxDecoration(
+                                    color:
+                                        Theme.of(context).colorScheme.secondary,
+                                    borderRadius: BorderRadius.circular(8)),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 2.0),
+                                          child: Text(
+                                            // "Roli / KumKum Powder",
+                                            // snapshot.data!.docs[index][""],
+                                            myData.productName,
+                                            style: KTextStyle.K_16,
+                                          ),
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.end,
+                                          children: [
+                                            RectangularButton(
+                                                title: myData.packaging,
+                                                color: AppColor.skyBlue),
+                                            RectangularButton(
+                                                title: myData.weight,
+                                                color: AppColor.yellowButton),
+                                            SmallSquareButton(
+                                                title: myData.cost.toString(),
+                                                color: AppColor.skyBlue),
+                                            SmallSquareButton(
+                                                title: myData.wholesalePrice
+                                                    .toString(),
+                                                color: AppColor.yellow),
+                                            SmallSquareButton(
+                                                title: myData.mrp.toString(),
+                                                color: AppColor.brownRed),
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                    FlexiableRectangularButton(
+                                        textColor: Colors.black,
+                                        title: "12",
+                                        width: 51,
+                                        height: 46,
+                                        onPress: () {},
+                                        color: AppColor.skyBlue)
+                                  ],
+                                ),
+                              ),
+                            );
+                          }
+                          return Container();
+                        }));
+              },
+            )
+          ],
         ),
-        floatingActionButton: FloatingActionButton(
-          backgroundColor: AppColor.brown,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(40.0),
-          ),
-          onPressed: () {
-          
-            Get.to(const AddProductScreen());
-          },
-          child: const Icon(
-            Icons.add,
-            color: AppColor.white,
-            size: 30,
-          ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: AppColor.brown,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(40.0),
+        ),
+        onPressed: () {
+          Get.to(const AddProductScreen());
+        },
+        child: const Icon(
+          Icons.add,
+          color: AppColor.white,
+          size: 30,
         ),
       ),
     );
@@ -239,7 +350,6 @@ class _StockRecordScreenState extends State<StockRecordScreen>
                             height: 44,
                             color: AppColor.brown,
                             onPress: () {
-                             
                               Get.back();
                             },
                           ),
@@ -317,7 +427,6 @@ class _StockRecordScreenState extends State<StockRecordScreen>
                             height: 44,
                             color: AppColor.brown,
                             onPress: () {
-                              
                               Get.back();
                             },
                           ),

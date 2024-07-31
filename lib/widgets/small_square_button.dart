@@ -12,15 +12,15 @@ class SmallSquareButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 2),
-      height: 29,
-      width: 30,
+      margin: const EdgeInsets.symmetric(horizontal: 2),
+      height: 33,
+      width: 34,
       decoration:
-          BoxDecoration(color: color, borderRadius: BorderRadius.circular(10)),
+          BoxDecoration(color: color, borderRadius: BorderRadius.circular(6)),
       child: Center(
           child: Text(
         title,
-        style: KTextStyle.K_10.copyWith(color:AppColor.white),
+        style: KTextStyle.K_10.copyWith(color: AppColor.white),
       )),
     );
   }
