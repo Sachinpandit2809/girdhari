@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 
 class KTextStyle {
-  
   static const TextStyle K_8 = TextStyle(
       // color: Colors.black,
       fontSize: 8,
@@ -13,6 +12,12 @@ class KTextStyle {
       // color: Colors.black,
       fontSize: 10,
       letterSpacing: 0.5,
+      fontWeight: FontWeight.w400);
+  static const TextStyle K_E_10 = TextStyle(
+      // color: Colors.black,
+      fontSize: 10,
+      letterSpacing: 0.5,
+      overflow: TextOverflow.visible,
       fontWeight: FontWeight.w400);
 
   static const TextStyle K_12 = TextStyle(

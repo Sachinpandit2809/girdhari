@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
-
+import 'package:get/get_core/get_core.dart';
+import 'package:get/get_navigation/get_navigation.dart';
+import 'package:girdhari/features/client/controller/edir_client_controller.dart';
+import 'package:girdhari/features/client/model/client_model.dart';
+import 'package:girdhari/features/client/screens/client_screen.dart';
+import 'package:girdhari/utils/utils.dart';
 
 import 'package:girdhari/widgets/flexiable_rectangular_button.dart';
 import 'package:girdhari/widgets/k_text_form_field.dart';
@@ -10,7 +15,8 @@ import 'package:girdhari/resource/k_text_style.dart';
 import 'package:girdhari/features/product/screens/edit_product_screen.dart';
 
 class EditClientScreen extends StatefulWidget {
-  const EditClientScreen({super.key});
+  final ClientModel clientData;
+  const EditClientScreen({super.key, required this.clientData});
 
   @override
   State<EditClientScreen> createState() => _EditClientScreenState();
@@ -20,16 +26,46 @@ class _EditClientScreenState extends State<EditClientScreen> {
   TextEditingController clientNameController = TextEditingController();
   TextEditingController phoneNumberController = TextEditingController();
   TextEditingController addressController = TextEditingController();
-  TextEditingController refferedByController = TextEditingController();
-
+  TextEditingController referredByController = TextEditingController();
+  bool loading = false;
+  final EditClientController _editClientController = EditClientController();
   @override
+  void initState() {
+    clientNameController.text = widget.clientData.clientName;
+    phoneNumberController.text = widget.clientData.phoneNumber.toString();
+    addressController.text = widget.clientData.address;
+    referredByController.text = widget.clientData.referredBy;
+
+    super.initState();
+  }
+
+  void _editClient() async {
+    setState(() {
+      loading = true;
+    });
+    String id = widget.clientData.id;
+    ClientModel client = ClientModel(
+        id: id,
+        clientName: clientNameController.text,
+        phoneNumber: int.parse(phoneNumberController.text),
+        address: addressController.text,
+        referredBy: referredByController.text);
+
+    await _editClientController.editClient(client).then((onValue) {
+      Get.to(ClientScreen());
+      Utils().toastSuccessMessage("Client Updated");
+    }).onError(
+      (error, stackTrace) {
+        Utils().toastErrorMessage(error.toString());
+      },
+    );
+  }
+
   void dispose() {
-  
     clientNameController.dispose();
     phoneNumberController.dispose();
-    refferedByController.dispose();
+    referredByController.dispose();
     addressController.dispose();
-
     super.dispose();
   }
 
@@ -62,22 +98,19 @@ class _EditClientScreenState extends State<EditClientScreen> {
               KTextFormField(
                   controller: addressController, hintText: "Address"),
               KTextFormField(
-                  controller: refferedByController,
+                  controller: referredByController,
                   hintText: "Referred By (optional)"),
               const SizedBox(
                 height: 50,
               ),
               Center(
                 child: FlexiableRectangularButton(
-                  title: "SUBMIT",
-                  width: 120,
-                  height: 44,
-                  color: AppColor.brown,
-                  onPress: () {
-                    
-                    // Get.to( const BillingScreen());
-                  },
-                ),
+                    title: "SUBMIT",
+                    width: 120,
+                    height: 44,
+                    color: AppColor.brown,
+                    loading: loading,
+                    onPress: _editClient),
               )
             ],
           ),

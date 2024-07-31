@@ -113,10 +113,7 @@ import 'package:girdhari/widgets/flexiable_rectangular_button.dart';
 import 'package:girdhari/widgets/k_text_form_field.dart';
 import 'package:girdhari/resource/app_color.dart';
 import 'package:girdhari/resource/k_text_style.dart';
-import 'package:girdhari/features/product/screens/edit_product_screen.dart';
-// import 'package:your_project/controllers/product_controller.dart';
-// import 'package:your_project/models/product_model.dart';
-// import 'package:uuid/uuid.dart';
+
 
 class AddProductScreen extends StatefulWidget {
   const AddProductScreen({super.key});
