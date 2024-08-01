@@ -124,15 +124,10 @@ class _ClientScreenState extends State<ClientScreen> {
                                           clientData.clientName,
                                           style: KTextStyle.K_14,
                                         ),
-                                        SizedBox(
-                                          width: 220,
-                                          child: Flexible(
-                                            child: Text(
-                                              clientData.address,
-                                              softWrap: true,
-                                              style: KTextStyle.K_E_10,
-                                            ),
-                                          ),
+                                        Text(
+                                          clientData.address,
+                                          // softWrap: true,
+                                          style: KTextStyle.K_E_10,
                                         ),
                                       ],
                                     ),
@@ -205,15 +200,10 @@ class _ClientScreenState extends State<ClientScreen> {
                                           clientData.clientName,
                                           style: KTextStyle.K_14,
                                         ),
-                                        SizedBox(
-                                          width: 220,
-                                          child: Flexible(
-                                            child: Text(
-                                              clientData.address,
-                                              softWrap: true,
-                                              style: KTextStyle.K_E_10,
-                                            ),
-                                          ),
+                                        Text(
+                                          clientData.address,
+                                          //softWrap: true,
+                                          style: KTextStyle.K_E_10,
                                         ),
                                       ],
                                     ),
