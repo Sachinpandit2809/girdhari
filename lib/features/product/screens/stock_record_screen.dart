@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/get_navigation.dart';
+import 'package:girdhari/features/product/controller/edit_product_controller.dart';
+import 'package:girdhari/features/product/controller/product_date_controller.dart';
 import 'package:girdhari/features/product/model/add_product_model.dart';
+import 'package:girdhari/features/product/model/date_model.dart';
 import 'package:girdhari/features/product/screens/edit_product_screen.dart';
 import 'package:girdhari/utils/utils.dart';
 
@@ -16,6 +19,7 @@ import 'package:girdhari/widgets/stock_show_date_sheet.dart';
 import 'package:girdhari/resource/app_color.dart';
 import 'package:girdhari/resource/k_text_style.dart';
 import 'package:girdhari/features/product/screens/add_product_screen.dart';
+import 'package:uuid/uuid.dart';
 
 class StockRecordScreen extends StatefulWidget {
   const StockRecordScreen({super.key});
@@ -31,6 +35,9 @@ class _StockRecordScreenState extends State<StockRecordScreen>
   // late TabController secondTabController;
 
   TextEditingController addQuantiyController = TextEditingController();
+
+  final EditProductController _editProductController = EditProductController();
+
   TextEditingController removeQuantiyController = TextEditingController();
   DateTime selectedDate = DateTime.now();
   final productsCollectionRef =
@@ -38,6 +45,13 @@ class _StockRecordScreenState extends State<StockRecordScreen>
   final fireStore =
       FirebaseFirestore.instance.collection('productStock').snapshots();
 
+  final dateCollection =
+      FirebaseFirestore.instance.collection('productStockDate');
+  final dateFireStore =
+      FirebaseFirestore.instance.collection('productStockDate').snapshots();
+
+  bool loading = false;
+  bool toggleLoading = false;
   @override
   void initState() {
     super.initState();
@@ -115,10 +129,10 @@ class _StockRecordScreenState extends State<StockRecordScreen>
                           //dynamic myData = snapshot.data!.docs[index];
                           if (searchProductController.text.isEmpty) {
                             return InkWell(
-                              onLongPress: () {
-                                showDateSheet();
-                              },
                               onTap: () {
+                                showDateSheet(myData);
+                              },
+                              onLongPress: () {
                                 // addBottomSheet();
                                 Get.to(EditProductScreen(data: myData));
                               },
@@ -177,10 +191,13 @@ class _StockRecordScreenState extends State<StockRecordScreen>
                                     ),
                                     FlexiableRectangularButton(
                                         textColor: Colors.black,
-                                        title: "12",
+                                        title:
+                                            myData.availableQuantity.toString(),
                                         width: 51,
                                         height: 46,
-                                        onPress: () {},
+                                        onPress: () {
+                                          addBottomSheet(myData);
+                                        },
                                         color: AppColor.skyBlue)
                                   ],
                                 ),
@@ -193,11 +210,11 @@ class _StockRecordScreenState extends State<StockRecordScreen>
                               .contains(
                                   searchProductController.text.toLowerCase())) {
                             return InkWell(
-                              onLongPress: () {
-                                showDateSheet();
-                              },
                               onTap: () {
-                                addBottomSheet();
+                                showDateSheet(myData);
+                              },
+                              onLongPress: () {
+                                Get.to(EditProductScreen(data: myData));
                               },
                               child: Container(
                                 padding: const EdgeInsets.symmetric(
@@ -217,7 +234,7 @@ class _StockRecordScreenState extends State<StockRecordScreen>
                                           CrossAxisAlignment.start,
                                       children: [
                                         Padding(
-                                          padding: EdgeInsets.symmetric(
+                                          padding: const EdgeInsets.symmetric(
                                               vertical: 2.0),
                                           child: Text(
                                             // "Roli / KumKum Powder",
@@ -254,10 +271,13 @@ class _StockRecordScreenState extends State<StockRecordScreen>
                                     ),
                                     FlexiableRectangularButton(
                                         textColor: Colors.black,
-                                        title: "12",
+                                        title:
+                                            myData.availableQuantity.toString(),
                                         width: 51,
                                         height: 46,
-                                        onPress: () {},
+                                        onPress: () {
+                                          addBottomSheet(myData);
+                                        },
                                         color: AppColor.skyBlue)
                                   ],
                                 ),
@@ -288,7 +308,7 @@ class _StockRecordScreenState extends State<StockRecordScreen>
     );
   }
 
-  void addBottomSheet() {
+  void addBottomSheet(ProductModel data) {
     showModalBottomSheet<void>(
         context: context,
         builder: (BuildContext context) {
@@ -340,6 +360,7 @@ class _StockRecordScreenState extends State<StockRecordScreen>
                           ),
                           KTextFormField(
                               controller: addQuantiyController,
+                              keyBoard: TextInputType.number,
                               hintText: "Enter Quantity"),
                           const SizedBox(
                             height: 40,
@@ -349,8 +370,68 @@ class _StockRecordScreenState extends State<StockRecordScreen>
                             width: 120,
                             height: 44,
                             color: AppColor.brown,
-                            onPress: () {
-                              Get.back();
+                            onPress: () async {
+                              try {
+                                int addQuantity =
+                                    int.tryParse(addQuantiyController.text) ??
+                                        0;
+                                int newAvailableQuantity =
+                                    (data.availableQuantity ?? 0) + addQuantity;
+                                String id = data.id;
+                                String date =
+                                    "${DateTime.now().day}-${DateTime.now().month}-${DateTime.now().year}";
+                                String sellTag = "created";
+                                int quantity = addQuantity;
+                                // Create a new DateModel instance with the updated
+                                DateModel productDate = DateModel(
+                                    id: id,
+                                    date: date,
+                                    sellTag: sellTag,
+                                    quantity: quantity);
+
+                                // Create a new ProductModel instance with the updated quantity
+                                ProductModel updatedProduct = ProductModel(
+                                  id: data.id,
+                                  time: data.time,
+                                  availableQuantity: newAvailableQuantity,
+                                  productName: data.productName,
+                                  skuCode: data.skuCode,
+                                  weight: data.weight,
+                                  packaging: data.packaging,
+                                  cost: data.cost,
+                                  wholesalePrice: data.wholesalePrice,
+                                  mrp: data.mrp,
+                                );
+
+                                // Call editProduct method to update the product in the database
+                                ProductDateController()
+                                    .addProductDate(productDate)
+                                    .then((onValue) {
+                                  debugPrint("################## date added");
+                                  // ScaffoldMessenger.of(context).showSnackBar(
+                                  //     SnackBar(content: Text("date added")));
+                                }).onError(
+                                  (error, stackTrace) {
+                                    Utils().toastErrorMessage(
+                                        "error in update date");
+                                  },
+                                );
+
+                                EditProductController()
+                                    .editProduct(updatedProduct)
+                                    .then((onValue) {
+                                  Utils().toastSuccessMessage(
+                                      "$addQuantity stock updated");
+                                }).onError(
+                                  (error, stackTrace) {
+                                    Utils().toastErrorMessage(
+                                        "error in Stock update");
+                                  },
+                                );
+                                Get.back();
+                              } catch (e) {
+                                Utils().toastErrorMessage(e.toString());
+                              }
                             },
                           ),
                         ],
@@ -365,6 +446,7 @@ class _StockRecordScreenState extends State<StockRecordScreen>
                           ),
                           KTextFormField(
                               controller: removeQuantiyController,
+                              keyBoard: TextInputType.number,
                               hintText: "Enter Quantity"),
                           const SizedBox(
                             height: 30,
@@ -380,6 +462,7 @@ class _StockRecordScreenState extends State<StockRecordScreen>
                             ],
                             onPressed: (int index) {
                               setState(() {
+                                toggleLoading = true;
                                 switch (index) {
                                   case 0:
                                     selectedCategory = 'Wholesale';
@@ -396,6 +479,12 @@ class _StockRecordScreenState extends State<StockRecordScreen>
                                 }
                               });
                             },
+                            // selectedColor:
+                            //     Colors.white, // Color of selected text
+                            // fillColor: Colors
+                            //     .blue, // Background color of selected button
+                            // // color: Colors.black, // Color of unselected text
+
                             children: const [
                               Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 16.0),
@@ -422,12 +511,67 @@ class _StockRecordScreenState extends State<StockRecordScreen>
                             height: 40,
                           ),
                           FlexiableRectangularButton(
+                            ////// remove button
                             title: "SUBMIT",
                             width: 120,
                             height: 44,
                             color: AppColor.brown,
-                            onPress: () {
-                              Get.back();
+                            onPress: () async {
+                              try {
+                                int removeQuantity = int.tryParse(
+                                        removeQuantiyController.text) ??
+                                    0;
+                                int newAvailableQuantity =
+                                    (data.availableQuantity ?? 0) -
+                                        removeQuantity;
+                                //.....................
+
+                                String id = data.id;
+                                String date =
+                                    "${DateTime.now().day}-${DateTime.now().month}-${DateTime.now().year}";
+                                String sellTag = selectedCategory.toString();
+                                int quantity = removeQuantity;
+                                // Create a new DateModel instance with the updated
+                                DateModel productDate = DateModel(
+                                    id: id,
+                                    date: date,
+                                    sellTag: sellTag,
+                                    quantity: quantity);
+                                ProductDateController()
+                                    .addProductDate(productDate)
+                                    .then((onValue) {
+                                  debugPrint("################## date added");
+                                  // ScaffoldMessenger.of(context).showSnackBar(
+                                  //     SnackBar(content: Text("date added")));
+                                }).onError(
+                                  (error, stackTrace) {
+                                    Utils().toastErrorMessage(
+                                        "error in update date");
+                                  },
+                                );
+
+                                //......................
+                                // Create a new ProductModel instance with the updated quantity
+                                ProductModel updatedProduct = ProductModel(
+                                  id: data.id,
+                                  time: data.time,
+                                  availableQuantity: newAvailableQuantity,
+                                  productName: data.productName,
+                                  skuCode: data.skuCode,
+                                  weight: data.weight,
+                                  packaging: data.packaging,
+                                  cost: data.cost,
+                                  wholesalePrice: data.wholesalePrice,
+                                  mrp: data.mrp,
+                                );
+
+                                // Call editProduct method to update the product in the database
+                                EditProductController()
+                                    .editProduct(updatedProduct);
+                                Get.back();
+                              } catch (e) {
+                                Utils().toastErrorMessage(e.toString());
+                              }
                             },
                           ),
                         ],
@@ -441,24 +585,47 @@ class _StockRecordScreenState extends State<StockRecordScreen>
 
   //  showDateSheet(String date, String buttonTitle, String count)
 
-  showDateSheet() {
+  showDateSheet(ProductModel productData) {
     showModalBottomSheet(
         context: context,
         builder: (BuildContext context) {
+          final dateCollectionDetails = dateCollection
+              .doc(productData.id)
+              .collection("stockDateList")
+              .snapshots();
+
           return Column(
             children: [
               const SizedBox(
                 height: 50,
                 child: Center(child: Icon(Icons.drag_handle_sharp)),
               ),
-              Expanded(
-                  child: ListView.builder(
-                itemCount: 5,
-                itemBuilder: (context, index) {
-                  return StockShowDateSheet(
-                      date: "28 jul 24", buttonTitle: "buttom", count: "24");
+              StreamBuilder<QuerySnapshot>(
+                stream: dateCollectionDetails,
+                builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const CircularProgressIndicator();
+                  }
+                  if (snapshot.hasError) {
+                    Utils().toastErrorMessage("error in connection ");
+                  }
+                  return Expanded(
+                      child: ListView.builder(
+                    itemCount: snapshot.data!.docs.length,
+                    itemBuilder: (context, index) {
+                      ///////////////////////////////////////////////////////////
+                      DateModel date = DateModel.fromJson(
+                          snapshot.data!.docs[index].data()
+                              as Map<String, dynamic>);
+
+                      return StockShowDateSheet(
+                          date: date.date,
+                          buttonTitle: date.sellTag,
+                          count: date.quantity.toString());
+                    },
+                  ));
                 },
-              ))
+              )
             ],
           );
         });

@@ -1,7 +1,7 @@
-
-
 class ProductModel {
   String id;
+  String time;
+  int? availableQuantity;
   String productName;
   String skuCode;
   String weight;
@@ -12,6 +12,8 @@ class ProductModel {
 
   ProductModel({
     required this.id,
+    required this.time,
+    required this.availableQuantity,
     required this.productName,
     required this.skuCode,
     required this.weight,
@@ -24,6 +26,8 @@ class ProductModel {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
+      'time': time,
+      'availableQuantity': availableQuantity,
       'productName': productName,
       'skuCode': skuCode,
       'weight': weight,
@@ -36,7 +40,9 @@ class ProductModel {
 
   factory ProductModel.fromJson(Map<String, dynamic> json) {
     return ProductModel(
+      availableQuantity: json['availableQuantity'],
       id: json['id'],
+      time: json['time'],
       productName: json['productName'],
       skuCode: json['skuCode'],
       weight: json['weight'],
