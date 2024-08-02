@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/get_core.dart';
-import 'package:get/get_navigation/get_navigation.dart';
+
 import 'package:girdhari/features/client/controller/client_controller.dart';
 import 'package:girdhari/features/client/model/client_model.dart';
 import 'package:girdhari/features/client/screens/client_screen.dart';
@@ -10,7 +9,7 @@ import 'package:girdhari/widgets/flexiable_rectangular_button.dart';
 import 'package:girdhari/widgets/k_text_form_field.dart';
 import 'package:girdhari/resource/app_color.dart';
 import 'package:girdhari/resource/k_text_style.dart';
-import 'package:girdhari/features/client/screens/edit_client_screen.dart';
+import 'package:uuid/uuid.dart';
 
 class AddClientScreen extends StatefulWidget {
   const AddClientScreen({super.key});
@@ -43,7 +42,7 @@ class _AddClientScreenState extends State<AddClientScreen> {
     setState(() {
       loading = true;
     });
-    String id = DateTime.now().millisecondsSinceEpoch.toString();
+    String id = const Uuid().v4();
     ClientModel client = ClientModel(
         id: id,
         clientName: clientNameController.text,
@@ -101,13 +100,12 @@ class _AddClientScreenState extends State<AddClientScreen> {
               ),
               Center(
                 child: FlexiableRectangularButton(
-                  title: "SUBMIT",
-                  width: 120,
-                  height: 44,
-                  color: AppColor.brown,
-                  loading: loading,
-                  onPress: _addClient
-                ),
+                    title: "SUBMIT",
+                    width: 120,
+                    height: 44,
+                    color: AppColor.brown,
+                    loading: loading,
+                    onPress: _addClient),
               )
             ],
           ),

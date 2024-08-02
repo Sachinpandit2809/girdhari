@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_core/get_core.dart';
 import 'package:get/get_navigation/get_navigation.dart';
-import 'package:girdhari/features/client/controller/edir_client_controller.dart';
+import 'package:girdhari/features/client/controller/client_controller.dart';
 import 'package:girdhari/features/client/model/client_model.dart';
 import 'package:girdhari/features/client/screens/client_screen.dart';
 import 'package:girdhari/utils/utils.dart';
@@ -28,7 +28,7 @@ class _EditClientScreenState extends State<EditClientScreen> {
   TextEditingController addressController = TextEditingController();
   TextEditingController referredByController = TextEditingController();
   bool loading = false;
-  final EditClientController _editClientController = EditClientController();
+  final ClientController _editClientController = ClientController();
   @override
   void initState() {
     clientNameController.text = widget.clientData.clientName;
@@ -52,15 +52,22 @@ class _EditClientScreenState extends State<EditClientScreen> {
         referredBy: referredByController.text);
 
     await _editClientController.editClient(client).then((onValue) {
-      Get.to(ClientScreen());
+      setState(() {
+        loading = false;
+      });
+      Get.to(() => const ClientScreen());
       Utils().toastSuccessMessage("Client Updated");
     }).onError(
       (error, stackTrace) {
+        setState(() {
+          loading = false;
+        });
         Utils().toastErrorMessage(error.toString());
       },
     );
   }
 
+  @override
   void dispose() {
     clientNameController.dispose();
     phoneNumberController.dispose();

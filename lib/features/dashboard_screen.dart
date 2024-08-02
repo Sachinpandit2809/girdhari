@@ -74,6 +74,7 @@
 // }
 
 import 'package:flutter/material.dart';
+import 'package:girdhari/features/expenses/screen/expenses_screen.dart';
 import 'package:girdhari/resource/app_color.dart';
 import 'package:girdhari/features/orders/screens/billing_screen.dart';
 import 'package:girdhari/features/client/screens/client_screen.dart';
@@ -100,6 +101,8 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
     BillingScreen(),
     //fourth bottom bar
     OrdersScreen(),
+    //fifth screen bar
+    ExpensesScreen()
   ];
 
   void _onItemTapped(int index) {
@@ -132,6 +135,10 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
+            label: '',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.attach_money_outlined),
             label: '',
           ),
         ],

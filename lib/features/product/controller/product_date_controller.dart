@@ -1,8 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:girdhari/features/product/model/add_product_model.dart';
 import 'package:girdhari/features/product/model/date_model.dart';
-import 'package:girdhari/utils/utils.dart';
 import 'package:uuid/uuid.dart';
 
 class ProductDateController {

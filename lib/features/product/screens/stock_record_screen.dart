@@ -19,7 +19,7 @@ import 'package:girdhari/widgets/stock_show_date_sheet.dart';
 import 'package:girdhari/resource/app_color.dart';
 import 'package:girdhari/resource/k_text_style.dart';
 import 'package:girdhari/features/product/screens/add_product_screen.dart';
-import 'package:uuid/uuid.dart';
+
 
 class StockRecordScreen extends StatefulWidget {
   const StockRecordScreen({super.key});
@@ -36,7 +36,6 @@ class _StockRecordScreenState extends State<StockRecordScreen>
 
   TextEditingController addQuantiyController = TextEditingController();
 
-  final EditProductController _editProductController = EditProductController();
 
   TextEditingController removeQuantiyController = TextEditingController();
   DateTime selectedDate = DateTime.now();
@@ -133,7 +132,8 @@ class _StockRecordScreenState extends State<StockRecordScreen>
                                 showDateSheet(myData);
                               },
                               onLongPress: () {
-                                // addBottomSheet();
+                                debugPrint("object triggred");
+
                                 Get.to(EditProductScreen(data: myData));
                               },
                               child: Container(
@@ -521,6 +521,17 @@ class _StockRecordScreenState extends State<StockRecordScreen>
                                 int removeQuantity = int.tryParse(
                                         removeQuantiyController.text) ??
                                     0;
+                                // try {
+                                if (((data.availableQuantity ?? 0) -
+                                        removeQuantity) <
+                                    0) {
+                                  throw Exception(
+                                      "not sufficient stock, only ${data.availableQuantity}");
+                                }
+                                // } catch (e) {
+                                //   Utils().toastErrorMessage(e.toString());
+                                // }
+
                                 int newAvailableQuantity =
                                     (data.availableQuantity ?? 0) -
                                         removeQuantity;
@@ -549,6 +560,7 @@ class _StockRecordScreenState extends State<StockRecordScreen>
                                         "error in update date");
                                   },
                                 );
+                                ////////////////////////////////////////////////////////
 
                                 //......................
                                 // Create a new ProductModel instance with the updated quantity
@@ -570,6 +582,7 @@ class _StockRecordScreenState extends State<StockRecordScreen>
                                     .editProduct(updatedProduct);
                                 Get.back();
                               } catch (e) {
+                                debugPrint(e.toString());
                                 Utils().toastErrorMessage(e.toString());
                               }
                             },
@@ -631,3 +644,25 @@ class _StockRecordScreenState extends State<StockRecordScreen>
         });
   }
 }
+
+
+
+
+
+
+
+
+
+  // PopupMenuButton(
+      
+  //     itemBuilder: (context) {
+  //       return [
+  //         const PopupMenuItem(
+  //           child: Text("edit"),
+  //         ),
+  //         const PopupMenuItem(
+  //           child: Text("delete"),
+  //         )
+  //       ];
+  //     },
+  //   );

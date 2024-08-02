@@ -41,7 +41,6 @@
 // import "package:get/get_navigation/get_navigation.dart";
 // import "package:girdhari/features/dashboard_screen.dart";
 
-
 // class SplashScreen extends StatefulWidget {
 //   const SplashScreen({super.key});
 
@@ -68,15 +67,12 @@
 //   }
 // }
 
-
 import "dart:async";
 
 import "package:flutter/material.dart";
 import "package:get/get_core/src/get_main.dart";
 import "package:get/get_navigation/get_navigation.dart";
 import "package:girdhari/features/dashboard_screen.dart";
-
-import "package:girdhari/features/product/screens/stock_record_screen.dart";
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -88,10 +84,7 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
-    Timer(
-        const Duration(seconds: 3),
-       
-        () => Get.to(const DashBoardScreen()));
+    Timer(const Duration(seconds: 3), () => Get.to(const DashBoardScreen()));
 
     super.initState();
   }
