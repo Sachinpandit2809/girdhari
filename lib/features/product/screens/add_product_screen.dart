@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/get_navigation.dart';
+import 'package:girdhari/features/dashboard_screen.dart';
 import 'package:girdhari/features/product/controller/product_controller.dart';
 import 'package:girdhari/features/product/model/add_product_model.dart';
 import 'package:girdhari/features/product/screens/stock_record_screen.dart';
@@ -74,7 +75,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
 
       Utils().toastSuccessMessage('Product added successfully!');
 
-      Get.to(const StockRecordScreen());
+      Get.to(const DashBoardScreen());
     }).catchError((error) {
       setState(() {
         loading = false;

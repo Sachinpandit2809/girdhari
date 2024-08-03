@@ -7,6 +7,7 @@ import 'package:girdhari/features/product/controller/edit_product_controller.dar
 import 'package:girdhari/features/product/controller/product_date_controller.dart';
 import 'package:girdhari/features/product/model/add_product_model.dart';
 import 'package:girdhari/features/product/model/date_model.dart';
+import 'package:girdhari/features/product/provider/remove_stock_provider.dart';
 import 'package:girdhari/features/product/screens/edit_product_screen.dart';
 import 'package:girdhari/utils/utils.dart';
 
@@ -19,7 +20,7 @@ import 'package:girdhari/widgets/stock_show_date_sheet.dart';
 import 'package:girdhari/resource/app_color.dart';
 import 'package:girdhari/resource/k_text_style.dart';
 import 'package:girdhari/features/product/screens/add_product_screen.dart';
-
+import 'package:provider/provider.dart';
 
 class StockRecordScreen extends StatefulWidget {
   const StockRecordScreen({super.key});
@@ -35,7 +36,6 @@ class _StockRecordScreenState extends State<StockRecordScreen>
   // late TabController secondTabController;
 
   TextEditingController addQuantiyController = TextEditingController();
-
 
   TextEditingController removeQuantiyController = TextEditingController();
   DateTime selectedDate = DateTime.now();
@@ -68,7 +68,7 @@ class _StockRecordScreenState extends State<StockRecordScreen>
     super.dispose();
   }
 
-  String? selectedCategory;
+  // String? selectedCategory;
 
   @override
   Widget build(BuildContext context) {
@@ -452,59 +452,69 @@ class _StockRecordScreenState extends State<StockRecordScreen>
                             height: 30,
                           ),
                           //..................................................
-
-                          ToggleButtons(
-                            isSelected: [
-                              selectedCategory == 'Wholesale',
-                              selectedCategory == 'Retails',
-                              selectedCategory == 'Gift',
-                              selectedCategory == 'Puja Kit',
-                            ],
-                            onPressed: (int index) {
-                              setState(() {
-                                toggleLoading = true;
-                                switch (index) {
-                                  case 0:
-                                    selectedCategory = 'Wholesale';
-                                    break;
-                                  case 1:
-                                    selectedCategory = 'Retails';
-                                    break;
-                                  case 2:
-                                    selectedCategory = 'Gift';
-                                    break;
-                                  case 3:
-                                    selectedCategory = 'Puja Kit';
-                                    break;
-                                }
-                              });
-                            },
-                            // selectedColor:
-                            //     Colors.white, // Color of selected text
-                            // fillColor: Colors
-                            //     .blue, // Background color of selected button
-                            // // color: Colors.black, // Color of unselected text
-
-                            children: const [
-                              Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 16.0),
-                                child: Text('Wholesale'),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 16.0),
-                                child: Text('Retails'),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 16.0),
-                                child: Text('Gift'),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 16.0),
-                                child: Text('Puja Kit'),
-                              ),
-                            ],
+                          Center(
+                            child: Consumer<RemoveStockProvider>(
+                              builder: (context, categoryProvider, child) {
+                                return ToggleButtons(
+                                  isSelected: [
+                                    categoryProvider.selectedCategory ==
+                                        'Wholesale',
+                                    categoryProvider.selectedCategory ==
+                                        'Retails',
+                                    categoryProvider.selectedCategory == 'Gift',
+                                    categoryProvider.selectedCategory ==
+                                        'Puja Kit',
+                                  ],
+                                  onPressed: (int index) {
+                                    switch (index) {
+                                      case 0:
+                                        categoryProvider
+                                            .setCategory('Wholesale');
+                                        break;
+                                      case 1:
+                                        categoryProvider.setCategory('Retails');
+                                        break;
+                                      case 2:
+                                        categoryProvider.setCategory('Gift');
+                                        break;
+                                      case 3:
+                                        categoryProvider
+                                            .setCategory('Puja Kit');
+                                        break;
+                                    }
+                                  },
+                                  selectedColor:
+                                      Colors.white, // Color of selected text
+                                  fillColor: Colors
+                                      .blue, // Background color of selected button
+                                  color:
+                                      Colors.black, // Color of unselected text
+                                  children: const [
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 16.0),
+                                      child: Text('Wholesale'),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 16.0),
+                                      child: Text('Retails'),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 16.0),
+                                      child: Text('Gift'),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 16.0),
+                                      child: Text('Puja Kit'),
+                                    ),
+                                  ],
+                                );
+                              },
+                            ),
                           ),
-
                           //.....................................
 
                           const SizedBox(
@@ -540,7 +550,10 @@ class _StockRecordScreenState extends State<StockRecordScreen>
                                 String id = data.id;
                                 String date =
                                     "${DateTime.now().day}-${DateTime.now().month}-${DateTime.now().year}";
-                                String sellTag = selectedCategory.toString();
+                                final rem = Provider.of<RemoveStockProvider>(
+                                    context,
+                                    listen: false);
+                                String sellTag = rem.selectedCategory;
                                 int quantity = removeQuantity;
                                 // Create a new DateModel instance with the updated
                                 DateModel productDate = DateModel(

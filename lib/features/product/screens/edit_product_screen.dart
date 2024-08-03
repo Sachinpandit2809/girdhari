@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:girdhari/features/dashboard_screen.dart';
 import 'package:girdhari/features/product/controller/edit_product_controller.dart';
 import 'package:girdhari/features/product/model/add_product_model.dart';
 import 'package:girdhari/features/product/screens/stock_record_screen.dart';
@@ -72,7 +73,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
       });
       Utils().toastSuccessMessage('Product Edited Successfully!');
 
-      Get.to(const StockRecordScreen());
+      Get.to(const DashBoardScreen());
     }).catchError((error) {
       setState(() {
         loading = false;
