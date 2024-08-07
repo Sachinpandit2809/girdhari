@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get_core/get_core.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:girdhari/features/expenses/controller/expenses_controller.dart';
-import 'package:girdhari/features/expenses/controller/provider/expenses_provider.dart';
+import 'package:girdhari/features/expenses/controller/expenses_provider.dart';
 import 'package:girdhari/features/expenses/model/expenses_model.dart';
 import 'package:girdhari/features/expenses/screen/edit_expenses.dart';
 import 'package:girdhari/utils/utils.dart';

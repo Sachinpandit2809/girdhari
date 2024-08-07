@@ -7,12 +7,12 @@ import 'package:girdhari/features/orders/model/order_model.dart';
 import 'package:girdhari/features/orders/screens/billing_screen.dart';
 import 'package:girdhari/features/orders/screens/orders_details_screen.dart';
 import 'package:girdhari/utils/utils.dart';
-import 'package:girdhari/widgets/flexiable_rectangular_button.dart';
-import 'package:girdhari/widgets/k_text_form_field.dart';
+
 import 'package:girdhari/widgets/rectangular_button.dart';
-// import 'package:girdhari/re_usable_widgets/squre_icon_button.dart';
+
 import 'package:girdhari/resource/app_color.dart';
 import 'package:girdhari/resource/k_text_style.dart';
+import 'package:girdhari/widgets/search_k_textformfield.dart';
 import 'package:provider/provider.dart';
 
 class OrdersScreen extends StatefulWidget {
@@ -41,22 +41,26 @@ class _OrdersScreenState extends State<OrdersScreen> {
           "Order",
           style: KTextStyle.K_20,
         ),
-        actions: [
-          FlexiableRectangularButton(
-              title: "\u{20B9} 5,00,00",
-              textColor: Colors.black,
-              width: 130,
-              height: 30,
-              color: AppColor.skyBlueButton,
-              onPress: () {})
-        ],
+        // actions: [
+        //   FlexiableRectangularButton(
+        //       title: "\u{20B9} 5,00,00",
+        //       textColor: Colors.black,
+        //       width: 130,
+        //       height: 30,
+        //       color: AppColor.skyBlueButton,
+        //       onPress: () {})
+        // ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            KTextFormField(
-                controller: SearchClientController, hintText: "Search Client"),
+            SearchKTextformfield(
+                onChange: (p0) {
+                  setState(() {});
+                },
+                controller: SearchClientController,
+                hintText: "Search Client"),
             StreamBuilder<QuerySnapshot>(
               stream: firebaseSnapshot,
               builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -75,84 +79,175 @@ class _OrdersScreenState extends State<OrdersScreen> {
                               snapshot.data!.docs[index].data()
                                   as Map<String, dynamic>);
 
-                          return InkWell(
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (contex) => OrdersDetailsScreen(
-                                            clientDetails: order.client,
-                                            orderProductList: order.orderList,
-                                            order: order,
-                                          )));
-                              final g = Provider.of<ModifyBillProduct>(context,
-                                  listen: false);
-                              g.setModifiedProductList(order);
-                            },
-                            child: Container(
-                              padding: const EdgeInsets.all(8),
-                              margin: const EdgeInsets.symmetric(
-                                  vertical: 15, horizontal: 4),
-                              decoration: BoxDecoration(
-                                  color:
-                                      Theme.of(context).colorScheme.secondary,
-                                  borderRadius: const BorderRadius.all(
-                                      Radius.circular(8)),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .primary, // Adjust opacity for a blush effect
-                                      offset: const Offset(
-                                          0, 1), // Move the shadow downwards
-                                      blurRadius:
-                                          6, // Adjust blur radius as needed
-                                      spreadRadius:
-                                          0, // Adjust spread radius as needed
-                                      blurStyle: BlurStyle.outer,
-                                    )
-                                  ]),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  //details
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        order.client.clientName,
-                                        style: KTextStyle.K_14,
-                                      ),
-                                      Text(
-                                        order.client.address,
-                                        style: KTextStyle.K_10,
-                                      ),
-                                      const SizedBox(
-                                        height: 4,
-                                      ),
-                                      RectangularButton(
-                                          title:
-                                              '${order.date.day}-${order.date.month}-${order.date.year}',
-                                          color: AppColor.yellow)
-                                    ],
-                                  ),
-                                  //figure
-                                  RectangularButton(
-                                      onPress: () {
-                                        debugPrint(order.status.name);
-                                      },
-                                      title: order.status.name,
-                                      color: order.status.name == "Pending"
-                                          ? AppColor.yellowButton
-                                          : AppColor.green)
-                                ],
+                          if (SearchClientController.text.isEmpty) {
+                            return InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (contex) =>
+                                            OrdersDetailsScreen(
+                                              clientDetails: order.client,
+                                              orderProductList: order.orderList,
+                                              order: order,
+                                            )));
+                                final g = Provider.of<ModifyBillProduct>(
+                                    context,
+                                    listen: false);
+                                g.setModifiedProductList(order);
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.all(8),
+                                margin: const EdgeInsets.symmetric(
+                                    vertical: 15, horizontal: 4),
+                                decoration: BoxDecoration(
+                                    color:
+                                        Theme.of(context).colorScheme.secondary,
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(8)),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary, // Adjust opacity for a blush effect
+                                        offset: const Offset(
+                                            0, 1), // Move the shadow downwards
+                                        blurRadius:
+                                            6, // Adjust blur radius as needed
+                                        spreadRadius:
+                                            0, // Adjust spread radius as needed
+                                        blurStyle: BlurStyle.outer,
+                                      )
+                                    ]),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    //details
+                                    Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          order.client.clientName,
+                                          style: KTextStyle.K_14,
+                                        ),
+                                        Text(
+                                          order.client.address,
+                                          style: KTextStyle.K_10,
+                                        ),
+                                        const SizedBox(
+                                          height: 4,
+                                        ),
+                                        RectangularButton(
+                                            title:
+                                                '${order.date.day}-${order.date.month}-${order.date.year}',
+                                            color: AppColor.yellow)
+                                      ],
+                                    ),
+                                    //figure
+                                    RectangularButton(
+                                        onPress: () {
+                                          debugPrint(order.status.name);
+                                        },
+                                        title: order.status.name,
+                                        color: order.status.name == "Pending"
+                                            ? AppColor.yellowButton
+                                            : AppColor.green)
+                                  ],
+                                ),
                               ),
-                            ),
-                          );
+                            );
+                          }
+
+                          if (order.client.clientName.toLowerCase().contains(
+                              SearchClientController.text.toLowerCase())) {
+                            return InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (contex) =>
+                                            OrdersDetailsScreen(
+                                              clientDetails: order.client,
+                                              orderProductList: order.orderList,
+                                              order: order,
+                                            )));
+                                final g = Provider.of<ModifyBillProduct>(
+                                    context,
+                                    listen: false);
+                                g.setModifiedProductList(order);
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.all(8),
+                                margin: const EdgeInsets.symmetric(
+                                    vertical: 15, horizontal: 4),
+                                decoration: BoxDecoration(
+                                    color:
+                                        Theme.of(context).colorScheme.secondary,
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(8)),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary, // Adjust opacity for a blush effect
+                                        offset: const Offset(
+                                            0, 1), // Move the shadow downwards
+                                        blurRadius:
+                                            6, // Adjust blur radius as needed
+                                        spreadRadius:
+                                            0, // Adjust spread radius as needed
+                                        blurStyle: BlurStyle.outer,
+                                      )
+                                    ]),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    //details
+                                    Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          order.client.clientName,
+                                          style: KTextStyle.K_14,
+                                        ),
+                                        Text(
+                                          order.client.address,
+                                          style: KTextStyle.K_10,
+                                        ),
+                                        const SizedBox(
+                                          height: 4,
+                                        ),
+                                        RectangularButton(
+                                            title:
+                                                '${order.date.day}-${order.date.month}-${order.date.year}',
+                                            color: AppColor.yellow)
+                                      ],
+                                    ),
+                                    //figure
+                                    RectangularButton(
+                                        onPress: () {
+                                          debugPrint(order.status.name);
+                                        },
+                                        title: order.status.name,
+                                        color: order.status.name == "Pending"
+                                            ? AppColor.yellowButton
+                                            : AppColor.green)
+                                  ],
+                                ),
+                              ),
+                            );
+                          }
+                          return Container();
                         }));
               },
             )

@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/get_navigation.dart';
-import 'package:girdhari/features/product/controller/edit_product_controller.dart';
+
+import 'package:girdhari/features/product/controller/product_controller.dart';
 import 'package:girdhari/features/product/controller/product_date_controller.dart';
 import 'package:girdhari/features/product/model/add_product_model.dart';
 import 'package:girdhari/features/product/model/date_model.dart';
@@ -408,8 +409,7 @@ class _StockRecordScreenState extends State<StockRecordScreen>
                                     .addProductDate(productDate)
                                     .then((onValue) {
                                   debugPrint("################## date added");
-                                  // ScaffoldMessenger.of(context).showSnackBar(
-                                  //     SnackBar(content: Text("date added")));
+                                  
                                 }).onError(
                                   (error, stackTrace) {
                                     Utils().toastErrorMessage(
@@ -417,7 +417,7 @@ class _StockRecordScreenState extends State<StockRecordScreen>
                                   },
                                 );
 
-                                EditProductController()
+                                ProductController()
                                     .editProduct(updatedProduct)
                                     .then((onValue) {
                                   Utils().toastSuccessMessage(
@@ -589,7 +589,7 @@ class _StockRecordScreenState extends State<StockRecordScreen>
                                 );
 
                                 // Call editProduct method to update the product in the database
-                                EditProductController()
+                                ProductController()
                                     .editProduct(updatedProduct);
                                 Get.back();
                               } catch (e) {

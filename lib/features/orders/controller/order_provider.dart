@@ -4,6 +4,7 @@ import 'package:girdhari/features/client/model/client_model.dart';
 import 'package:girdhari/features/orders/controller/order_controller.dart';
 import 'package:girdhari/features/orders/model/order_model.dart';
 import 'package:girdhari/features/orders/screens/orders_screen.dart';
+import 'package:girdhari/features/product/controller/product_controller.dart';
 import 'package:girdhari/features/product/model/add_product_model.dart';
 import 'package:girdhari/utils/utils.dart';
 import 'package:provider/provider.dart';
@@ -157,6 +158,8 @@ class ModifyBillProduct with ChangeNotifier {
       orderModel.status = OrderStatus.completed;
       setLoading(false);
       Utils().toastSuccessMessage("Bill added");
+      
+      
       Get.to(const OrdersScreen());
     }).onError(
       (error, stackTrace) {

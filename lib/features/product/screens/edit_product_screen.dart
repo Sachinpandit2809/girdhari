@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:girdhari/features/dashboard_screen.dart';
-import 'package:girdhari/features/product/controller/edit_product_controller.dart';
+import 'package:girdhari/features/product/controller/product_controller.dart';
 import 'package:girdhari/features/product/model/add_product_model.dart';
 import 'package:girdhari/utils/utils.dart';
 import 'package:girdhari/widgets/drop_down_text_form_field.dart';
@@ -34,7 +34,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
   bool loading = false;
   int? availableQty;
 
-  final EditProductController _editProductController = EditProductController();
+  final ProductController _productController = ProductController();
 
   @override
   void initState() {
@@ -66,7 +66,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
       mrp: double.parse(mrpController.text),
     );
 
-    await _editProductController.editProduct(product).then((value) {
+    await _productController.editProduct(product).then((value) {
       setState(() {
         loading = false;
       });

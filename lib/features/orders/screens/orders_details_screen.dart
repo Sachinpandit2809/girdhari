@@ -6,8 +6,9 @@ import 'package:girdhari/features/client/model/client_model.dart';
 import 'package:girdhari/features/orders/controller/order_provider.dart';
 import 'package:girdhari/features/orders/model/order_model.dart';
 import 'package:girdhari/features/product/model/add_product_model.dart';
+import 'package:girdhari/utils/utils.dart';
 import 'package:girdhari/widgets/flexiable_rectangular_button.dart';
-import 'package:girdhari/widgets/k_text_form_field.dart';
+import 'package:girdhari/widgets/lebel_k_text_form_field.dart';
 import 'package:girdhari/widgets/rectangular_button.dart';
 import 'package:girdhari/widgets/small_square_button.dart';
 import 'package:girdhari/widgets/squre_icon_button.dart';
@@ -40,8 +41,6 @@ class _OrdersDetailsScreenState extends State<OrdersDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    //  final P = Provider.of<ModifyBillProduct>(context, listen: false);
-
     return Scaffold(
         appBar: AppBar(
           title: const Text(
@@ -129,6 +128,13 @@ class _OrdersDetailsScreenState extends State<OrdersDetailsScreen> {
                         itemBuilder: (context, index) {
                           return InkWell(
                             onTap: () {
+                              if (modifyBillProduct.orderModel.status.name ==
+                                  'Completed') {
+                                Utils().toastErrorMessage(
+                                    "Order allready Completed");
+                                // Get.back();
+                                return;
+                              }
                               qtyController.text = modifyBillProduct
                                   .modifiedProductList[index].selectedQuantity
                                   .toString();
@@ -149,7 +155,8 @@ class _OrdersDetailsScreenState extends State<OrdersDetailsScreen> {
                                             mainAxisAlignment:
                                                 MainAxisAlignment.center,
                                             children: <Widget>[
-                                              KTextFormField(
+                                              LebelKTextFormField(
+                                                  label: "MRP",
                                                   controller: mrpController,
                                                   keyBoard:
                                                       TextInputType.number,
@@ -157,7 +164,8 @@ class _OrdersDetailsScreenState extends State<OrdersDetailsScreen> {
                                               const SizedBox(
                                                 height: 10,
                                               ),
-                                              KTextFormField(
+                                              LebelKTextFormField(
+                                                  label: "Quantity",
                                                   controller: qtyController,
                                                   keyBoard:
                                                       TextInputType.number,
@@ -170,9 +178,17 @@ class _OrdersDetailsScreenState extends State<OrdersDetailsScreen> {
                                                 // loading: loading,
                                                 color: AppColor.brown,
                                                 onPress: () {
-                                                  debugPrint(widget
-                                                      .orderProductList
-                                                      .toString());
+                                                  if (modifyBillProduct
+                                                          .orderModel
+                                                          .status
+                                                          .name ==
+                                                      'Completed') {
+                                                    Utils().toastErrorMessage(
+                                                        "Order allready Completed");
+                                                    Get.back();
+                                                    return;
+                                                  }
+
                                                   modifyBillProduct.ModifiedProductList(
                                                       BillingProductModel(
                                                           id: widget
@@ -322,6 +338,13 @@ class _OrdersDetailsScreenState extends State<OrdersDetailsScreen> {
                           color: AppColor.brown,
                           loading: modifyBillProduct.isLoading,
                           onPress: () {
+                            if (modifyBillProduct.orderModel.status.name ==
+                                'Completed') {
+                              Utils().toastErrorMessage(
+                                  "Order allready Completed");
+                              // Get.back();
+                              return;
+                            }
                             modifyBillProduct.setLoading(true);
                             modifyBillProduct.uploadBillToFireBase(context);
                           }),
@@ -338,47 +361,3 @@ class _OrdersDetailsScreenState extends State<OrdersDetailsScreen> {
         }));
   }
 }
-// //bottom sheet for modify the mrp and quantity
-//   void mrpQty(OrderModel orderModel, ClientModel clientModel,
-//       List<BillingProductModel> billingProductList) {
-//     showModalBottomSheet<void>(
-//       context: context,
-//       builder: (BuildContext context) {
-//         return Padding(
-//           padding: const EdgeInsets.all(16.0),
-//           child: SizedBox(
-//             height: 510,
-//             child: SingleChildScrollView(
-//               scrollDirection: Axis.vertical,
-//               child: Column(
-//                   mainAxisAlignment: MainAxisAlignment.center,
-//                   children: <Widget>[
-//                     KTextFormField(
-//                         controller: mrpController,
-//                         keyBoard: TextInputType.number,
-//                         hintText: "Enter new mrp"),
-//                     const SizedBox(
-//                       height: 10,
-//                     ),
-//                     KTextFormField(
-//                         controller: qtyController,
-//                         keyBoard: TextInputType.number,
-//                         hintText: "Enter new quantity"),
-//                     FlexiableRectangularButton(
-//                       title: "SUBMIT",
-//                       width: 120,
-//                       height: 44,
-//                       // loading: loading,
-//                       color: AppColor.brown,
-//                       onPress: () {
-
-//                       },
-//                     )
-//                   ]),
-//             ),
-//           ),
-//         );
-//       },
-//     );
-//   }
-

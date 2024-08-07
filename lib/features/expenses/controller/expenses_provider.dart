@@ -81,7 +81,7 @@ class ExpensesProvider with ChangeNotifier {
       _totalPrice += expense.amount;
       notifyListeners();
     } catch (error) {
-      print("Error adding expense: $error");
+      debugPrint("Error adding expense: $error");
     } finally {
       _loading = false;
       notifyListeners();

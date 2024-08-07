@@ -7,16 +7,6 @@ class ProductDateController {
   final dateCollection =
       FirebaseFirestore.instance.collection('productStockDate');
 
-  // Future<void> editProductDate(DateModel product) {
-  //  final   dateCollectionDetails =dateCollection.collection("collectionPath");
-  //    return  dateCollectionDetails.doc("sac").set(product.toJson())
-  //       // .add(product.toJson())
-  //       .then((value) =>
-  //           debugPrint("...............................Product Edited"))
-  //       .catchError((error) => debugPrint(
-  //           "////////////////////////////////////Failed to Edit product: $error"));
-  // }
-
   Future<void> addProductDate(DateModel product) async {
 
     final dateCollectionDetails =
@@ -32,13 +22,5 @@ class ProductDateController {
     }
   }
 
-  // Future<void> addProductDate(DateModel productDate) {
-  //   return dateCollection
-  //       .doc(productDate.id)
-  //       .set(productDate.toJson())
-  //
-  //       .then((value) => Utils().toastSuccessMessage("Date Added"))
-  //       .catchError((error) => debugPrint(
-  //           "////////////////////////////////////Failed to Edit productDate: $error"));
-  // }
+
 }

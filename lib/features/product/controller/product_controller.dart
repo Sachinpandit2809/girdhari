@@ -17,4 +17,16 @@ class ProductController {
         .catchError((error) => debugPrint(
             "////////////////////////////////////Failed to add product: $error"));
   }
+
+Future<void> editProduct(ProductModel product) {
+    return productsCollection
+        .doc(product.id)
+        .update(product.toJson())
+        // .add(product.toJson())
+        .then((value) =>
+            debugPrint("...............................Product Edited"))
+        .catchError((error) => debugPrint(
+            "////////////////////////////////////Failed to Edit product: $error"));
+  }
+
 }

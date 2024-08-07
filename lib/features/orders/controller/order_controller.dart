@@ -17,17 +17,6 @@ class OrderController {
         .catchError((error) => debugPrint(
             "////////////////////////////////////Failed to add order: $error"));
   }
-
-  Future<void> editClient(BillingProductModel order) {
-    return orderCollection
-        .doc(order.id)
-        .set(order.toJson())
-        // .add(client.toJson())
-        .then((value) =>
-            debugPrint("...............................order edited"))
-        .catchError((error) => debugPrint(
-            "////////////////////////////////////Failed to edit order: $error"));
-  }
 }
 
 class BillController {
@@ -40,7 +29,7 @@ class BillController {
         .update(order.toJson())
         // .add(client.toJson())
         .then(
-            (value) => debugPrint("...............................Bill Added"))
+            (value) => debugPrint("..........Bill Added"))
         .catchError((error) => debugPrint("Failed to add Bill: $error"));
   }
 }
