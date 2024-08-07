@@ -531,16 +531,14 @@ class _StockRecordScreenState extends State<StockRecordScreen>
                                 int removeQuantity = int.tryParse(
                                         removeQuantiyController.text) ??
                                     0;
-                                // try {
+
                                 if (((data.availableQuantity ?? 0) -
                                         removeQuantity) <
                                     0) {
-                                  throw Exception(
+                                  Utils().toastErrorMessage(
                                       "not sufficient stock, only ${data.availableQuantity}");
+                                  return;
                                 }
-                                // } catch (e) {
-                                //   Utils().toastErrorMessage(e.toString());
-                                // }
 
                                 int newAvailableQuantity =
                                     (data.availableQuantity ?? 0) -

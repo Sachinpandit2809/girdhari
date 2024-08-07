@@ -1,21 +1,47 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+import 'package:girdhari/features/client/model/client_model.dart';
+import 'package:girdhari/features/orders/controller/order_provider.dart';
+import 'package:girdhari/features/orders/model/order_model.dart';
+import 'package:girdhari/features/product/model/add_product_model.dart';
 import 'package:girdhari/widgets/flexiable_rectangular_button.dart';
+import 'package:girdhari/widgets/k_text_form_field.dart';
 import 'package:girdhari/widgets/rectangular_button.dart';
 import 'package:girdhari/widgets/small_square_button.dart';
 import 'package:girdhari/widgets/squre_icon_button.dart';
 import 'package:girdhari/resource/app_color.dart';
 import 'package:girdhari/resource/k_text_style.dart';
+import 'package:provider/provider.dart';
 
+// ignore: must_be_immutable
 class OrdersDetailsScreen extends StatefulWidget {
-  const OrdersDetailsScreen({super.key});
+  OrderModel order;
+  List<BillingProductModel> orderProductList;
+  ClientModel clientDetails;
+  OrdersDetailsScreen(
+      {super.key,
+      required this.orderProductList,
+      required this.clientDetails,
+      required this.order});
 
   @override
   State<OrdersDetailsScreen> createState() => _OrdersDetailsScreenState();
 }
 
 class _OrdersDetailsScreenState extends State<OrdersDetailsScreen> {
+  TextEditingController qtyController = TextEditingController();
+  TextEditingController mrpController = TextEditingController();
+
+  final fireStore =
+      FirebaseFirestore.instance.collection('OrderStock').snapshots();
+  final listDetails = FirebaseFirestore.instance.collection('productStore');
+
   @override
   Widget build(BuildContext context) {
+    //  final P = Provider.of<ModifyBillProduct>(context, listen: false);
+
     return Scaffold(
         appBar: AppBar(
           title: const Text(
@@ -23,150 +49,336 @@ class _OrdersDetailsScreenState extends State<OrdersDetailsScreen> {
             style: KTextStyle.K_20,
           ),
           actions: [
-            FlexiableRectangularButton(
-                title: "\u{20B9} 5,00,00",
-                textColor: Colors.black,
-                width: 130,
-                height: 30,
-                color: AppColor.skyBlueButton,
-                onPress: () {})
+            Consumer<ModifyBillProduct>(
+                builder: (context, modifyBillProduct, _) {
+              return FlexiableRectangularButton(
+                  title: "\u{20B9} ${modifyBillProduct.totalPrice}",
+                  textColor: Colors.black,
+                  width: 130,
+                  height: 30,
+                  color: AppColor.skyBlueButton,
+                  onPress: () {});
+            })
           ],
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                margin: const EdgeInsets.symmetric(vertical: 15, horizontal: 4),
-                decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.secondary,
-                    borderRadius: const BorderRadius.all(Radius.circular(8)),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Theme.of(context)
-                            .colorScheme
-                            .primary, // Adjust opacity for a blush effect
-                        offset: const Offset(0, 0), // Move the shadow downwards
-                        blurRadius: 5, // Adjust blur radius as needed
-                        spreadRadius: 0, // Adjust spread radius as needed
-                        blurStyle: BlurStyle.outer,
+        body: Consumer<ModifyBillProduct>(
+            builder: (context, modifyBillProduct, _) {
+          return Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  margin:
+                      const EdgeInsets.symmetric(vertical: 15, horizontal: 4),
+                  decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.secondary,
+                      borderRadius: const BorderRadius.all(Radius.circular(8)),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Theme.of(context).colorScheme.primary,
+                          offset: const Offset(0, 0),
+                          blurRadius: 5,
+                          spreadRadius: 0,
+                          blurStyle: BlurStyle.outer,
+                        )
+                      ]),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      //details
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            modifyBillProduct.clientModel.clientName,
+                            style: KTextStyle.K_14,
+                          ),
+                          Text(
+                            modifyBillProduct.clientModel.address,
+                            style: KTextStyle.K_10,
+                          ),
+                        ],
+                      ),
+                      //figure
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          RectangularButton(
+                              title:
+                                  "${widget.order.date.day}-${widget.order.date.month}-${widget.order.date.year}",
+                              color: AppColor.yellow),
+                          const SizedBox(
+                            height: 4,
+                          ),
+                          RectangularButton(
+                              title: widget.order.status.name,
+                              color: widget.order.status.name == "Pending"
+                                  ? AppColor.skyBlueButton
+                                  : AppColor.green),
+                        ],
                       )
-                    ]),
-                child: const Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    //details
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Shree Shyam Store",
-                          style: KTextStyle.K_14,
-                        ),
-                        Text(
-                          "Hawrah",
-                          style: KTextStyle.K_10,
-                        ),
-                      ],
-                    ),
-                    //figure
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        RectangularButton(
-                            title: "27 jul 24", color: AppColor.yellow),
-                        SizedBox(
-                          height: 4,
-                        ),
-                        RectangularButton(
-                            title: "PENDING", color: AppColor.skyBlueButton),
-                      ],
-                    )
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              Expanded(
-                  child: ListView.builder(
-                      itemCount: 10,
-                      itemBuilder: (context, index) {
-                        return Container(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 3),
-                          margin: const EdgeInsets.only(top: 15),
-                          decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.secondary,
-                              borderRadius: BorderRadius.circular(8)),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(vertical: 2.0),
-                                    child: Text(
-                                      "Roli / KumKum Powder",
-                                      style: KTextStyle.K_16,
+                Expanded(
+                    child: ListView.builder(
+                        itemCount: modifyBillProduct.modifiedProductList.length,
+                        itemBuilder: (context, index) {
+                          return InkWell(
+                            onTap: () {
+                              qtyController.text = modifyBillProduct
+                                  .modifiedProductList[index].selectedQuantity
+                                  .toString();
+                              mrpController.text = modifyBillProduct
+                                  .modifiedProductList[index].mrp
+                                  .toString();
+                              //mrpQty(widget.order,widget.clientDetails,widget.orderProductList);
+                              showModalBottomSheet<void>(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return Padding(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: SizedBox(
+                                      height: 510,
+                                      child: SingleChildScrollView(
+                                        scrollDirection: Axis.vertical,
+                                        child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: <Widget>[
+                                              KTextFormField(
+                                                  controller: mrpController,
+                                                  keyBoard:
+                                                      TextInputType.number,
+                                                  hintText: "Enter new mrp"),
+                                              const SizedBox(
+                                                height: 10,
+                                              ),
+                                              KTextFormField(
+                                                  controller: qtyController,
+                                                  keyBoard:
+                                                      TextInputType.number,
+                                                  hintText:
+                                                      "Enter new quantity"),
+                                              FlexiableRectangularButton(
+                                                title: "CHANGE",
+                                                width: 120,
+                                                height: 44,
+                                                // loading: loading,
+                                                color: AppColor.brown,
+                                                onPress: () {
+                                                  debugPrint(widget
+                                                      .orderProductList
+                                                      .toString());
+                                                  modifyBillProduct.ModifiedProductList(
+                                                      BillingProductModel(
+                                                          id: widget
+                                                              .orderProductList[
+                                                                  index]
+                                                              .id,
+                                                          time: widget
+                                                              .orderProductList[
+                                                                  index]
+                                                              .time,
+                                                          availableQuantity: widget
+                                                              .orderProductList[
+                                                                  index]
+                                                              .availableQuantity,
+                                                          productName: widget
+                                                              .orderProductList[
+                                                                  index]
+                                                              .productName,
+                                                          skuCode: widget
+                                                              .orderProductList[
+                                                                  index]
+                                                              .skuCode,
+                                                          weight: widget
+                                                              .orderProductList[
+                                                                  index]
+                                                              .weight,
+                                                          packaging: widget
+                                                              .orderProductList[
+                                                                  index]
+                                                              .packaging,
+                                                          cost: widget
+                                                              .orderProductList[
+                                                                  index]
+                                                              .cost,
+                                                          wholesalePrice: widget
+                                                              .orderProductList[
+                                                                  index]
+                                                              .wholesalePrice,
+                                                          selectedQuantity:
+                                                              int.parse(
+                                                                  qtyController
+                                                                      .text),
+                                                          mrp: double.parse(
+                                                              mrpController
+                                                                  .text)),
+                                                      index);
+                                                  debugPrint(
+                                                      "................||...............");
+                                                  debugPrint(modifyBillProduct
+                                                      .modifiedProductList
+                                                      .toString());
+
+                                                  modifyBillProduct
+                                                      .calculateTotalOrderBill();
+                                                  Get.back();
+                                                },
+                                              )
+                                            ]),
+                                      ),
                                     ),
+                                  );
+                                },
+                              );
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 3),
+                              margin: const EdgeInsets.only(top: 15),
+                              decoration: BoxDecoration(
+                                  color:
+                                      Theme.of(context).colorScheme.secondary,
+                                  borderRadius: BorderRadius.circular(8)),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 2.0),
+                                        child: Text(
+                                          modifyBillProduct
+                                              .modifiedProductList[index]
+                                              .productName,
+                                          style: KTextStyle.K_16,
+                                        ),
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
+                                        children: [
+                                          RectangularButton(
+                                              title: modifyBillProduct
+                                                  .modifiedProductList[index]
+                                                  .packaging,
+                                              color: AppColor.skyBlueButton),
+                                          RectangularButton(
+                                              title: modifyBillProduct
+                                                  .modifiedProductList[index]
+                                                  .weight,
+                                              color: AppColor.yellowButton),
+                                          SmallSquareButton(
+                                              title: modifyBillProduct
+                                                  .modifiedProductList[index]
+                                                  .mrp
+                                                  .toString(),
+                                              color: AppColor.yellow),
+                                        ],
+                                      )
+                                    ],
                                   ),
                                   Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
-                                      RectangularButton(
-                                          title: "Bottle",
+                                      FlexiableRectangularButton(
+                                          textColor: Colors.black,
+                                          title: modifyBillProduct
+                                              .modifiedProductList[index]
+                                              .selectedQuantity
+                                              .toString(),
+                                          width: 51,
+                                          height: 46,
+                                          onPress: () {},
                                           color: AppColor.skyBlueButton),
-                                      RectangularButton(
-                                          title: "25 GM",
-                                          color: AppColor.yellowButton),
-                                      SmallSquareButton(
-                                          title: "10", color: AppColor.yellow),
                                     ],
-                                  )
+                                  ),
                                 ],
                               ),
-                              Row(
-                                children: [
-                                  FlexiableRectangularButton(
-                                      textColor: Colors.black,
-                                      title: "12",
-                                      width: 51,
-                                      height: 46,
-                                      onPress: () {},
-                                      color: AppColor.skyBlueButton),
-                                ],
-                              ),
-                            ],
-                          ),
-                        );
-                      })),
-              SizedBox(
-                height: 60,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    FlexiableRectangularButton(
-                        title: "MARK COMPLETED",
-                        width: 200,
-                        height: 40,
-                        color: AppColor.brown,
-                        onPress: () {}),
-                    SqureIconButton(
-                        icon: const Icon(Icons.print, color: AppColor.white),
-                        color: AppColor.brown,
-                        onPress: () {})
-                  ],
-                ),
-              )
-            ],
-          ),
-        ));
+                            ),
+                          );
+                        })),
+                SizedBox(
+                  height: 60,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      FlexiableRectangularButton(
+                          title: "MARK COMPLETED",
+                          width: 200,
+                          height: 40,
+                          color: AppColor.brown,
+                          loading: modifyBillProduct.isLoading,
+                          onPress: () {
+                            modifyBillProduct.setLoading(true);
+                            modifyBillProduct.uploadBillToFireBase(context);
+                          }),
+                      SqureIconButton(
+                          icon: const Icon(Icons.print, color: AppColor.white),
+                          color: AppColor.brown,
+                          onPress: () {})
+                    ],
+                  ),
+                )
+              ],
+            ),
+          );
+        }));
   }
 }
+// //bottom sheet for modify the mrp and quantity
+//   void mrpQty(OrderModel orderModel, ClientModel clientModel,
+//       List<BillingProductModel> billingProductList) {
+//     showModalBottomSheet<void>(
+//       context: context,
+//       builder: (BuildContext context) {
+//         return Padding(
+//           padding: const EdgeInsets.all(16.0),
+//           child: SizedBox(
+//             height: 510,
+//             child: SingleChildScrollView(
+//               scrollDirection: Axis.vertical,
+//               child: Column(
+//                   mainAxisAlignment: MainAxisAlignment.center,
+//                   children: <Widget>[
+//                     KTextFormField(
+//                         controller: mrpController,
+//                         keyBoard: TextInputType.number,
+//                         hintText: "Enter new mrp"),
+//                     const SizedBox(
+//                       height: 10,
+//                     ),
+//                     KTextFormField(
+//                         controller: qtyController,
+//                         keyBoard: TextInputType.number,
+//                         hintText: "Enter new quantity"),
+//                     FlexiableRectangularButton(
+//                       title: "SUBMIT",
+//                       width: 120,
+//                       height: 44,
+//                       // loading: loading,
+//                       color: AppColor.brown,
+//                       onPress: () {
+
+//                       },
+//                     )
+//                   ]),
+//             ),
+//           ),
+//         );
+//       },
+//     );
+//   }
+

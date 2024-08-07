@@ -343,98 +343,102 @@ class _ExpensesScreenState extends State<ExpensesScreen>
     showModalBottomSheet<void>(
       context: context,
       builder: (BuildContext context) {
-        return Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: SizedBox(
-            height: 510,
-            child: SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    KTextFormField(
-                        controller: venderDetailsController,
-                        hintText: "Enter Vender Details"),
-                    KTextFormField(
-                        controller: expenseTitleController,
-                        hintText: "Enter Expense Title"),
-                    KTextFormField(
-                        controller: amountController, hintText: "Enter Amount"),
-                    Center(
-                      child: Consumer<ExpensesProvider>(
-                        builder: (context, categoryProvider, child) {
-                          return ToggleButtons(
-                            isSelected: [
-                              categoryProvider.selectedCategory ==
-                                  'Raw Material',
-                              categoryProvider.selectedCategory == 'Packaging',
-                              categoryProvider.selectedCategory == 'Others',
-                            ],
-                            onPressed: (int index) {
-                              switch (index) {
-                                case 0:
-                                  categoryProvider.setCategory('Raw Material');
-                                  break;
-                                case 1:
-                                  categoryProvider.setCategory('Packaging');
-                                  break;
-                                case 2:
-                                  categoryProvider.setCategory('Others');
-                                  break;
-                              }
+        return Consumer(
+          builder: (context,expProvider,_) {
+            return Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: SizedBox(
+                height: 510,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        KTextFormField(
+                            controller: venderDetailsController,
+                            hintText: "Enter Vender Details"),
+                        KTextFormField(
+                            controller: expenseTitleController,
+                            hintText: "Enter Expense Title"),
+                        KTextFormField(
+                            controller: amountController, hintText: "Enter Amount"),
+                        Center(
+                          child: Consumer<ExpensesProvider>(
+                            builder: (context, categoryProvider, child) {
+                              return ToggleButtons(
+                                isSelected: [
+                                  categoryProvider.selectedCategory ==
+                                      'Raw Material',
+                                  categoryProvider.selectedCategory == 'Packaging',
+                                  categoryProvider.selectedCategory == 'Others',
+                                ],
+                                onPressed: (int index) {
+                                  switch (index) {
+                                    case 0:
+                                      categoryProvider.setCategory('Raw Material');
+                                      break;
+                                    case 1:
+                                      categoryProvider.setCategory('Packaging');
+                                      break;
+                                    case 2:
+                                      categoryProvider.setCategory('Others');
+                                      break;
+                                  }
+                                },
+                                selectedColor: Colors.white,
+                                fillColor: Colors.blue,
+                                color: Colors.black,
+                                children: const [
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(horizontal: 16.0),
+                                    child: Text('Raw Material'),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(horizontal: 16.0),
+                                    child: Text('Packaging'),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(horizontal: 16.0),
+                                    child: Text('Others'),
+                                  ),
+                                ],
+                              );
                             },
-                            selectedColor: Colors.white,
-                            fillColor: Colors.blue,
-                            color: Colors.black,
-                            children: const [
-                              Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 16.0),
-                                child: Text('Raw Material'),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 16.0),
-                                child: Text('Packaging'),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 16.0),
-                                child: Text('Others'),
-                              ),
-                            ],
-                          );
-                        },
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    TextFormField(
-                      controller: _dateController,
-                      readOnly: true,
-                      onTap: () => _selectDate(context),
-                      decoration: const InputDecoration(
-                        contentPadding: EdgeInsets.fromLTRB(25, 0, 10, 0),
-                        labelText: 'Select Date',
-                        border: OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(12))),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    FlexiableRectangularButton(
-                      title: "SUBMIT",
-                      width: 120,
-                      height: 44,
-                      loading: loading,
-                      color: AppColor.brown,
-                      onPress: () {
-                        addExpenses();
-                      },
-                    )
-                  ]),
-            ),
-          ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        TextFormField(
+                          controller: _dateController,
+                          readOnly: true,
+                          onTap: () => _selectDate(context),
+                          decoration: const InputDecoration(
+                            contentPadding: EdgeInsets.fromLTRB(25, 0, 10, 0),
+                            labelText: 'Select Date',
+                            border: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(12))),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        FlexiableRectangularButton(
+                          title: "SUBMIT",
+                          width: 120,
+                          height: 44,
+                          loading: loading,
+                          color: AppColor.brown,
+                          onPress: () {
+                            addExpenses();
+                          },
+                        )
+                      ]),
+                ),
+              ),
+            );
+          }
         );
       },
     );

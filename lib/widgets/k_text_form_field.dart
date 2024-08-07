@@ -5,11 +5,12 @@ class KTextFormField extends StatelessWidget {
   final String hintText;
   final TextInputType keyBoard;
 
-  const KTextFormField(
-      {super.key,
-      required this.controller,
-      required this.hintText,
-      this.keyBoard = TextInputType.text});
+  const KTextFormField({
+    super.key,
+    required this.controller,
+    required this.hintText,
+    this.keyBoard = TextInputType.text,
+  });
 
   @override
   Widget build(BuildContext context) {

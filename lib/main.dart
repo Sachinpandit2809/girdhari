@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:girdhari/dropDown.dart';
 import 'package:girdhari/features/expenses/controller/provider/expenses_provider.dart';
+import 'package:girdhari/features/orders/controller/order_provider.dart';
 import 'package:girdhari/features/product/provider/remove_stock_provider.dart';
 import 'package:girdhari/firebase_options.dart';
 
@@ -31,6 +32,9 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => ExpensesProvider()),
         ChangeNotifierProvider(create: (_) => RemoveStockProvider()),
+        ChangeNotifierProvider(create: (_) => OrderProvider()),
+        ChangeNotifierProvider(create: (_) => SelectedProductProvider()),
+        ChangeNotifierProvider(create: (_) => ModifyBillProduct())
       ],
       child: Builder(builder: (BuildContext context) {
         return GetMaterialApp(
