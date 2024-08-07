@@ -3,7 +3,6 @@ import 'package:get/get_core/get_core.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:girdhari/features/client/controller/client_controller.dart';
 import 'package:girdhari/features/client/model/client_model.dart';
-import 'package:girdhari/features/client/screens/client_screen.dart';
 import 'package:girdhari/features/dashboard_screen.dart';
 import 'package:girdhari/utils/utils.dart';
 

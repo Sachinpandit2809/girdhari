@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 
 import 'package:girdhari/features/client/controller/client_controller.dart';
 import 'package:girdhari/features/client/model/client_model.dart';
-import 'package:girdhari/features/client/screens/client_screen.dart';
 import 'package:girdhari/features/dashboard_screen.dart';
 import 'package:girdhari/utils/utils.dart';
 import 'package:girdhari/widgets/flexiable_rectangular_button.dart';

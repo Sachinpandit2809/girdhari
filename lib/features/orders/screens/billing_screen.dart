@@ -2,9 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import 'package:girdhari/features/client/model/client_model.dart';
-import 'package:girdhari/features/orders/controller/order_controller.dart';
 import 'package:girdhari/features/orders/controller/order_provider.dart';
-import 'package:girdhari/features/orders/model/order_model.dart';
 
 import 'package:girdhari/features/product/model/add_product_model.dart';
 import 'package:girdhari/utils/utils.dart';
@@ -17,7 +15,6 @@ import 'package:girdhari/resource/app_color.dart';
 import 'package:girdhari/resource/k_text_style.dart';
 
 import 'package:provider/provider.dart';
-import 'package:uuid/uuid.dart';
 
 class BillingScreen extends StatefulWidget {
   const BillingScreen({super.key});
@@ -145,8 +142,8 @@ class _BillingScreenState extends State<BillingScreen> {
                               searchClientController.text =
                                   searchClient.clientName;
                               orderProvider.setClientModel(searchClient);
-                              print(orderProvider.toString());
-                              print(selectedProductProvider.selectedProducts);
+                              debugPrint(orderProvider.toString());
+                              debugPrint(selectedProductProvider.selectedProducts.toString());
                               searchProductController.text = '';
                             },
                             child: Container(
@@ -258,9 +255,9 @@ class _BillingScreenState extends State<BillingScreen> {
 
                               selectedProductProvider.addProduct(bill);
 
-                              print(selectedProductProvider.selectedProducts);
+                              debugPrint(selectedProductProvider.selectedProducts.toString());
                               // print(selectedProductProvider);
-                              print(selectedProductProvider.selectColor);
+                              debugPrint(selectedProductProvider.selectColor.toString());
                               setState(() {});
                             },
                             child: Container(

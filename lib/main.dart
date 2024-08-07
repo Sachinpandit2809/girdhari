@@ -1,14 +1,11 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
-import 'package:girdhari/dropDown.dart';
 import 'package:girdhari/features/expenses/controller/provider/expenses_provider.dart';
 import 'package:girdhari/features/orders/controller/order_provider.dart';
 import 'package:girdhari/features/product/provider/remove_stock_provider.dart';
 import 'package:girdhari/firebase_options.dart';
-
 import 'package:girdhari/features/splash_screen.dart';
-
 import 'package:girdhari/theme/dark_theme.dart';
 import 'package:girdhari/theme/light_theme.dart';
 import 'package:provider/provider.dart';

@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:girdhari/features/dashboard_screen.dart';
 import 'package:girdhari/features/product/controller/edit_product_controller.dart';
 import 'package:girdhari/features/product/model/add_product_model.dart';
-import 'package:girdhari/features/product/screens/stock_record_screen.dart';
 import 'package:girdhari/utils/utils.dart';
 import 'package:girdhari/widgets/drop_down_text_form_field.dart';
 import 'package:girdhari/widgets/flexiable_rectangular_button.dart';

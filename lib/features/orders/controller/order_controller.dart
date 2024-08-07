@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:girdhari/features/client/model/client_model.dart';
 import 'package:girdhari/features/orders/model/order_model.dart';
 import 'package:girdhari/features/product/model/add_product_model.dart';
 

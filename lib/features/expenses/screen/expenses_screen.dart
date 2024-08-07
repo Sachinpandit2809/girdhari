@@ -104,7 +104,7 @@ class _ExpensesScreenState extends State<ExpensesScreen>
 
   @override
   Widget build(BuildContext context) {
-    final expenseProvider = Provider.of<ExpensesProvider>(context);
+    
     return DefaultTabController(
       initialIndex: 0,
       length: 3,

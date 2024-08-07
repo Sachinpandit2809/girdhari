@@ -91,7 +91,7 @@ class SelectedProductProvider with ChangeNotifier {
     OrderController().addOrder(billing).then((onValue) {
       Utils().toastSuccessMessage("Order added");
       addProduct.clearProducts();
-      Get.to(OrdersScreen());
+      Get.to(const OrdersScreen());
     }).onError(
       (error, stackTrace) {
         Utils().toastErrorMessage("failed to add order");

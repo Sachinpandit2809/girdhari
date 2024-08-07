@@ -97,7 +97,7 @@ class ExpensesProvider with ChangeNotifier {
       _totalPrice = _expenses.fold(0, (sum, expense) => sum + expense.amount);
       notifyListeners();
     } catch (error) {
-      print("Error fetching expenses: $error");
+      debugPrint("Error fetching expenses: $error");
     }
   }
 }
