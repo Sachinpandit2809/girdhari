@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:girdhari/features/product/model/add_product_model.dart';
 
 class ProductController {
-  // final CollectionReference productsCollection = FirebaseFirestore.instance.collection('products');
   final productsCollection =
       FirebaseFirestore.instance.collection('productStock');
 
@@ -11,22 +10,29 @@ class ProductController {
     return productsCollection
         .doc(product.id)
         .set(product.toJson())
-        // .add(product.toJson())
         .then((value) =>
             debugPrint("...............................Product Added"))
         .catchError((error) => debugPrint(
             "////////////////////////////////////Failed to add product: $error"));
   }
 
-Future<void> editProduct(ProductModel product) {
+  Future<void> editProduct(ProductModel product) {
     return productsCollection
         .doc(product.id)
         .update(product.toJson())
-        // .add(product.toJson())
         .then((value) =>
             debugPrint("...............................Product Edited"))
         .catchError((error) => debugPrint(
             "////////////////////////////////////Failed to Edit product: $error"));
   }
 
+  Future<void> deleteProduct(String id) {
+    return productsCollection
+        .doc(id)
+        .delete()
+        .then((value) =>
+            debugPrint("...............................Product deleted"))
+        .catchError((error) => debugPrint(
+            "////////////////////////////////////Failed to Product product: $error"));
+  }
 }

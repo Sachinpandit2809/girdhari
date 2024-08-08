@@ -61,21 +61,6 @@ class _BillingScreenState extends State<BillingScreen> {
                 "Reset",
                 style: KTextStyle.K_13.copyWith(color: AppColor.brown),
               )),
-          // RectangularButton(
-          //   title: "Conferm",
-          //   color: AppColor.brown,
-          //   textColor: AppColor.white,
-
-          //   onPress: () {
-          // final addProduct =
-          //     Provider.of<SelectedProductProvider>(context, listen: false);
-          // addProduct.uploadToFirebase(context);
-          // searchClientController.text = "";
-          // searchProductController.text = "";
-
-          //   },
-          // )
-
           Consumer<SelectedProductProvider>(
               builder: (context, selectedProductProvider, _) {
             return FlexiableRectangularButton(
@@ -242,33 +227,42 @@ class _BillingScreenState extends State<BillingScreen> {
                           // bool selectedColor = false;
                           return InkWell(
                             onTap: () {
-                              // selectedProductProvider.changeColor(true);
-                              searchProduct.setSelected(true);
-
                               BillingProductModel bill =
                                   BillingProductModel.fromProduct(
                                       searchProduct.productModel);
 
                               selectedProductProvider.addProduct(bill);
+                              if (selectedProductProvider.selectedProducts
+                                  .contains(bill)) {
+                                debugPrint(
+                                    " &&&&&&&&&&&&&&&&&&avalable in list show true");
+                              }
 
                               debugPrint(selectedProductProvider
                                   .selectedProducts
                                   .toString());
-                              // print(selectedProductProvider);
-                              debugPrint(selectedProductProvider.selectColor
-                                  .toString());
-                              setState(() {});
+
+                              // debugPrint(selectedProductProvider.selectColor
+                              //     .toString());
+                              // setState(() {});
                             },
                             child: Container(
                               padding: const EdgeInsets.symmetric(
                                   vertical: 10, horizontal: 3),
                               margin: const EdgeInsets.only(top: 15),
                               decoration: BoxDecoration(
-                                  color: searchProduct
+                                  color: (searchProduct
                                               .productModel.availableQuantity! >
-                                          0
-                                      ? Theme.of(context).colorScheme.secondary
+                                          0)
+                                      ? (Theme.of(context)
+                                          .colorScheme
+                                          .secondary)
                                       : Colors.red.shade100,
+
+                                  // color: selectedProductProvider.selectedProducts.contains(
+                                  //         searchProduct.productModel)
+                                  //     ? AppColor.green
+                                  //     : AppColor.grey,
                                   borderRadius: BorderRadius.circular(8)),
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -322,7 +316,9 @@ class _BillingScreenState extends State<BillingScreen> {
                                           height: 46,
                                           onPress: () {},
                                           color: AppColor.skyBlueButton),
-                                      searchProduct.isSelected
+                                      selectedProductProvider.selectedProducts
+                                              .contains(
+                                                  searchProduct.productModel)
                                           ? SqureIconButton(
                                               icon: const Icon(
                                                 Icons.close,
@@ -331,8 +327,7 @@ class _BillingScreenState extends State<BillingScreen> {
                                               ),
                                               color: AppColor.brown,
                                               onPress: () {
-                                                searchProduct
-                                                    .setSelected(false);
+                                                // selectedProductProvider.removeProduct(product)
                                               })
                                           : Container()
                                     ],

@@ -8,6 +8,7 @@ import 'package:girdhari/features/product/controller/product_controller.dart';
 import 'package:girdhari/features/product/controller/product_date_controller.dart';
 import 'package:girdhari/features/product/model/add_product_model.dart';
 import 'package:girdhari/features/product/model/date_model.dart';
+import 'package:girdhari/features/product/provider/product_controller_provider.dart';
 import 'package:girdhari/features/product/provider/remove_stock_provider.dart';
 import 'package:girdhari/features/product/screens/edit_product_screen.dart';
 import 'package:girdhari/utils/utils.dart';
@@ -69,8 +70,6 @@ class _StockRecordScreenState extends State<StockRecordScreen>
     super.dispose();
   }
 
-  // String? selectedCategory;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -122,27 +121,122 @@ class _StockRecordScreenState extends State<StockRecordScreen>
                     child: ListView.builder(
                         itemCount: snapshot.data!.docs.length,
                         itemBuilder: (context, index) {
-                          // ProductModel myData = ProductModel.fromJson(snapshot.data!.docs[index].data());
-                          ProductModel myData = ProductModel.fromJson(
+                          ProductModel product = ProductModel.fromJson(
                               snapshot.data!.docs[index].data()
                                   as Map<String, dynamic>);
-                          //dynamic myData = snapshot.data!.docs[index];
                           if (searchProductController.text.isEmpty) {
                             return InkWell(
-                              onTap: () {
-                                showDateSheet(myData);
-                              },
                               onLongPress: () {
-                                debugPrint("object triggred");
-
-                                Get.to(EditProductScreen(data: myData));
+                                debugPrint("....................triggred");
+                                showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return Consumer<
+                                              ProductControllerProvider>(
+                                          builder: (context,
+                                              productControllerProvider, _) {
+                                        return AlertDialog(
+                                          content: SizedBox(
+                                            height: 250,
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceEvenly,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                FlexiableRectangularButton(
+                                                    title: "edit Product",
+                                                    width: 140,
+                                                    height: 40,
+                                                    loading:
+                                                        productControllerProvider
+                                                            .editproductLoading,
+                                                    color: AppColor.green,
+                                                    onPress: () {
+                                                      Get.to(() =>
+                                                          EditProductScreen(
+                                                              product:
+                                                                  product));
+                                                    }),
+                                                FlexiableRectangularButton(
+                                                    title: "flag Zero",
+                                                    width: 140,
+                                                    height: 40,
+                                                    loading:
+                                                        productControllerProvider
+                                                            .flagZeroLoading,
+                                                    color: AppColor.yellow,
+                                                    onPress: () {
+                                                      productControllerProvider
+                                                          .setflagZeroLoading(
+                                                              true);
+                                                      DateModel flagZeroDate =
+                                                          DateModel(
+                                                              id: product.id,
+                                                              date:
+                                                                  "${DateTime.now().day}-${DateTime.now().month}-${DateTime.now().year}",
+                                                              sellTag:
+                                                                  "Flag Zero",
+                                                              quantity: product
+                                                                      .availableQuantity ??
+                                                                  0);
+                                                      ProductModel setZeroFlag =
+                                                          ProductModel(
+                                                              id: product.id,
+                                                              time:
+                                                                  product.time,
+                                                              availableQuantity:
+                                                                  0,
+                                                              productName: product
+                                                                  .productName,
+                                                              skuCode: product
+                                                                  .skuCode,
+                                                              weight: product
+                                                                  .weight,
+                                                              packaging: product
+                                                                  .packaging,
+                                                              cost:
+                                                                  product.cost,
+                                                              wholesalePrice:
+                                                                  product
+                                                                      .wholesalePrice,
+                                                              mrp: product.mrp);
+                                                      productControllerProvider
+                                                          .flagZero(setZeroFlag,
+                                                              flagZeroDate);
+                                                    }),
+                                                FlexiableRectangularButton(
+                                                    title: "delete",
+                                                    width: 140,
+                                                    height: 40,
+                                                    loading:
+                                                        productControllerProvider
+                                                            .deleteProductLoading,
+                                                    color: AppColor.brownRed,
+                                                    onPress: () {
+                                                      productControllerProvider
+                                                          .setDeleteProductLoading(
+                                                              true);
+                                                      productControllerProvider
+                                                          .deleteProduct(
+                                                              product.id);
+                                                    })
+                                              ],
+                                            ),
+                                          ),
+                                        );
+                                      });
+                                    });
+                              },
+                              onTap: () {
+                                showDateSheet(product);
                               },
                               child: Container(
                                 padding: const EdgeInsets.symmetric(
                                     vertical: 10, horizontal: 3),
                                 margin: const EdgeInsets.only(top: 15),
                                 decoration: BoxDecoration(
-                                    color: myData.availableQuantity! > 0
+                                    color: product.availableQuantity! > 0
                                         ? Theme.of(context)
                                             .colorScheme
                                             .secondary
@@ -161,9 +255,7 @@ class _StockRecordScreenState extends State<StockRecordScreen>
                                           padding: const EdgeInsets.symmetric(
                                               vertical: 2.0),
                                           child: Text(
-                                            // "Roli / KumKum Powder",
-                                            // snapshot.data!.docs[index][""],
-                                            myData.productName,
+                                            product.productName,
                                             style: KTextStyle.K_16,
                                           ),
                                         ),
@@ -174,20 +266,20 @@ class _StockRecordScreenState extends State<StockRecordScreen>
                                               CrossAxisAlignment.end,
                                           children: [
                                             RectangularButton(
-                                                title: myData.packaging,
+                                                title: product.packaging,
                                                 color: AppColor.skyBlue),
                                             RectangularButton(
-                                                title: myData.weight,
+                                                title: product.weight,
                                                 color: AppColor.yellowButton),
                                             SmallSquareButton(
-                                                title: myData.cost.toString(),
+                                                title: product.cost.toString(),
                                                 color: AppColor.skyBlue),
                                             SmallSquareButton(
-                                                title: myData.wholesalePrice
+                                                title: product.wholesalePrice
                                                     .toString(),
                                                 color: AppColor.yellow),
                                             SmallSquareButton(
-                                                title: myData.mrp.toString(),
+                                                title: product.mrp.toString(),
                                                 color: AppColor.brownRed),
                                           ],
                                         )
@@ -195,12 +287,12 @@ class _StockRecordScreenState extends State<StockRecordScreen>
                                     ),
                                     FlexiableRectangularButton(
                                         textColor: Colors.black,
-                                        title:
-                                            myData.availableQuantity.toString(),
+                                        title: product.availableQuantity
+                                            .toString(),
                                         width: 51,
                                         height: 46,
                                         onPress: () {
-                                          addBottomSheet(myData);
+                                          addBottomSheet(product);
                                         },
                                         color: AppColor.skyBlue)
                                   ],
@@ -208,24 +300,123 @@ class _StockRecordScreenState extends State<StockRecordScreen>
                               ),
                             );
                           }
-                          if (myData.productName
+                          if (product.productName
                               .toString()
                               .toLowerCase()
                               .contains(
                                   searchProductController.text.toLowerCase())) {
                             return InkWell(
                               onTap: () {
-                                showDateSheet(myData);
+                                showDateSheet(product);
                               },
                               onLongPress: () {
-                                Get.to(EditProductScreen(data: myData));
+                                debugPrint("....................triggred");
+                                showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return Consumer<
+                                              ProductControllerProvider>(
+                                          builder: (context,
+                                              productControllerProvider, _) {
+                                        return AlertDialog(
+                                          content: SizedBox(
+                                            height: 250,
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceEvenly,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                FlexiableRectangularButton(
+                                                    title: "edit Product",
+                                                    width: 140,
+                                                    height: 40,
+                                                    loading:
+                                                        productControllerProvider
+                                                            .editproductLoading,
+                                                    color: AppColor.green,
+                                                    onPress: () {
+                                                      Get.to(() =>
+                                                          EditProductScreen(
+                                                              product:
+                                                                  product));
+                                                    }),
+                                                FlexiableRectangularButton(
+                                                    title: "flag Zero",
+                                                    width: 140,
+                                                    height: 40,
+                                                    loading:
+                                                        productControllerProvider
+                                                            .flagZeroLoading,
+                                                    color: AppColor.yellow,
+                                                    onPress: () {
+                                                      productControllerProvider
+                                                          .setflagZeroLoading(
+                                                              true);
+                                                      DateModel flagZeroDate =
+                                                          DateModel(
+                                                              id: product.id,
+                                                              date:
+                                                                  "${DateTime.now().day}-${DateTime.now().month}-${DateTime.now().year}",
+                                                              sellTag:
+                                                                  "Flag Zero",
+                                                              quantity: product
+                                                                      .availableQuantity ??
+                                                                  0);
+                                                      ProductModel setZeroFlag =
+                                                          ProductModel(
+                                                              id: product.id,
+                                                              time:
+                                                                  product.time,
+                                                              availableQuantity:
+                                                                  0,
+                                                              productName: product
+                                                                  .productName,
+                                                              skuCode: product
+                                                                  .skuCode,
+                                                              weight: product
+                                                                  .weight,
+                                                              packaging: product
+                                                                  .packaging,
+                                                              cost:
+                                                                  product.cost,
+                                                              wholesalePrice:
+                                                                  product
+                                                                      .wholesalePrice,
+                                                              mrp: product.mrp);
+                                                      productControllerProvider
+                                                          .flagZero(setZeroFlag,
+                                                              flagZeroDate);
+                                                    }),
+                                                FlexiableRectangularButton(
+                                                    title: "delete",
+                                                    width: 140,
+                                                    height: 40,
+                                                    loading:
+                                                        productControllerProvider
+                                                            .deleteProductLoading,
+                                                    color: AppColor.brownRed,
+                                                    onPress: () {
+                                                      productControllerProvider
+                                                          .setDeleteProductLoading(
+                                                              true);
+                                                      productControllerProvider
+                                                          .deleteProduct(
+                                                              product.id);
+                                                    })
+                                              ],
+                                            ),
+                                          ),
+                                        );
+                                      });
+                                    });
                               },
                               child: Container(
                                 padding: const EdgeInsets.symmetric(
                                     vertical: 10, horizontal: 3),
                                 margin: const EdgeInsets.only(top: 15),
                                 decoration: BoxDecoration(
-                                    color: myData.availableQuantity! > 0
+                                    color: product.availableQuantity! > 0
                                         ? Theme.of(context)
                                             .colorScheme
                                             .secondary
@@ -244,9 +435,7 @@ class _StockRecordScreenState extends State<StockRecordScreen>
                                           padding: const EdgeInsets.symmetric(
                                               vertical: 2.0),
                                           child: Text(
-                                            // "Roli / KumKum Powder",
-                                            // snapshot.data!.docs[index][""],
-                                            myData.productName,
+                                            product.productName,
                                             style: KTextStyle.K_16,
                                           ),
                                         ),
@@ -257,20 +446,20 @@ class _StockRecordScreenState extends State<StockRecordScreen>
                                               CrossAxisAlignment.end,
                                           children: [
                                             RectangularButton(
-                                                title: myData.packaging,
+                                                title: product.packaging,
                                                 color: AppColor.skyBlue),
                                             RectangularButton(
-                                                title: myData.weight,
+                                                title: product.weight,
                                                 color: AppColor.yellowButton),
                                             SmallSquareButton(
-                                                title: myData.cost.toString(),
+                                                title: product.cost.toString(),
                                                 color: AppColor.skyBlue),
                                             SmallSquareButton(
-                                                title: myData.wholesalePrice
+                                                title: product.wholesalePrice
                                                     .toString(),
                                                 color: AppColor.yellow),
                                             SmallSquareButton(
-                                                title: myData.mrp.toString(),
+                                                title: product.mrp.toString(),
                                                 color: AppColor.brownRed),
                                           ],
                                         )
@@ -278,12 +467,12 @@ class _StockRecordScreenState extends State<StockRecordScreen>
                                     ),
                                     FlexiableRectangularButton(
                                         textColor: Colors.black,
-                                        title:
-                                            myData.availableQuantity.toString(),
+                                        title: product.availableQuantity
+                                            .toString(),
                                         width: 51,
                                         height: 46,
                                         onPress: () {
-                                          addBottomSheet(myData);
+                                          addBottomSheet(product);
                                         },
                                         color: AppColor.skyBlue)
                                   ],
@@ -366,7 +555,7 @@ class _StockRecordScreenState extends State<StockRecordScreen>
                             height: 30,
                           ),
                           KTextFormField(
-                            validator: (value) {
+                              validator: (value) {
                                 if (removeQuantiyController.text.isEmpty) {
                                   return "enter  quantity";
                                 }

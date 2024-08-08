@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_core/get_core.dart';
 import 'package:get/get_navigation/get_navigation.dart';
-import 'package:girdhari/features/expenses/controller/expenses_controller.dart';
+
 import 'package:girdhari/features/expenses/controller/expenses_provider.dart';
 import 'package:girdhari/features/expenses/model/expenses_model.dart';
 import 'package:girdhari/features/expenses/screen/edit_expenses.dart';
@@ -39,11 +39,6 @@ class _ExpensesScreenState extends State<ExpensesScreen>
   final expencesCollectionRefernce =
       FirebaseFirestore.instance.collection("expensesStore");
 
-  String? selectedCategory;
-  bool toggleLoading = false;
-  bool loading = false;
-
-  get type => selectedCategory;
   double totalPrice = 0;
 
   @override
@@ -73,37 +68,6 @@ class _ExpensesScreenState extends State<ExpensesScreen>
     }
   }
 
-// ...............................................................................................
-  void addExpenses() async {
-    setState(() {
-      loading = true;
-    });
-    String id = const Uuid().v4();
-
-    final exPvdr = Provider.of<ExpensesProvider>(context, listen: false);
-    ExpensesModel expense = ExpensesModel(
-        id: id,
-        venderDetail: venderDetailsController.text,
-        expensesTitle: expenseTitleController.text,
-        type: exPvdr.selectedCategory,
-        amount: double.parse(amountController.text),
-        expensesDate: _dateController.text);
-    await ExpensesController().addExpenses(expense).then((onValue) {
-      setState(() {
-        loading = false;
-      });
-      Utils().toastSuccessMessage("expenses added");
-      Get.back();
-    }).onError(
-      (error, stackTrace) {
-        setState(() {
-          loading = false;
-        });
-        Utils().toastErrorMessage(error.toString());
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -122,203 +86,287 @@ class _ExpensesScreenState extends State<ExpensesScreen>
               onPress: () {})
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            SearchKTextformfield(
-                onChange: (p0) {
-                  setState(() {});
+      body: Consumer<ExpensesProvider>(builder: (context, expenseProvider, _) {
+        return Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              SearchKTextformfield(
+                  onChange: (p0) {
+                    setState(() {});
+                  },
+                  controller: searchExpensesController,
+                  hintText: "Search Expenses"),
+              StreamBuilder<QuerySnapshot>(
+                stream: fireStore,
+                builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const CircularProgressIndicator(
+                      color: Colors.amber,
+                    );
+                  }
+                  if (snapshot.hasError) {
+                    Utils().toastErrorMessage("error during Communication");
+                  }
+
+                  return Expanded(
+                      child: ListView.builder(
+                          itemCount: snapshot.data!.docs.length,
+                          itemBuilder: (context, index) {
+                            ExpensesModel expenses = ExpensesModel.fromJson(
+                                snapshot.data!.docs[index].data()
+                                    as Map<String, dynamic>);
+                            totalPrice += expenses.amount;
+
+                            if (expenses.expensesTitle.isEmpty &&
+                                expenses.venderDetail.isEmpty) {
+                              return InkWell(
+                                onLongPress: () {
+                                  debugPrint("....................triggred");
+                                  showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return Consumer<ExpensesProvider>(
+                                            builder: (context, expense, _) {
+                                          return AlertDialog(
+                                            content: SizedBox(
+                                              height: 100,
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceEvenly,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  const Text(
+                                                      "are you sure want to delete"),
+                                                  FlexiableRectangularButton(
+                                                      title: "delete",
+                                                      width: 140,
+                                                      height: 40,
+                                                      color: AppColor.brownRed,
+                                                      loading: expenseProvider
+                                                          .deleteLoading,
+                                                      onPress: () {
+                                                        expense
+                                                            .setDeleteLoading(
+                                                                true);
+                                                        expense.deleteExpense(
+                                                            expenses.id);
+                                                      })
+                                                ],
+                                              ),
+                                            ),
+                                          );
+                                        });
+                                      });
+                                },
+                                onTap: () {
+                                  debugPrint("....................triggred");
+
+                                  Get.to(EditExpenses(expenseData: expenses));
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.all(8),
+                                  margin: const EdgeInsets.symmetric(
+                                      vertical: 15, horizontal: 4),
+                                  decoration: BoxDecoration(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondary,
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(8)),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary, // Adjust opacity for a blush effect
+                                          offset: const Offset(0,
+                                              0), // Move the shadow downwards
+                                          blurRadius:
+                                              5, // Adjust blur radius as needed
+                                          spreadRadius:
+                                              0, // Adjust spread radius as needed
+                                          blurStyle: BlurStyle.outer,
+                                        )
+                                      ]),
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      //details
+                                      Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            expenses.venderDetail,
+                                            style: KTextStyle.K_14,
+                                          ),
+                                          Text(
+                                            expenses.expensesTitle,
+                                            style: KTextStyle.K_10,
+                                          ),
+                                          const SizedBox(
+                                            height: 4,
+                                          ),
+                                          Row(
+                                            children: [
+                                              RectangularButton(
+                                                  title: expenses.type,
+                                                  color:
+                                                      AppColor.skyBlueButton),
+                                              RectangularButton(
+                                                  title: expenses.expensesDate,
+                                                  color: AppColor.yellow),
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                      //figure
+                                      RectangularButton(
+                                          onPress: () {},
+                                          title: "\u{20B9} ${expenses.amount}",
+                                          color: AppColor.skyBlueButton)
+                                    ],
+                                  ),
+                                ),
+                              );
+                            }
+
+                            if (expenses.expensesTitle.toLowerCase().contains(
+                                    searchExpensesController.text
+                                        .toLowerCase()) ||
+                                expenses.venderDetail.toLowerCase().contains(
+                                    searchExpensesController.text
+                                        .toLowerCase())) {
+                              return InkWell(
+                                onLongPress: () {
+                                  debugPrint("....................triggred");
+                                  showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return Consumer<ExpensesProvider>(
+                                            builder: (context, expense, _) {
+                                          return AlertDialog(
+                                            content: SizedBox(
+                                              height: 100,
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceEvenly,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  const Text(
+                                                      "are you sure want to delete"),
+                                                  FlexiableRectangularButton(
+                                                      title: "delete",
+                                                      width: 140,
+                                                      height: 40,
+                                                      color: AppColor.brownRed,
+                                                      loading: expenseProvider
+                                                          .deleteLoading,
+                                                      onPress: () {
+                                                        expense
+                                                            .setDeleteLoading(
+                                                                true);
+                                                        expense.deleteExpense(
+                                                            expenses.id);
+                                                      })
+                                                ],
+                                              ),
+                                            ),
+                                          );
+                                        });
+                                      });
+                                },
+                                onTap: () {
+                                  Get.to(EditExpenses(expenseData: expenses));
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.all(8),
+                                  margin: const EdgeInsets.symmetric(
+                                      vertical: 15, horizontal: 4),
+                                  decoration: BoxDecoration(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondary,
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(8)),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary, // Adjust opacity for a blush effect
+                                          offset: const Offset(0,
+                                              0), // Move the shadow downwards
+                                          blurRadius:
+                                              5, // Adjust blur radius as needed
+                                          spreadRadius:
+                                              0, // Adjust spread radius as needed
+                                          blurStyle: BlurStyle.outer,
+                                        )
+                                      ]),
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      //details
+                                      Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            expenses.venderDetail,
+                                            style: KTextStyle.K_14,
+                                          ),
+                                          Text(
+                                            expenses.expensesTitle,
+                                            style: KTextStyle.K_10,
+                                          ),
+                                          const SizedBox(
+                                            height: 4,
+                                          ),
+                                          Row(
+                                            children: [
+                                              RectangularButton(
+                                                  title: expenses.type,
+                                                  color:
+                                                      AppColor.skyBlueButton),
+                                              RectangularButton(
+                                                  title: expenses.expensesDate,
+                                                  color: AppColor.yellow),
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                      //figure
+                                      RectangularButton(
+                                          onPress: () {},
+                                          title: "\u{20B9} ${expenses.amount}",
+                                          color: AppColor.skyBlueButton)
+                                    ],
+                                  ),
+                                ),
+                              );
+                            }
+                            return Container();
+                          }));
                 },
-                controller: searchExpensesController,
-                hintText: "Search Expenses"),
-            StreamBuilder<QuerySnapshot>(
-              stream: fireStore,
-              builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const CircularProgressIndicator(
-                    color: Colors.amber,
-                  );
-                }
-                if (snapshot.hasError) {
-                  Utils().toastErrorMessage("error during Communication");
-                }
-    
-                return Expanded(
-                    child: ListView.builder(
-                        itemCount: snapshot.data!.docs.length,
-                        itemBuilder: (context, index) {
-                          ExpensesModel expenses = ExpensesModel.fromJson(
-                              snapshot.data!.docs[index].data()
-                                  as Map<String, dynamic>);
-                          totalPrice += expenses.amount;
-    
-                          if (expenses.expensesTitle.isEmpty &&
-                              expenses.venderDetail.isEmpty) {
-                            return InkWell(
-                              onTap: () {
-                                Get.to(EditExpenses(expenseData: expenses));
-                              },
-                              child: Container(
-                                padding: const EdgeInsets.all(8),
-                                margin: const EdgeInsets.symmetric(
-                                    vertical: 15, horizontal: 4),
-                                decoration: BoxDecoration(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .secondary,
-                                    borderRadius: const BorderRadius.all(
-                                        Radius.circular(8)),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary, // Adjust opacity for a blush effect
-                                        offset: const Offset(0,
-                                            0), // Move the shadow downwards
-                                        blurRadius:
-                                            5, // Adjust blur radius as needed
-                                        spreadRadius:
-                                            0, // Adjust spread radius as needed
-                                        blurStyle: BlurStyle.outer,
-                                      )
-                                    ]),
-                                child: Row(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.center,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    //details
-                                    Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          expenses.venderDetail,
-                                          style: KTextStyle.K_14,
-                                        ),
-                                        Text(
-                                          expenses.expensesTitle,
-                                          style: KTextStyle.K_10,
-                                        ),
-                                        const SizedBox(
-                                          height: 4,
-                                        ),
-                                        Row(
-                                          children: [
-                                            RectangularButton(
-                                                title: expenses.type,
-                                                color:
-                                                    AppColor.skyBlueButton),
-                                            RectangularButton(
-                                                title: expenses.expensesDate,
-                                                color: AppColor.yellow),
-                                          ],
-                                        )
-                                      ],
-                                    ),
-                                    //figure
-                                    RectangularButton(
-                                        onPress: () {},
-                                        title: "\u{20B9} ${expenses.amount}",
-                                        color: AppColor.skyBlueButton)
-                                  ],
-                                ),
-                              ),
-                            );
-                          }
-    
-                          if (expenses.expensesTitle.toLowerCase().contains(
-                                  searchExpensesController.text
-                                      .toLowerCase()) ||
-                              expenses.venderDetail.toLowerCase().contains(
-                                  searchExpensesController.text
-                                      .toLowerCase())) {
-                            return InkWell(
-                              onTap: () {
-                                Get.to(EditExpenses(expenseData: expenses));
-                              },
-                              child: Container(
-                                padding: const EdgeInsets.all(8),
-                                margin: const EdgeInsets.symmetric(
-                                    vertical: 15, horizontal: 4),
-                                decoration: BoxDecoration(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .secondary,
-                                    borderRadius: const BorderRadius.all(
-                                        Radius.circular(8)),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary, // Adjust opacity for a blush effect
-                                        offset: const Offset(0,
-                                            0), // Move the shadow downwards
-                                        blurRadius:
-                                            5, // Adjust blur radius as needed
-                                        spreadRadius:
-                                            0, // Adjust spread radius as needed
-                                        blurStyle: BlurStyle.outer,
-                                      )
-                                    ]),
-                                child: Row(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.center,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    //details
-                                    Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          expenses.venderDetail,
-                                          style: KTextStyle.K_14,
-                                        ),
-                                        Text(
-                                          expenses.expensesTitle,
-                                          style: KTextStyle.K_10,
-                                        ),
-                                        const SizedBox(
-                                          height: 4,
-                                        ),
-                                        Row(
-                                          children: [
-                                            RectangularButton(
-                                                title: expenses.type,
-                                                color:
-                                                    AppColor.skyBlueButton),
-                                            RectangularButton(
-                                                title: expenses.expensesDate,
-                                                color: AppColor.yellow),
-                                          ],
-                                        )
-                                      ],
-                                    ),
-                                    //figure
-                                    RectangularButton(
-                                        onPress: () {},
-                                        title: "\u{20B9} ${expenses.amount}",
-                                        color: AppColor.skyBlueButton)
-                                  ],
-                                ),
-                              ),
-                            );
-                          }
-                          return Container();
-                        }));
-              },
-            )
-          ],
-        ),
-      ),
+              )
+            ],
+          ),
+        );
+      }),
       floatingActionButton: FloatingActionButton(
         backgroundColor: AppColor.brown,
         shape: RoundedRectangleBorder(
@@ -340,7 +388,7 @@ class _ExpensesScreenState extends State<ExpensesScreen>
     showModalBottomSheet<void>(
       context: context,
       builder: (BuildContext context) {
-        return Consumer(builder: (context, expProvider, _) {
+        return Consumer<ExpensesProvider>(builder: (context, expProvider, _) {
           return Padding(
             padding: const EdgeInsets.all(16.0),
             child: SizedBox(
@@ -458,11 +506,19 @@ class _ExpensesScreenState extends State<ExpensesScreen>
                           title: "SUBMIT",
                           width: 120,
                           height: 44,
-                          loading: loading,
+                          loading: expProvider.loading,
                           color: AppColor.brown,
                           onPress: () {
                             if (_formKey.currentState!.validate()) {
-                              addExpenses();
+                              expProvider.setLoading(true);
+                              ExpensesModel expense = ExpensesModel(
+                                  id: const Uuid().v4(),
+                                  venderDetail: venderDetailsController.text,
+                                  expensesTitle: expenseTitleController.text,
+                                  type: expProvider.selectedCategory,
+                                  amount: double.parse(amountController.text),
+                                  expensesDate: _dateController.text);
+                              expProvider.addExpenses(expense);
                             }
                           },
                         )

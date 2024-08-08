@@ -1,56 +1,11 @@
-// import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:flutter/material.dart';
-// import 'package:girdhari/features/expenses/model/expenses_model.dart';
-
-// class ExpensesProvider with ChangeNotifier {
-//   final expensesCollection =
-//       FirebaseFirestore.instance.collection('expensesStore');
-
-//   Future<void> addExpenses(ExpensesModel expense) {
-//     return expensesCollection
-//         .doc(expense.id)
-//         .set(expense.toJson())
-//         // .add(client.toJson())
-//         .then((value) =>
-//             debugPrint("...............................client Added"))
-//         .catchError((error) => debugPrint(
-//             "////////////////////////////////////Failed to add client: $error"));
-//   }
-
-//   Future<void> editExpense(ExpensesModel expense) {
-//     return expensesCollection
-//         .doc(expense.id)
-//         .update(expense.toJson())
-//         // .add(client.toJson())
-//         .then((value) =>
-//             debugPrint("...............................client Added"))
-//         .catchError((error) => debugPrint(
-//             "////////////////////////////////////Failed to add client: $error"));
-//   }
-
-//   bool _loading = false;
-//   bool get loading => _loading;
-//   void setLoading(bool loading) {
-//     _loading = loading;
-//     notifyListeners();
-//   }
-
-//   String _selectedCategory = 'Raw Material';
-
-//   String get selectedCategory => _selectedCategory;
-
-//   void setCategory(String category) {
-//     _selectedCategory = category;
-//     notifyListeners();
-//   }
-// }
-
-
-
-
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get/get.dart';
+
+import 'package:girdhari/features/expenses/controller/expenses_controller.dart';
 import 'package:girdhari/features/expenses/model/expenses_model.dart';
+import 'package:girdhari/utils/utils.dart';
+
 
 class ExpensesProvider with ChangeNotifier {
   List<ExpensesModel> _expenses = [];
@@ -68,32 +23,57 @@ class ExpensesProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> addExpenses(ExpensesModel expense) async {
-    _loading = true;
+  void setLoading(bool load) {
+    _loading = load;
     notifyListeners();
+  }
 
-    try {
-      await FirebaseFirestore.instance
-          .collection("expensesStore")
-          .doc(expense.id)
-          .set(expense.toJson());
-      _expenses.add(expense);
-      _totalPrice += expense.amount;
-      notifyListeners();
-    } catch (error) {
-      debugPrint("Error adding expense: $error");
-    } finally {
-      _loading = false;
-      notifyListeners();
-    }
+  bool _deleteLoading = false;
+  bool get deleteLoading => _deleteLoading;
+  void setDeleteLoading(bool load) {
+    _deleteLoading = load;
+    notifyListeners();
+  }
+
+  void deleteExpense(String id) async {
+   
+    await ExpensesController().deleteExpense(id).then((onValue) {
+      Utils().toastSuccessMessage("successfully  deleted");
+      setDeleteLoading(false);
+      Get.back();
+    }).onError(
+      (error, stackTrace) {
+        Utils().toastSuccessMessage("successfully  deleted");
+        setDeleteLoading(false);
+        Get.back();
+      },
+    );
+  }
+
+  void addExpenses(ExpensesModel expense) async {
+    await ExpensesController().addExpenses(expense).then((onValue) {
+      Utils().toastSuccessMessage("expenses added");
+      setLoading(false);
+      Get.back();
+    }).onError(
+      (error, stackTrace) {
+        setLoading(false);
+
+        Utils().toastErrorMessage(error.toString());
+      },
+    );
   }
 
   Future<void> fetchExpenses() async {
     try {
-      final snapshot = await FirebaseFirestore.instance.collection("expensesStore").get();
+      final snapshot =
+          await FirebaseFirestore.instance.collection("expensesStore").get();
       _expenses = snapshot.docs
-          .map((doc) => ExpensesModel.fromJson(doc.data() as Map<String, dynamic>))
+          .map((doc) =>
+              // ignore: unnecessary_cast
+              ExpensesModel.fromJson(doc.data() as Map<String, dynamic>))
           .toList();
+      // ignore: avoid_types_as_parameter_names
       _totalPrice = _expenses.fold(0, (sum, expense) => sum + expense.amount);
       notifyListeners();
     } catch (error) {
