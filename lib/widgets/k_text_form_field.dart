@@ -4,10 +4,12 @@ class KTextFormField extends StatelessWidget {
   final TextEditingController controller;
   final String hintText;
   final TextInputType keyBoard;
+  final FormFieldValidator<String> validator;
 
   const KTextFormField({
     super.key,
     required this.controller,
+    required this.validator,
     required this.hintText,
     this.keyBoard = TextInputType.text,
   });
@@ -19,6 +21,7 @@ class KTextFormField extends StatelessWidget {
       child: TextFormField(
         keyboardType: keyBoard,
         controller: controller,
+        validator: validator,
         decoration: InputDecoration(
           contentPadding: const EdgeInsets.fromLTRB(25, 0, 10, 0),
           border: const OutlineInputBorder(

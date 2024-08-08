@@ -128,6 +128,13 @@ class _OrdersDetailsScreenState extends State<OrdersDetailsScreen> {
                         itemBuilder: (context, index) {
                           return InkWell(
                             onTap: () {
+                                // if(widget.orderProductList[index].availableQuantity! -int.parse (qtyController.text)<0){
+                                //                     Utils().toastErrorMessage(
+                                //                         "Not sufficient stock Only ${widget.orderProductList[index].availableQuantity}");
+                                //                     Get.back();
+                                //                     return;
+                                //                   }
+
                               if (modifyBillProduct.orderModel.status.name ==
                                   'Completed') {
                                 Utils().toastErrorMessage(
@@ -188,6 +195,12 @@ class _OrdersDetailsScreenState extends State<OrdersDetailsScreen> {
                                                     Get.back();
                                                     return;
                                                   }
+                                                  if(widget.orderProductList[index].availableQuantity! -int.parse (qtyController.text)<0){
+                                                    Utils().toastErrorMessage(
+                                                        "Not sufficient stock Only ${widget.orderProductList[index].availableQuantity}");
+                                                    Get.back();
+                                                    return;
+                                                  }
 
                                                   modifyBillProduct.ModifiedProductList(
                                                       BillingProductModel(
@@ -202,7 +215,7 @@ class _OrdersDetailsScreenState extends State<OrdersDetailsScreen> {
                                                           availableQuantity: widget
                                                               .orderProductList[
                                                                   index]
-                                                              .availableQuantity,
+                                                              .availableQuantity!-int.parse(qtyController.text),
                                                           productName: widget
                                                               .orderProductList[
                                                                   index]
@@ -338,6 +351,8 @@ class _OrdersDetailsScreenState extends State<OrdersDetailsScreen> {
                           color: AppColor.brown,
                           loading: modifyBillProduct.isLoading,
                           onPress: () {
+                    
+
                             if (modifyBillProduct.orderModel.status.name ==
                                 'Completed') {
                               Utils().toastErrorMessage(

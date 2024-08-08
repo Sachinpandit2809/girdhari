@@ -28,12 +28,22 @@ class StockShowDateSheet extends StatelessWidget {
         children: [
           Text(
             date,
-            style: KTextStyle.K_20,
+            style: buttonTitle == "created"
+                ? KTextStyle.K_20
+                    .copyWith(color: const Color.fromARGB(255, 79, 209, 76))
+                : KTextStyle.K_20,
           ),
-          RectangularButton(title: buttonTitle, color: AppColor.yellow),
+          RectangularButton(
+              title: buttonTitle,
+              color: buttonTitle == "created"
+                  ? AppColor.lowGreen
+                  : AppColor.yellow),
           Text(
             count,
-            style: KTextStyle.K_20,
+            style: buttonTitle == "created"
+                ? KTextStyle.K_20
+                    .copyWith(color: const Color.fromARGB(255, 79, 209, 76))
+                : KTextStyle.K_20,
           )
         ],
       ),

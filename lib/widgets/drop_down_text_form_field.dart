@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 class DropDownTextFormField extends StatefulWidget {
   final TextEditingController controller;
   final String hintText;
+  final FormFieldValidator validator;
 
   const DropDownTextFormField({
     super.key,
+    required this.validator,
     required this.controller,
     required this.hintText,
   });
@@ -25,6 +27,7 @@ class _DropDownTextFormFieldState extends State<DropDownTextFormField> {
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: TextFormField(
         controller: widget.controller,
+        validator: widget.validator,
         decoration: InputDecoration(
           contentPadding: const EdgeInsets.fromLTRB(25, 0, 10, 0),
           border: const OutlineInputBorder(

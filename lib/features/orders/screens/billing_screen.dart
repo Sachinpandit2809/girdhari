@@ -40,29 +40,6 @@ class _BillingScreenState extends State<BillingScreen> {
     super.dispose();
   }
 
-  // void _addOrder() {
-  //   final clientDetails = Provider.of<OrderProvider>(context, listen: false);
-  //   final addProduct =
-  //       Provider.of<SelectedProductProvider>(context, listen: false);
-  //   String id = const Uuid().v4();
-  //   DateTime time = DateTime.now();
-
-  //   OrderModel billing = OrderModel(
-  //       id: id,
-  //       client: clientDetails.clientModel,
-  //       orderList: addProduct.selectedProducts,
-  //       date: time);
-
-  //   OrderController().addOrder(billing).then((onValue) {
-  //     Utils().toastSuccessMessage("Order added");
-  //     addProduct.clearProducts();
-  //   }).onError(
-  //     (error, stackTrace) {
-  //       Utils().toastErrorMessage("failed to add order");
-  //     },
-  //   );
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -71,7 +48,7 @@ class _BillingScreenState extends State<BillingScreen> {
           "Billing",
           style: KTextStyle.K_20,
         ),
-        actions: [
+        actions: <Widget>[
           TextButton(
               onPressed: () {
                 final addProduct = Provider.of<SelectedProductProvider>(context,
@@ -84,19 +61,36 @@ class _BillingScreenState extends State<BillingScreen> {
                 "Reset",
                 style: KTextStyle.K_13.copyWith(color: AppColor.brown),
               )),
-          RectangularButton(
-            title: "Conferm",
-            color: AppColor.brown,
-            textColor: AppColor.white,
-            onPress: () {
-              final addProduct =
-                  Provider.of<SelectedProductProvider>(context, listen: false);
-              addProduct.uploadToFirebase(context);
-              searchClientController.text = "";
-              searchProductController.text = "";
-              // _addOrder();
-            },
-          )
+          // RectangularButton(
+          //   title: "Conferm",
+          //   color: AppColor.brown,
+          //   textColor: AppColor.white,
+
+          //   onPress: () {
+          // final addProduct =
+          //     Provider.of<SelectedProductProvider>(context, listen: false);
+          // addProduct.uploadToFirebase(context);
+          // searchClientController.text = "";
+          // searchProductController.text = "";
+
+          //   },
+          // )
+
+          Consumer<SelectedProductProvider>(
+              builder: (context, selectedProductProvider, _) {
+            return FlexiableRectangularButton(
+                title: "Conferm",
+                width: 75,
+                height: 30,
+                color: AppColor.brown,
+                loading: selectedProductProvider.loading,
+                onPress: () {
+                  selectedProductProvider.setCmfLoading(true);
+                  selectedProductProvider.uploadToFirebase(context);
+                  searchClientController.text = "";
+                  searchProductController.text = "";
+                });
+          })
         ],
       ),
       body: Consumer2<OrderProvider, SelectedProductProvider>(
@@ -143,7 +137,9 @@ class _BillingScreenState extends State<BillingScreen> {
                                   searchClient.clientName;
                               orderProvider.setClientModel(searchClient);
                               debugPrint(orderProvider.toString());
-                              debugPrint(selectedProductProvider.selectedProducts.toString());
+                              debugPrint(selectedProductProvider
+                                  .selectedProducts
+                                  .toString());
                               searchProductController.text = '';
                             },
                             child: Container(
@@ -255,9 +251,12 @@ class _BillingScreenState extends State<BillingScreen> {
 
                               selectedProductProvider.addProduct(bill);
 
-                              debugPrint(selectedProductProvider.selectedProducts.toString());
+                              debugPrint(selectedProductProvider
+                                  .selectedProducts
+                                  .toString());
                               // print(selectedProductProvider);
-                              debugPrint(selectedProductProvider.selectColor.toString());
+                              debugPrint(selectedProductProvider.selectColor
+                                  .toString());
                               setState(() {});
                             },
                             child: Container(
@@ -265,9 +264,11 @@ class _BillingScreenState extends State<BillingScreen> {
                                   vertical: 10, horizontal: 3),
                               margin: const EdgeInsets.only(top: 15),
                               decoration: BoxDecoration(
-                                  color: selectedProductProvider.selectColor
-                                      ? Colors.amberAccent.shade700
-                                      : Theme.of(context).colorScheme.secondary,
+                                  color: searchProduct
+                                              .productModel.availableQuantity! >
+                                          0
+                                      ? Theme.of(context).colorScheme.secondary
+                                      : Colors.red.shade100,
                                   borderRadius: BorderRadius.circular(8)),
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,

@@ -142,8 +142,11 @@ class _StockRecordScreenState extends State<StockRecordScreen>
                                     vertical: 10, horizontal: 3),
                                 margin: const EdgeInsets.only(top: 15),
                                 decoration: BoxDecoration(
-                                    color:
-                                        Theme.of(context).colorScheme.secondary,
+                                    color: myData.availableQuantity! > 0
+                                        ? Theme.of(context)
+                                            .colorScheme
+                                            .secondary
+                                        : Colors.red.shade100,
                                     borderRadius: BorderRadius.circular(8)),
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.end,
@@ -222,8 +225,11 @@ class _StockRecordScreenState extends State<StockRecordScreen>
                                     vertical: 10, horizontal: 3),
                                 margin: const EdgeInsets.only(top: 15),
                                 decoration: BoxDecoration(
-                                    color:
-                                        Theme.of(context).colorScheme.secondary,
+                                    color: myData.availableQuantity! > 0
+                                        ? Theme.of(context)
+                                            .colorScheme
+                                            .secondary
+                                        : Colors.red.shade100,
                                     borderRadius: BorderRadius.circular(8)),
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.end,
@@ -360,6 +366,12 @@ class _StockRecordScreenState extends State<StockRecordScreen>
                             height: 30,
                           ),
                           KTextFormField(
+                            validator: (value) {
+                                if (removeQuantiyController.text.isEmpty) {
+                                  return "enter  quantity";
+                                }
+                                return null;
+                              },
                               controller: addQuantiyController,
                               keyBoard: TextInputType.number,
                               hintText: "Enter Quantity"),
@@ -409,7 +421,6 @@ class _StockRecordScreenState extends State<StockRecordScreen>
                                     .addProductDate(productDate)
                                     .then((onValue) {
                                   debugPrint("################## date added");
-                                  
                                 }).onError(
                                   (error, stackTrace) {
                                     Utils().toastErrorMessage(
@@ -445,6 +456,12 @@ class _StockRecordScreenState extends State<StockRecordScreen>
                             height: 30,
                           ),
                           KTextFormField(
+                              validator: (value) {
+                                if (removeQuantiyController.text.isEmpty) {
+                                  return "enter quantity";
+                                }
+                                return null;
+                              },
                               controller: removeQuantiyController,
                               keyBoard: TextInputType.number,
                               hintText: "Enter Quantity"),
@@ -563,8 +580,6 @@ class _StockRecordScreenState extends State<StockRecordScreen>
                                     .addProductDate(productDate)
                                     .then((onValue) {
                                   debugPrint("################## date added");
-                                  // ScaffoldMessenger.of(context).showSnackBar(
-                                  //     SnackBar(content: Text("date added")));
                                 }).onError(
                                   (error, stackTrace) {
                                     Utils().toastErrorMessage(
@@ -589,8 +604,7 @@ class _StockRecordScreenState extends State<StockRecordScreen>
                                 );
 
                                 // Call editProduct method to update the product in the database
-                                ProductController()
-                                    .editProduct(updatedProduct);
+                                ProductController().editProduct(updatedProduct);
                                 Get.back();
                               } catch (e) {
                                 debugPrint(e.toString());
@@ -655,25 +669,3 @@ class _StockRecordScreenState extends State<StockRecordScreen>
         });
   }
 }
-
-
-
-
-
-
-
-
-
-  // PopupMenuButton(
-      
-  //     itemBuilder: (context) {
-  //       return [
-  //         const PopupMenuItem(
-  //           child: Text("edit"),
-  //         ),
-  //         const PopupMenuItem(
-  //           child: Text("delete"),
-  //         )
-  //       ];
-  //     },
-  //   );

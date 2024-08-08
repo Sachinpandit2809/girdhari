@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:girdhari/features/dashboard_screen.dart';
@@ -30,6 +31,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
   TextEditingController wholesalePriceController = TextEditingController();
   TextEditingController mrpController = TextEditingController();
   bool loading = false;
+  final _addProductFormKey = GlobalKey<FormState>();
 
   final ProductController _productController = ProductController();
   final fireStore = FirebaseFirestore.instance.collection("users");
@@ -93,45 +95,99 @@ class _AddProductScreenState extends State<AddProductScreen> {
         ),
       ),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Padding(
-                padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
-                child: Text(
-                  "Enter details",
-                  style: KTextStyle.K_14,
+        child: Form(
+          key: _addProductFormKey,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
+                  child: Text(
+                    "Enter details",
+                    style: KTextStyle.K_14,
+                  ),
                 ),
-              ),
-              KTextFormField(
-                  controller: productNameController, hintText: "Product"),
-              KTextFormField(
-                  controller: squCodeController, hintText: "SKU Code"),
-              KTextFormField(
-                  controller: weightController, hintText: "Weight/Qty"),
-              DropDownTextFormField(
-                  controller: packagingController, hintText: "Packaging"),
-              KTextFormField(controller: costController, hintText: "Cost"),
-              KTextFormField(
-                  controller: wholesalePriceController,
-                  hintText: "Wholesale Price"),
-              KTextFormField(controller: mrpController, hintText: "MRP"),
-              // KTextFormField(
-              //     controller: packageController, hintText: "Packaging"),
-              const SizedBox(height: 20),
-              Center(
-                child: FlexiableRectangularButton(
-                  title: "SUBMIT",
-                  width: 120,
-                  loading: loading,
-                  height: 44,
-                  color: AppColor.brown,
-                  onPress: _submitProduct,
-                ),
-              )
-            ],
+                KTextFormField(
+                    validator: (value) {
+                      if (productNameController.text.isEmpty) {
+                        return "please enter product name ";
+                      }
+                      return null;
+                    },
+                    controller: productNameController,
+                    hintText: "Product"),
+                KTextFormField(
+                    validator: (value) {
+                      if (squCodeController.text.isEmpty) {
+                        return "please enter SKU code ";
+                      }
+                      return null;
+                    },
+                    controller: squCodeController,
+                    hintText: "SKU Code"),
+                KTextFormField(
+                    validator: (value) {
+                      if (weightController.text.isEmpty) {
+                        return "please enter weight/QTY ";
+                      }
+                      return null;
+                    },
+                    controller: weightController,
+                    hintText: "Weight/Qty"),
+                DropDownTextFormField(
+                  validator: (value) {
+                     if (packagingController.text.isEmpty) {
+                        return "please select Package ";
+                      }
+                      return null;
+                  },
+                    controller: packagingController, hintText: "Packaging"),
+                KTextFormField(
+                    validator: (value) {
+                      if (costController.text.isEmpty) {
+                        return "please enter cost";
+                      }
+                      return null;
+                    },
+                    controller: costController,
+                    hintText: "Cost"),
+                KTextFormField(
+                    validator: (value) {
+                      if (wholesalePriceController.text.isEmpty) {
+                        return "please enter wholesale price ";
+                      }
+                      return null;
+                    },
+                    controller: wholesalePriceController,
+                    hintText: "Wholesale Price"),
+                KTextFormField(
+                    validator: (value) {
+                      if (mrpController.text.isEmpty) {
+                        return "please enter MRP";
+                      }
+                      return null;
+                    },
+                    controller: mrpController,
+                    hintText: "MRP"),
+                const SizedBox(height: 20),
+                Center(
+                  child: FlexiableRectangularButton(
+                    title: "SUBMIT",
+                    width: 120,
+                    loading: loading,
+                    height: 44,
+                    color: AppColor.brown,
+                    onPress: () {
+                      if (_addProductFormKey.currentState!.validate()) {
+                        _submitProduct();
+                      }
+                    },
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),

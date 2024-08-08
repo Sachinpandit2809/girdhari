@@ -21,12 +21,12 @@ class AddClientScreen extends StatefulWidget {
 class _AddClientScreenState extends State<AddClientScreen> {
   TextEditingController clientNameController = TextEditingController();
   TextEditingController phoneNumberController = TextEditingController();
-
   TextEditingController addressController = TextEditingController();
-
   TextEditingController referredByController = TextEditingController();
-  bool loading = false;
   final ClientController _clientController = ClientController();
+  final _formKey = GlobalKey<FormState>();
+  bool loading = false;
+
   @override
   void dispose() {
     clientNameController.dispose();
@@ -74,40 +74,74 @@ class _AddClientScreenState extends State<AddClientScreen> {
         ),
       ),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Padding(
-                padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
-                child: Text(
-                  "Enter details",
-                  style: KTextStyle.K_14,
+        child: Form(
+          key: _formKey,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
+                  child: Text(
+                    "Enter details",
+                    style: KTextStyle.K_14,
+                  ),
                 ),
-              ),
-              KTextFormField(
-                  controller: clientNameController, hintText: "Client Name"),
-              KTextFormField(
-                  controller: phoneNumberController, hintText: "phone Number"),
-              KTextFormField(
-                  controller: addressController, hintText: "Address"),
-              KTextFormField(
-                  controller: referredByController,
-                  hintText: "Referred By (optional)"),
-              const SizedBox(
-                height: 50,
-              ),
-              Center(
-                child: FlexiableRectangularButton(
-                    title: "SUBMIT",
-                    width: 120,
-                    height: 44,
-                    color: AppColor.brown,
-                    loading: loading,
-                    onPress: _addClient),
-              )
-            ],
+                KTextFormField(
+                    validator: (value) {
+                      if (clientNameController.text.isEmpty) {
+                        return "enter client";
+                      }
+                      return null;
+                    },
+                    controller: clientNameController,
+                    hintText: "Client Name"),
+                KTextFormField(
+                    validator: (value) {
+                      if (phoneNumberController.text.isEmpty) {
+                        return "enter phone number";
+                      }
+                      return null;
+                    },
+                    controller: phoneNumberController,
+                    hintText: "phone Number"),
+                KTextFormField(
+                    validator: (value) {
+                      if (addressController.text.isEmpty) {
+                        return "enter adress";
+                      }
+                      return null;
+                    },
+                    controller: addressController,
+                    hintText: "Address"),
+                KTextFormField(
+                    validator: (value) {
+                      // if (referredByController.text.isEmpty) {
+                      //   return "enter quantity";
+                      // }
+                      return null;
+                    },
+                    controller: referredByController,
+                    hintText: "Referred By (optional)"),
+                const SizedBox(
+                  height: 50,
+                ),
+                Center(
+                  child: FlexiableRectangularButton(
+                      title: "SUBMIT",
+                      width: 120,
+                      height: 44,
+                      color: AppColor.brown,
+                      loading: loading,
+                      onPress: () {
+                        if (_formKey.currentState!.validate()) {
+                          _addClient();
+                        }
+                      }),
+                )
+              ],
+            ),
           ),
         ),
       ),

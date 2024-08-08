@@ -92,6 +92,8 @@ class _EditExpensesState extends State<EditExpenses> {
     );
   }
 
+  final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -106,90 +108,121 @@ class _EditExpensesState extends State<EditExpenses> {
           padding: const EdgeInsets.all(16.0),
           child: SizedBox(
             height: 510,
-            child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  KTextFormField(
-                      controller: venderDetailsController,
-                      hintText: "Enter Vender Details"),
-                  KTextFormField(
-                      controller: expenseTitleController,
-                      hintText: "Enter Expense Title"),
-                  KTextFormField(
-                      keyBoard: TextInputType.number,
-                      controller: amountController,
-                      hintText: "Enter Amount"),
-                  Center(
-                    child: Consumer<ExpensesProvider>(
-                      builder: (context, categoryProvider, child) {
-                        return ToggleButtons(
-                          isSelected: [
-                            categoryProvider.selectedCategory == 'Raw Material',
-                            categoryProvider.selectedCategory == 'Packaging',
-                            categoryProvider.selectedCategory == 'Others',
-                          ],
-                          onPressed: (int index) {
-                            switch (index) {
-                              case 0:
-                                categoryProvider.setCategory('Raw Material');
-                                break;
-                              case 1:
-                                categoryProvider.setCategory('Packaging');
-                                break;
-                              case 2:
-                                categoryProvider.setCategory('Others');
-                                break;
-                            }
-                          },
-                          selectedColor: Colors.white,
-                          fillColor: Colors.blue,
-                          color: Colors.black,
-                          children: const [
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 16.0),
-                              child: Text('Raw Material'),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 16.0),
-                              child: Text('Packaging'),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 16.0),
-                              child: Text('Others'),
-                            ),
-                          ],
-                        );
+            child: Form(
+              key: _formKey,
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    KTextFormField(
+                        validator: (value) {
+                          if (venderDetailsController.text.isEmpty) {
+                            return "enter vender details";
+                          }
+                          return null;
+                        },
+                        controller: venderDetailsController,
+                        hintText: "Enter Vender Details"),
+                    KTextFormField(
+                        validator: (value) {
+                          if (expenseTitleController.text.isEmpty) {
+                            return "enter expenses title";
+                          }
+                          return null;
+                        },
+                        controller: expenseTitleController,
+                        hintText: "Enter Expense Title"),
+                    KTextFormField(
+                        validator: (value) {
+                          if (amountController.text.isEmpty) {
+                            return "enter amount";
+                          }
+                          return null;
+                        },
+                        keyBoard: TextInputType.number,
+                        controller: amountController,
+                        hintText: "Enter Amount"),
+                    Center(
+                      child: Consumer<ExpensesProvider>(
+                        builder: (context, categoryProvider, child) {
+                          return ToggleButtons(
+                            isSelected: [
+                              categoryProvider.selectedCategory ==
+                                  'Raw Material',
+                              categoryProvider.selectedCategory == 'Packaging',
+                              categoryProvider.selectedCategory == 'Others',
+                            ],
+                            onPressed: (int index) {
+                              switch (index) {
+                                case 0:
+                                  categoryProvider.setCategory('Raw Material');
+                                  break;
+                                case 1:
+                                  categoryProvider.setCategory('Packaging');
+                                  break;
+                                case 2:
+                                  categoryProvider.setCategory('Others');
+                                  break;
+                              }
+                            },
+                            selectedColor: Colors.white,
+                            fillColor: Colors.blue,
+                            color: Colors.black,
+                            children: const [
+                              Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 16.0),
+                                child: Text('Raw Material'),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 16.0),
+                                child: Text('Packaging'),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 16.0),
+                                child: Text('Others'),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    TextFormField(
+                      controller: _dateController,
+                      readOnly: true,
+                      validator: (value) {
+                        if (_dateController.text.isEmpty) {
+                          return "select Date";
+                        }
+                        return null;
                       },
+                      onTap: () => _selectDate(context),
+                      decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.fromLTRB(25, 0, 10, 0),
+                        labelText: 'Select Date',
+                        border: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(12))),
+                      ),
                     ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  TextFormField(
-                    controller: _dateController,
-                    readOnly: true,
-                    onTap: () => _selectDate(context),
-                    decoration: const InputDecoration(
-                      contentPadding: EdgeInsets.fromLTRB(25, 0, 10, 0),
-                      labelText: 'Select Date',
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(12))),
+                    const SizedBox(
+                      height: 15,
                     ),
-                  ),
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  FlexiableRectangularButton(
-                    title: "SUBMIT",
-                    width: 120,
-                    height: 44,
-                    loading: loading,
-                    color: AppColor.brown,
-                    onPress: () {
-                      editExpenses();
-                    },
-                  )
-                ]),
+                    FlexiableRectangularButton(
+                      title: "SUBMIT",
+                      width: 120,
+                      height: 44,
+                      loading: loading,
+                      color: AppColor.brown,
+                      onPress: () {
+                        if (_formKey.currentState!.validate()) {
+                          editExpenses();
+                        }
+                      },
+                    )
+                  ]),
+            ),
           ),
         ),
       ),

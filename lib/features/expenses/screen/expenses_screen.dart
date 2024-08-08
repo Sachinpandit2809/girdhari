@@ -56,6 +56,8 @@ class _ExpensesScreenState extends State<ExpensesScreen>
     super.dispose();
   }
 
+  final _formKey = GlobalKey<FormState>();
+
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -104,236 +106,231 @@ class _ExpensesScreenState extends State<ExpensesScreen>
 
   @override
   Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          "Expenses",
+          style: KTextStyle.K_20,
+        ),
+        actions: [
+          FlexiableRectangularButton(
+              title: "\u{20B9} $totalPrice",
+              textColor: Colors.black,
+              width: 130,
+              height: 30,
+              color: AppColor.skyBlueButton,
+              onPress: () {})
+        ],
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            SearchKTextformfield(
+                onChange: (p0) {
+                  setState(() {});
+                },
+                controller: searchExpensesController,
+                hintText: "Search Expenses"),
+            StreamBuilder<QuerySnapshot>(
+              stream: fireStore,
+              builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator(
+                    color: Colors.amber,
+                  );
+                }
+                if (snapshot.hasError) {
+                  Utils().toastErrorMessage("error during Communication");
+                }
     
-    return DefaultTabController(
-      initialIndex: 0,
-      length: 3,
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text(
-            "Expenses",
-            style: KTextStyle.K_20,
-          ),
-          actions: [
-            FlexiableRectangularButton(
-                title: "\u{20B9} $totalPrice",
-                textColor: Colors.black,
-                width: 130,
-                height: 30,
-                color: AppColor.skyBlueButton,
-                onPress: () {})
+                return Expanded(
+                    child: ListView.builder(
+                        itemCount: snapshot.data!.docs.length,
+                        itemBuilder: (context, index) {
+                          ExpensesModel expenses = ExpensesModel.fromJson(
+                              snapshot.data!.docs[index].data()
+                                  as Map<String, dynamic>);
+                          totalPrice += expenses.amount;
+    
+                          if (expenses.expensesTitle.isEmpty &&
+                              expenses.venderDetail.isEmpty) {
+                            return InkWell(
+                              onTap: () {
+                                Get.to(EditExpenses(expenseData: expenses));
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.all(8),
+                                margin: const EdgeInsets.symmetric(
+                                    vertical: 15, horizontal: 4),
+                                decoration: BoxDecoration(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .secondary,
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(8)),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary, // Adjust opacity for a blush effect
+                                        offset: const Offset(0,
+                                            0), // Move the shadow downwards
+                                        blurRadius:
+                                            5, // Adjust blur radius as needed
+                                        spreadRadius:
+                                            0, // Adjust spread radius as needed
+                                        blurStyle: BlurStyle.outer,
+                                      )
+                                    ]),
+                                child: Row(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.center,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    //details
+                                    Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          expenses.venderDetail,
+                                          style: KTextStyle.K_14,
+                                        ),
+                                        Text(
+                                          expenses.expensesTitle,
+                                          style: KTextStyle.K_10,
+                                        ),
+                                        const SizedBox(
+                                          height: 4,
+                                        ),
+                                        Row(
+                                          children: [
+                                            RectangularButton(
+                                                title: expenses.type,
+                                                color:
+                                                    AppColor.skyBlueButton),
+                                            RectangularButton(
+                                                title: expenses.expensesDate,
+                                                color: AppColor.yellow),
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                    //figure
+                                    RectangularButton(
+                                        onPress: () {},
+                                        title: "\u{20B9} ${expenses.amount}",
+                                        color: AppColor.skyBlueButton)
+                                  ],
+                                ),
+                              ),
+                            );
+                          }
+    
+                          if (expenses.expensesTitle.toLowerCase().contains(
+                                  searchExpensesController.text
+                                      .toLowerCase()) ||
+                              expenses.venderDetail.toLowerCase().contains(
+                                  searchExpensesController.text
+                                      .toLowerCase())) {
+                            return InkWell(
+                              onTap: () {
+                                Get.to(EditExpenses(expenseData: expenses));
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.all(8),
+                                margin: const EdgeInsets.symmetric(
+                                    vertical: 15, horizontal: 4),
+                                decoration: BoxDecoration(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .secondary,
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(8)),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary, // Adjust opacity for a blush effect
+                                        offset: const Offset(0,
+                                            0), // Move the shadow downwards
+                                        blurRadius:
+                                            5, // Adjust blur radius as needed
+                                        spreadRadius:
+                                            0, // Adjust spread radius as needed
+                                        blurStyle: BlurStyle.outer,
+                                      )
+                                    ]),
+                                child: Row(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.center,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    //details
+                                    Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          expenses.venderDetail,
+                                          style: KTextStyle.K_14,
+                                        ),
+                                        Text(
+                                          expenses.expensesTitle,
+                                          style: KTextStyle.K_10,
+                                        ),
+                                        const SizedBox(
+                                          height: 4,
+                                        ),
+                                        Row(
+                                          children: [
+                                            RectangularButton(
+                                                title: expenses.type,
+                                                color:
+                                                    AppColor.skyBlueButton),
+                                            RectangularButton(
+                                                title: expenses.expensesDate,
+                                                color: AppColor.yellow),
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                    //figure
+                                    RectangularButton(
+                                        onPress: () {},
+                                        title: "\u{20B9} ${expenses.amount}",
+                                        color: AppColor.skyBlueButton)
+                                  ],
+                                ),
+                              ),
+                            );
+                          }
+                          return Container();
+                        }));
+              },
+            )
           ],
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              SearchKTextformfield(
-                  onChange: (p0) {
-                    setState(() {});
-                  },
-                  controller: searchExpensesController,
-                  hintText: "Search Expenses"),
-              StreamBuilder<QuerySnapshot>(
-                stream: fireStore,
-                builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const CircularProgressIndicator(
-                      color: Colors.amber,
-                    );
-                  }
-                  if (snapshot.hasError) {
-                    Utils().toastErrorMessage("error during Communication");
-                  }
-
-                  return Expanded(
-                      child: ListView.builder(
-                          itemCount: snapshot.data!.docs.length,
-                          itemBuilder: (context, index) {
-                            ExpensesModel expenses = ExpensesModel.fromJson(
-                                snapshot.data!.docs[index].data()
-                                    as Map<String, dynamic>);
-                            totalPrice += expenses.amount;
-
-                            if (expenses.expensesTitle.isEmpty &&
-                                expenses.venderDetail.isEmpty) {
-                              return InkWell(
-                                onTap: () {
-                                  Get.to(EditExpenses(expenseData: expenses));
-                                },
-                                child: Container(
-                                  padding: const EdgeInsets.all(8),
-                                  margin: const EdgeInsets.symmetric(
-                                      vertical: 15, horizontal: 4),
-                                  decoration: BoxDecoration(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .secondary,
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(8)),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .primary, // Adjust opacity for a blush effect
-                                          offset: const Offset(0,
-                                              0), // Move the shadow downwards
-                                          blurRadius:
-                                              5, // Adjust blur radius as needed
-                                          spreadRadius:
-                                              0, // Adjust spread radius as needed
-                                          blurStyle: BlurStyle.outer,
-                                        )
-                                      ]),
-                                  child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      //details
-                                      Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            expenses.venderDetail,
-                                            style: KTextStyle.K_14,
-                                          ),
-                                          Text(
-                                            expenses.expensesTitle,
-                                            style: KTextStyle.K_10,
-                                          ),
-                                          const SizedBox(
-                                            height: 4,
-                                          ),
-                                          Row(
-                                            children: [
-                                              RectangularButton(
-                                                  title: expenses.type,
-                                                  color:
-                                                      AppColor.skyBlueButton),
-                                              RectangularButton(
-                                                  title: expenses.expensesDate,
-                                                  color: AppColor.yellow),
-                                            ],
-                                          )
-                                        ],
-                                      ),
-                                      //figure
-                                      RectangularButton(
-                                          onPress: () {},
-                                          title: "\u{20B9} ${expenses.amount}",
-                                          color: AppColor.skyBlueButton)
-                                    ],
-                                  ),
-                                ),
-                              );
-                            }
-
-                            if (expenses.expensesTitle.toLowerCase().contains(
-                                    searchExpensesController.text
-                                        .toLowerCase()) ||
-                                expenses.venderDetail.toLowerCase().contains(
-                                    searchExpensesController.text
-                                        .toLowerCase())) {
-                              return InkWell(
-                                onTap: () {
-                                  Get.to(EditExpenses(expenseData: expenses));
-                                },
-                                child: Container(
-                                  padding: const EdgeInsets.all(8),
-                                  margin: const EdgeInsets.symmetric(
-                                      vertical: 15, horizontal: 4),
-                                  decoration: BoxDecoration(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .secondary,
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(8)),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .primary, // Adjust opacity for a blush effect
-                                          offset: const Offset(0,
-                                              0), // Move the shadow downwards
-                                          blurRadius:
-                                              5, // Adjust blur radius as needed
-                                          spreadRadius:
-                                              0, // Adjust spread radius as needed
-                                          blurStyle: BlurStyle.outer,
-                                        )
-                                      ]),
-                                  child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      //details
-                                      Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            expenses.venderDetail,
-                                            style: KTextStyle.K_14,
-                                          ),
-                                          Text(
-                                            expenses.expensesTitle,
-                                            style: KTextStyle.K_10,
-                                          ),
-                                          const SizedBox(
-                                            height: 4,
-                                          ),
-                                          Row(
-                                            children: [
-                                              RectangularButton(
-                                                  title: expenses.type,
-                                                  color:
-                                                      AppColor.skyBlueButton),
-                                              RectangularButton(
-                                                  title: expenses.expensesDate,
-                                                  color: AppColor.yellow),
-                                            ],
-                                          )
-                                        ],
-                                      ),
-                                      //figure
-                                      RectangularButton(
-                                          onPress: () {},
-                                          title: "\u{20B9} ${expenses.amount}",
-                                          color: AppColor.skyBlueButton)
-                                    ],
-                                  ),
-                                ),
-                              );
-                            }
-                            return Container();
-                          }));
-                },
-              )
-            ],
-          ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: AppColor.brown,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(40.0),
         ),
-        floatingActionButton: FloatingActionButton(
-          backgroundColor: AppColor.brown,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(40.0),
-          ),
-          onPressed: () {
-            addBottomSheet();
-          },
-          child: const Icon(
-            Icons.add,
-            color: AppColor.white,
-            size: 30,
-          ),
+        onPressed: () {
+          addBottomSheet();
+        },
+        child: const Icon(
+          Icons.add,
+          color: AppColor.white,
+          size: 30,
         ),
       ),
     );
@@ -343,25 +340,47 @@ class _ExpensesScreenState extends State<ExpensesScreen>
     showModalBottomSheet<void>(
       context: context,
       builder: (BuildContext context) {
-        return Consumer(
-          builder: (context,expProvider,_) {
-            return Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: SizedBox(
-                height: 510,
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.vertical,
+        return Consumer(builder: (context, expProvider, _) {
+          return Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: SizedBox(
+              height: 510,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: Form(
+                  key: _formKey,
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         KTextFormField(
+                            validator: (value) {
+                              if (venderDetailsController.text.isEmpty) {
+                                return "enter quantity vender details";
+                              }
+                              return null;
+                            },
                             controller: venderDetailsController,
                             hintText: "Enter Vender Details"),
                         KTextFormField(
+                            validator: (value) {
+                              if (expenseTitleController.text.isEmpty) {
+                                return "enter expenses title";
+                              }
+                              return null;
+                            },
                             controller: expenseTitleController,
                             hintText: "Enter Expense Title"),
                         KTextFormField(
-                            controller: amountController, hintText: "Enter Amount"),
+                          validator: (value) {
+                            if (amountController.text.isEmpty) {
+                              return "enter amount";
+                            }
+                            return null;
+                          },
+                          controller: amountController,
+                          hintText: "enter amount",
+                          keyBoard: TextInputType.number,
+                        ),
                         Center(
                           child: Consumer<ExpensesProvider>(
                             builder: (context, categoryProvider, child) {
@@ -369,13 +388,15 @@ class _ExpensesScreenState extends State<ExpensesScreen>
                                 isSelected: [
                                   categoryProvider.selectedCategory ==
                                       'Raw Material',
-                                  categoryProvider.selectedCategory == 'Packaging',
+                                  categoryProvider.selectedCategory ==
+                                      'Packaging',
                                   categoryProvider.selectedCategory == 'Others',
                                 ],
                                 onPressed: (int index) {
                                   switch (index) {
                                     case 0:
-                                      categoryProvider.setCategory('Raw Material');
+                                      categoryProvider
+                                          .setCategory('Raw Material');
                                       break;
                                     case 1:
                                       categoryProvider.setCategory('Packaging');
@@ -390,15 +411,18 @@ class _ExpensesScreenState extends State<ExpensesScreen>
                                 color: Colors.black,
                                 children: const [
                                   Padding(
-                                    padding: EdgeInsets.symmetric(horizontal: 16.0),
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 16.0),
                                     child: Text('Raw Material'),
                                   ),
                                   Padding(
-                                    padding: EdgeInsets.symmetric(horizontal: 16.0),
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 16.0),
                                     child: Text('Packaging'),
                                   ),
                                   Padding(
-                                    padding: EdgeInsets.symmetric(horizontal: 16.0),
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 16.0),
                                     child: Text('Others'),
                                   ),
                                 ],
@@ -411,6 +435,12 @@ class _ExpensesScreenState extends State<ExpensesScreen>
                         ),
                         TextFormField(
                           controller: _dateController,
+                          validator: (value) {
+                            if (_dateController.text.isEmpty) {
+                              return "select date";
+                            }
+                            return null;
+                          },
                           readOnly: true,
                           onTap: () => _selectDate(context),
                           decoration: const InputDecoration(
@@ -431,15 +461,17 @@ class _ExpensesScreenState extends State<ExpensesScreen>
                           loading: loading,
                           color: AppColor.brown,
                           onPress: () {
-                            addExpenses();
+                            if (_formKey.currentState!.validate()) {
+                              addExpenses();
+                            }
                           },
                         )
                       ]),
                 ),
               ),
-            );
-          }
-        );
+            ),
+          );
+        });
       },
     );
   }

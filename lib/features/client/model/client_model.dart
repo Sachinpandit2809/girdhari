@@ -3,7 +3,7 @@ class ClientModel {
   String clientName;
   int phoneNumber;
   String address;
-  String referredBy;
+  String? referredBy;
 
   ClientModel(
       {required this.id,
