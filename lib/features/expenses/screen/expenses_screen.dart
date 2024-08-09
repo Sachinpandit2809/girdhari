@@ -116,8 +116,10 @@ class _ExpensesScreenState extends State<ExpensesScreen>
                             ExpensesModel expenses = ExpensesModel.fromJson(
                                 snapshot.data!.docs[index].data()
                                     as Map<String, dynamic>);
+                            //totalPrice = 0;
                             totalPrice += expenses.amount;
-
+                            debugPrint(
+                                "............................${totalPrice.toString()}");
                             if (expenses.expensesTitle.isEmpty &&
                                 expenses.venderDetail.isEmpty) {
                               return InkWell(
@@ -164,7 +166,8 @@ class _ExpensesScreenState extends State<ExpensesScreen>
                                 onTap: () {
                                   debugPrint("....................triggred");
 
-                                  Get.to(EditExpenses(expenseData: expenses));
+                                  Get.to(() =>
+                                      EditExpenses(expenseData: expenses));
                                 },
                                 child: Container(
                                   padding: const EdgeInsets.all(8),

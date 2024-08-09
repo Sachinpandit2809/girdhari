@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 
 import 'package:get/get_core/get_core.dart';
 import 'package:get/get_navigation/get_navigation.dart';
@@ -13,6 +14,7 @@ import 'package:girdhari/widgets/squre_icon_button.dart';
 import 'package:girdhari/resource/app_color.dart';
 import 'package:girdhari/resource/k_text_style.dart';
 import 'package:girdhari/features/client/screens/add_client_screen.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ClientScreen extends StatefulWidget {
   const ClientScreen({super.key});
@@ -30,7 +32,6 @@ class _ClientScreenState extends State<ClientScreen> {
 
   @override
   void dispose() {
-
     searchClientController.dispose();
     super.dispose();
   }
@@ -133,8 +134,9 @@ class _ClientScreenState extends State<ClientScreen> {
                                     //figure
                                     Column(
                                       children: [
-                                        const RectangularButton(
-                                            title: "\u{20B9}" "15420",
+                                        RectangularButton(
+                                            title:
+                                                "\u{20B9} ${clientData.dueAmount}",
                                             color: AppColor.skyBlueButton),
                                         Row(
                                           children: [
@@ -145,7 +147,12 @@ class _ClientScreenState extends State<ClientScreen> {
                                                   size: 18,
                                                 ),
                                                 color: AppColor.skyBlue,
-                                                onPress: () {}),
+                                                onPress: () {
+                                                  FlutterPhoneDirectCaller
+                                                      .callNumber(clientData
+                                                          .phoneNumber
+                                                          .toString());
+                                                }),
                                             SqureIconButton(
                                                 icon: const Icon(
                                                   Icons.comment,
@@ -153,7 +160,10 @@ class _ClientScreenState extends State<ClientScreen> {
                                                   size: 18,
                                                 ),
                                                 color: AppColor.yellowButton,
-                                                onPress: () {})
+                                                onPress: () {
+                                                  launchUrl(Uri.parse(
+                                                      "https://wa.me/+91 ${clientData.phoneNumber}"));
+                                                })
                                           ],
                                         )
                                       ],
@@ -209,8 +219,9 @@ class _ClientScreenState extends State<ClientScreen> {
                                     //figure
                                     Column(
                                       children: [
-                                        const RectangularButton(
-                                            title: "\u{20B9}" "15420",
+                                        RectangularButton(
+                                            title:
+                                                "\u{20B9} ${clientData.dueAmount.toString()}",
                                             color: AppColor.skyBlueButton),
                                         Row(
                                           children: [
@@ -221,7 +232,12 @@ class _ClientScreenState extends State<ClientScreen> {
                                                   size: 18,
                                                 ),
                                                 color: AppColor.skyBlue,
-                                                onPress: () {}),
+                                                onPress: () {
+                                                  FlutterPhoneDirectCaller
+                                                      .callNumber(clientData
+                                                          .phoneNumber
+                                                          .toString());
+                                                }),
                                             SqureIconButton(
                                                 icon: const Icon(
                                                   Icons.comment,
@@ -229,7 +245,10 @@ class _ClientScreenState extends State<ClientScreen> {
                                                   size: 18,
                                                 ),
                                                 color: AppColor.yellowButton,
-                                                onPress: () {})
+                                                onPress: () {
+                                                  launchUrl(Uri.parse(
+                                                      "https://wa.me/+91 ${clientData.phoneNumber}"));
+                                                })
                                           ],
                                         )
                                       ],

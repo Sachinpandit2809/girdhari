@@ -4,13 +4,15 @@ class ClientModel {
   int phoneNumber;
   String address;
   String? referredBy;
+  double? dueAmount;
 
   ClientModel(
       {required this.id,
       required this.clientName,
       required this.phoneNumber,
       required this.address,
-      required this.referredBy});
+      required this.referredBy,
+      this.dueAmount = 0.0});
 
   Map<String, dynamic> toJson() {
     return {
@@ -18,7 +20,8 @@ class ClientModel {
       'clientName': clientName,
       'phoneNumber': phoneNumber,
       'address': address,
-      'referredBy': referredBy
+      'referredBy': referredBy,
+      'dueAmount': dueAmount
     };
   }
 
@@ -28,6 +31,7 @@ class ClientModel {
         clientName: json['clientName'],
         phoneNumber: json['phoneNumber'],
         address: json['address'],
-        referredBy: json['referredBy']);
+        referredBy: json['referredBy'],
+        dueAmount: json['dueAmount']);
   }
 }
