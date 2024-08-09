@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:girdhari/features/client/model/client_model.dart';
@@ -23,14 +22,33 @@ class OrderProvider with ChangeNotifier {
   ClientModel get clientModel => _clientModel;
   bool _loading = false;
   bool get loading => _loading;
+  bool _delloading = false;
+  bool get delLoading => _delloading;
   void setCmfLoading(bool load) {
     _loading = load;
+    notifyListeners();
+  }
+
+  void setDelLoading(bool load) {
+    _delloading = load;
     notifyListeners();
   }
 
   void setClientModel(ClientModel model) {
     _clientModel = model;
     notifyListeners();
+  }
+
+  void deleteOrder(String id) {
+    OrderController().deleteOrder(id).then((onValue) {
+      Utils().toastSuccessMessage("order has been deleted");
+      Get.back();
+    }).onError(
+      (error, stackTrace) {
+        Utils().toastSuccessMessage("order has been deleted");
+        Get.back();
+      },
+    );
   }
 }
 
@@ -83,6 +101,7 @@ class SelectedProductProvider with ChangeNotifier {
     debugPrint(
         "...............................cleared.............................");
     debugPrint(_selectedProducts.toString());
+
     notifyListeners();
   }
 
@@ -104,9 +123,7 @@ class SelectedProductProvider with ChangeNotifier {
       final clientDetails = Provider.of<OrderProvider>(context, listen: false);
       final addProduct =
           Provider.of<SelectedProductProvider>(context, listen: false);
-      // debugPrint(
-      //     "...............................CLIENT NAME'${clientDetails._clientModel.clientName}'.............................");
-      // debugPrint(clientDetails._clientModel.clientName);
+
       String id = const Uuid().v4();
       DateTime time = DateTime.now();
       if (clientDetails._clientModel.clientName == 'dumyClientDeveloper') {
@@ -225,7 +242,7 @@ class ModifyBillProduct with ChangeNotifier {
       Utils().toastSuccessMessage("Bill added");
       debugPrint(billing.orderList.toString());
 
-      Get.to(const OrdersScreen());
+      // Get.to(const OrdersScreen());
     }).onError(
       (error, stackTrace) {
         setLoading(false);

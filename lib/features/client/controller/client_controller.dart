@@ -18,7 +18,7 @@ class ClientController {
             "////////////////////////////////////Failed to add client: $error"));
   }
 
-Future<void> editClient(ClientModel client) {
+  Future<void> editClient(ClientModel client) {
     return clientsCollection
         .doc(client.id)
         .update(client.toJson())
@@ -29,5 +29,13 @@ Future<void> editClient(ClientModel client) {
             "////////////////////////////////////Failed to add client: $error"));
   }
 
-
+  Future<void> deleteClient(String id) {
+    return clientsCollection
+        .doc(id)
+        .delete()
+        .then((value) =>
+            debugPrint("...............................client deleted"))
+        .catchError((error) => debugPrint(
+            "////////////////////////////////////Failed to deleted client: $error"));
+  }
 }

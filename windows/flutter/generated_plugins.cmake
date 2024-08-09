@@ -5,6 +5,8 @@
 list(APPEND FLUTTER_PLUGIN_LIST
   cloud_firestore
   firebase_core
+  flutter_pos_printer_platform_image_3
+  printing
   url_launcher_windows
 )
 

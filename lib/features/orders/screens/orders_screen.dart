@@ -7,6 +7,7 @@ import 'package:girdhari/features/orders/model/order_model.dart';
 import 'package:girdhari/features/orders/screens/billing_screen.dart';
 import 'package:girdhari/features/orders/screens/orders_details_screen.dart';
 import 'package:girdhari/utils/utils.dart';
+import 'package:girdhari/widgets/flexiable_rectangular_button.dart';
 
 import 'package:girdhari/widgets/rectangular_button.dart';
 
@@ -81,6 +82,45 @@ class _OrdersScreenState extends State<OrdersScreen> {
 
                           if (SearchClientController.text.isEmpty) {
                             return InkWell(
+                              onLongPress: () {
+                                debugPrint("....................triggred");
+                                showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return Consumer<OrderProvider>(
+                                          builder: (context, orderProvider, _) {
+                                        return AlertDialog(
+                                          content: SizedBox(
+                                            height: 100,
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceEvenly,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                const Text(
+                                                    "are you sure want to delete"),
+                                                FlexiableRectangularButton(
+                                                    title: "delete",
+                                                    width: 140,
+                                                    height: 40,
+                                                    color: AppColor.brownRed,
+                                                    loading: orderProvider
+                                                        .delLoading,
+                                                    onPress: () {
+                                                      orderProvider
+                                                          .setDelLoading(true);
+
+                                                      orderProvider.deleteOrder(
+                                                          order.id);
+                                                    })
+                                              ],
+                                            ),
+                                          ),
+                                        );
+                                      });
+                                    });
+                              },
                               onTap: () {
                                 Navigator.push(
                                     context,
@@ -109,13 +149,10 @@ class _OrdersScreenState extends State<OrdersScreen> {
                                       BoxShadow(
                                         color: Theme.of(context)
                                             .colorScheme
-                                            .primary, // Adjust opacity for a blush effect
-                                        offset: const Offset(
-                                            0, 1), // Move the shadow downwards
-                                        blurRadius:
-                                            6, // Adjust blur radius as needed
-                                        spreadRadius:
-                                            0, // Adjust spread radius as needed
+                                            .primary,
+                                        offset: const Offset(0, 1),
+                                        blurRadius: 6,
+                                        spreadRadius: 0,
                                         blurStyle: BlurStyle.outer,
                                       )
                                     ]),
@@ -166,6 +203,45 @@ class _OrdersScreenState extends State<OrdersScreen> {
                           if (order.client.clientName.toLowerCase().contains(
                               SearchClientController.text.toLowerCase())) {
                             return InkWell(
+                              onLongPress: () {
+                                debugPrint("....................triggred");
+                                showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return Consumer<OrderProvider>(
+                                          builder: (context, orderProvider, _) {
+                                        return AlertDialog(
+                                          content: SizedBox(
+                                            height: 100,
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceEvenly,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                const Text(
+                                                    "are you sure want to delete"),
+                                                FlexiableRectangularButton(
+                                                    title: "delete",
+                                                    width: 140,
+                                                    height: 40,
+                                                    color: AppColor.brownRed,
+                                                    loading: orderProvider
+                                                        .delLoading,
+                                                    onPress: () {
+                                                      orderProvider
+                                                          .setDelLoading(true);
+
+                                                      orderProvider.deleteOrder(
+                                                          order.id);
+                                                    })
+                                              ],
+                                            ),
+                                          ),
+                                        );
+                                      });
+                                    });
+                              },
                               onTap: () {
                                 Navigator.push(
                                     context,

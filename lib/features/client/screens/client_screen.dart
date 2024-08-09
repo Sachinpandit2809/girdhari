@@ -4,9 +4,12 @@ import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 
 import 'package:get/get_core/get_core.dart';
 import 'package:get/get_navigation/get_navigation.dart';
+import 'package:girdhari/features/client/controller/client_provider_controller.dart';
 import 'package:girdhari/features/client/model/client_model.dart';
 import 'package:girdhari/features/client/screens/edit_client_screen.dart';
+import 'package:girdhari/features/expenses/controller/expenses_provider.dart';
 import 'package:girdhari/utils/utils.dart';
+import 'package:girdhari/widgets/flexiable_rectangular_button.dart';
 
 import 'package:girdhari/widgets/rectangular_button.dart';
 import 'package:girdhari/widgets/search_k_textformfield.dart';
@@ -14,6 +17,7 @@ import 'package:girdhari/widgets/squre_icon_button.dart';
 import 'package:girdhari/resource/app_color.dart';
 import 'package:girdhari/resource/k_text_style.dart';
 import 'package:girdhari/features/client/screens/add_client_screen.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ClientScreen extends StatefulWidget {
@@ -93,6 +97,47 @@ class _ClientScreenState extends State<ClientScreen> {
 
                           if (searchClientController.text.isEmpty) {
                             return InkWell(
+                              onLongPress: () {
+                                showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return Consumer<ClientProviderController>(
+                                          builder: (context,
+                                              clientProviderController, _) {
+                                        return AlertDialog(
+                                          content: SizedBox(
+                                            height: 100,
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceEvenly,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                const Text(
+                                                    "are you sure want to delete?"),
+                                                FlexiableRectangularButton(
+                                                    title: "delete",
+                                                    width: 140,
+                                                    height: 40,
+                                                    color: AppColor.brownRed,
+                                                    loading:
+                                                        clientProviderController
+                                                            .loading,
+                                                    onPress: () {
+                                                      clientProviderController
+                                                          .setLoading(true);
+
+                                                      clientProviderController
+                                                          .deleteClient(
+                                                              clientData.id);
+                                                    })
+                                              ],
+                                            ),
+                                          ),
+                                        );
+                                      });
+                                    });
+                              },
                               onTap: () {
                                 Get.to(
                                     EditClientScreen(clientData: clientData));
@@ -178,6 +223,47 @@ class _ClientScreenState extends State<ClientScreen> {
                               clientData.address.toLowerCase().contains(
                                   searchClientController.text.toLowerCase())) {
                             return InkWell(
+                              onLongPress: () {
+                                showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return Consumer<ClientProviderController>(
+                                          builder: (context,
+                                              clientProviderController, _) {
+                                        return AlertDialog(
+                                          content: SizedBox(
+                                            height: 100,
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceEvenly,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                const Text(
+                                                    "are you sure want to delete?"),
+                                                FlexiableRectangularButton(
+                                                    title: "delete",
+                                                    width: 140,
+                                                    height: 40,
+                                                    color: AppColor.brownRed,
+                                                    loading:
+                                                        clientProviderController
+                                                            .loading,
+                                                    onPress: () {
+                                                      clientProviderController
+                                                          .setLoading(true);
+
+                                                      clientProviderController
+                                                          .deleteClient(
+                                                              clientData.id);
+                                                    })
+                                              ],
+                                            ),
+                                          ),
+                                        );
+                                      });
+                                    });
+                              },
                               onTap: () {
                                 Get.to(
                                     EditClientScreen(clientData: clientData));

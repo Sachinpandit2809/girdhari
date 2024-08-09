@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
+import 'package:girdhari/features/client/controller/client_provider_controller.dart';
 import 'package:girdhari/features/expenses/controller/expenses_provider.dart';
 import 'package:girdhari/features/orders/controller/order_provider.dart';
 import 'package:girdhari/features/product/provider/product_controller_provider.dart';
@@ -33,6 +34,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => OrderProvider()),
         ChangeNotifierProvider(create: (_) => SelectedProductProvider()),
         ChangeNotifierProvider(create: (_) => ModifyBillProduct()),
+        ChangeNotifierProvider(create: (_)=>ClientProviderController()),
         ChangeNotifierProvider(create: (_) => ProductControllerProvider())
       ],
       child: Builder(builder: (BuildContext context) {

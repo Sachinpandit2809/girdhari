@@ -27,6 +27,8 @@ class _EditClientScreenState extends State<EditClientScreen> {
   TextEditingController phoneNumberController = TextEditingController();
   TextEditingController addressController = TextEditingController();
   TextEditingController referredByController = TextEditingController();
+  TextEditingController dueAmountController = TextEditingController();
+
   bool loading = false;
   final ClientController _editClientController = ClientController();
   @override
@@ -35,6 +37,7 @@ class _EditClientScreenState extends State<EditClientScreen> {
     phoneNumberController.text = widget.clientData.phoneNumber.toString();
     addressController.text = widget.clientData.address;
     referredByController.text = widget.clientData.referredBy ?? "";
+    dueAmountController.text = widget.clientData.dueAmount.toString();
 
     super.initState();
   }
@@ -49,6 +52,7 @@ class _EditClientScreenState extends State<EditClientScreen> {
         clientName: clientNameController.text,
         phoneNumber: int.parse(phoneNumberController.text),
         address: addressController.text,
+        dueAmount: double.parse(dueAmountController.text),
         referredBy: referredByController.text);
 
     await _editClientController.editClient(client).then((onValue) {
@@ -73,6 +77,7 @@ class _EditClientScreenState extends State<EditClientScreen> {
     phoneNumberController.dispose();
     referredByController.dispose();
     addressController.dispose();
+    dueAmountController.dispose();
     super.dispose();
   }
 
@@ -129,6 +134,15 @@ class _EditClientScreenState extends State<EditClientScreen> {
                     },
                     controller: addressController,
                     hintText: "Address"),
+                KTextFormField(
+                    validator: (value) {
+                      // if (referredByController.text.isEmpty) {
+                      //   return "enter quantity";
+                      // }
+                      return null;
+                    },
+                    controller: dueAmountController,
+                    hintText: "enter due amount"),
                 KTextFormField(
                     validator: (value) {
                       // if (referredByController.text.isEmpty) {
