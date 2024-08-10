@@ -75,13 +75,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
   }
 }
 
-// import 'package:flutter/material.dart';
-// import 'package:girdhari/features/expenses/screen/expenses_screen.dart';
-// import 'package:girdhari/resource/app_color.dart';
-// import 'package:girdhari/features/orders/screens/billing_screen.dart';
-// import 'package:girdhari/features/client/screens/client_screen.dart';
-// import 'package:girdhari/features/orders/screens/orders_screen.dart';
-// import 'package:girdhari/features/product/screens/stock_record_screen.dart';
+
 
 // class DashBoardScreen extends StatefulWidget {
 //   const DashBoardScreen({super.key});

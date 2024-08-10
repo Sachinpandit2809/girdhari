@@ -64,7 +64,7 @@ class ExpensesProvider with ChangeNotifier {
     );
   }
 
-  Future<void> fetchExpenses() async {
+  Stream<List<ExpensesModel>> fetchExpenses() async* {
     try {
       final snapshot =
           await FirebaseFirestore.instance.collection("expensesStore").get();
@@ -73,9 +73,9 @@ class ExpensesProvider with ChangeNotifier {
               // ignore: unnecessary_cast
               ExpensesModel.fromJson(doc.data() as Map<String, dynamic>))
           .toList();
-      // ignore: avoid_types_as_parameter_names
-      _totalPrice = _expenses.fold(0, (sum, expense) => sum + expense.amount);
+      _totalPrice = _expenses.fold(0, (result, expense) => result + expense.amount);
       notifyListeners();
+      yield _expenses;
     } catch (error) {
       debugPrint("Error fetching expenses: $error");
     }

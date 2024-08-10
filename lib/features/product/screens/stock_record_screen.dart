@@ -236,6 +236,7 @@ class _StockRecordScreenState extends State<StockRecordScreen>
                                     vertical: 10, horizontal: 3),
                                 margin: const EdgeInsets.only(top: 15),
                                 decoration: BoxDecoration(
+                                    border: Border.all(),
                                     color: product.availableQuantity! > 0
                                         ? Theme.of(context)
                                             .colorScheme
@@ -416,6 +417,7 @@ class _StockRecordScreenState extends State<StockRecordScreen>
                                     vertical: 10, horizontal: 3),
                                 margin: const EdgeInsets.only(top: 15),
                                 decoration: BoxDecoration(
+                                    border: Border.all(),
                                     color: product.availableQuantity! > 0
                                         ? Theme.of(context)
                                             .colorScheme

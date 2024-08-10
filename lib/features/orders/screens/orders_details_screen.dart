@@ -6,7 +6,6 @@ import 'package:girdhari/features/client/model/client_model.dart';
 import 'package:girdhari/features/orders/controller/order_provider.dart';
 import 'package:girdhari/features/orders/model/order_model.dart';
 import 'package:girdhari/features/product/model/add_product_model.dart';
-import 'package:girdhari/printer/lib/invoices/food_and_drink_invoice/invoice_data.dart';
 import 'package:girdhari/printer/lib/main.dart';
 import 'package:girdhari/utils/utils.dart';
 import 'package:girdhari/widgets/flexiable_rectangular_button.dart';

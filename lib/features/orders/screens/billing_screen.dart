@@ -604,6 +604,7 @@ class _BillingScreenState extends State<BillingScreen> {
                                   vertical: 10, horizontal: 3),
                               margin: const EdgeInsets.only(top: 15),
                               decoration: BoxDecoration(
+                                  border: Border.all(),
                                   color: (searchProduct
                                               .productModel.availableQuantity! >
                                           0)
