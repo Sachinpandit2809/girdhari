@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:girdhari/features/product/model/add_product_model.dart';
 import 'package:girdhari/features/product/provider/product_controller_provider.dart';
-import 'package:girdhari/widgets/drop_down_text_form_field.dart';
-import 'package:girdhari/widgets/flexiable_rectangular_button.dart';
-import 'package:girdhari/widgets/k_text_form_field.dart';
+import 'package:girdhari/widgets/common/drop_down_text_form_field.dart';
+import 'package:girdhari/widgets/common/flexiable_rectangular_button.dart';
+import 'package:girdhari/widgets/common/k_text_form_field.dart';
 import 'package:girdhari/resource/app_color.dart';
 import 'package:girdhari/resource/k_text_style.dart';
 import 'package:provider/provider.dart';

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/get_navigation.dart';
+import 'package:get/get_utils/get_utils.dart';
 
 import 'package:girdhari/features/product/controller/product_controller.dart';
 import 'package:girdhari/features/product/controller/product_date_controller.dart';
@@ -13,15 +14,16 @@ import 'package:girdhari/features/product/provider/remove_stock_provider.dart';
 import 'package:girdhari/features/product/screens/edit_product_screen.dart';
 import 'package:girdhari/utils/utils.dart';
 
-import 'package:girdhari/widgets/flexiable_rectangular_button.dart';
-import 'package:girdhari/widgets/k_text_form_field.dart';
-import 'package:girdhari/widgets/rectangular_button.dart';
-import 'package:girdhari/widgets/search_k_textformfield.dart';
-import 'package:girdhari/widgets/small_square_button.dart';
-import 'package:girdhari/widgets/stock_show_date_sheet.dart';
+import 'package:girdhari/widgets/common/flexiable_rectangular_button.dart';
+import 'package:girdhari/widgets/common/k_text_form_field.dart';
+import 'package:girdhari/widgets/common/rectangular_button.dart';
+import 'package:girdhari/widgets/common/search_k_textformfield.dart';
+import 'package:girdhari/widgets/common/small_square_button.dart';
+import 'package:girdhari/widgets/common/stock_show_date_sheet.dart';
 import 'package:girdhari/resource/app_color.dart';
 import 'package:girdhari/resource/k_text_style.dart';
 import 'package:girdhari/features/product/screens/add_product_screen.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class StockRecordScreen extends StatefulWidget {
@@ -43,8 +45,10 @@ class _StockRecordScreenState extends State<StockRecordScreen>
   DateTime selectedDate = DateTime.now();
   final productsCollectionRef =
       FirebaseFirestore.instance.collection('productStock');
-  final fireStore =
-      FirebaseFirestore.instance.collection('productStock').snapshots();
+  final fireStore = FirebaseFirestore.instance
+      .collection('productStock')
+      .where("is_deleted", isEqualTo: false)
+      .snapshots();
 
   final dateCollection =
       FirebaseFirestore.instance.collection('productStockDate');
@@ -117,6 +121,9 @@ class _StockRecordScreenState extends State<StockRecordScreen>
                 if (snapshot.hasError) {
                   Utils().toastErrorMessage("error during communication");
                 }
+                if (snapshot.data!.docs.isEmpty) {
+                  Utils().toastErrorMessage("No Data Found");
+                }
                 return Expanded(
                     child: ListView.builder(
                         itemCount: snapshot.data!.docs.length,
@@ -125,124 +132,126 @@ class _StockRecordScreenState extends State<StockRecordScreen>
                               snapshot.data!.docs[index].data()
                                   as Map<String, dynamic>);
                           if (searchProductController.text.isEmpty) {
-                            return InkWell(
-                              onLongPress: () {
-                                debugPrint("....................triggred");
-                                showDialog(
-                                    context: context,
-                                    builder: (context) {
-                                      return Consumer<
-                                              ProductControllerProvider>(
-                                          builder: (context,
-                                              productControllerProvider, _) {
-                                        return AlertDialog(
-                                          content: SizedBox(
-                                            height: 250,
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceEvenly,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                                FlexiableRectangularButton(
-                                                    title: "edit Product",
-                                                    width: 140,
-                                                    height: 40,
-                                                    loading:
+                            return Container(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 3),
+                              margin: const EdgeInsets.only(top: 15),
+                              decoration: BoxDecoration(
+                                  border: Border.all(),
+                                  color: product.availableQuantity! > 0
+                                      ? Theme.of(context).colorScheme.secondary
+                                      : Colors.red.shade100,
+                                  borderRadius: BorderRadius.circular(8)),
+                              child: InkWell(
+                                onLongPress: () {
+                                  debugPrint("....................triggred");
+                                  showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return Consumer<
+                                                ProductControllerProvider>(
+                                            builder: (context,
+                                                productControllerProvider, _) {
+                                          return AlertDialog(
+                                            content: SizedBox(
+                                              height: 250,
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceEvenly,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  FlexiableRectangularButton(
+                                                      title: "edit Product",
+                                                      width: 140,
+                                                      height: 40,
+                                                      loading:
+                                                          productControllerProvider
+                                                              .editproductLoading,
+                                                      color: AppColor.green,
+                                                      onPress: () {
+                                                        Get.to(() =>
+                                                            EditProductScreen(
+                                                                product:
+                                                                    product));
+                                                      }),
+                                                  FlexiableRectangularButton(
+                                                      title: "flag Zero",
+                                                      width: 140,
+                                                      height: 40,
+                                                      loading:
+                                                          productControllerProvider
+                                                              .flagZeroLoading,
+                                                      color: AppColor.yellow,
+                                                      onPress: () {
                                                         productControllerProvider
-                                                            .editproductLoading,
-                                                    color: AppColor.green,
-                                                    onPress: () {
-                                                      Get.to(() =>
-                                                          EditProductScreen(
-                                                              product:
-                                                                  product));
-                                                    }),
-                                                FlexiableRectangularButton(
-                                                    title: "flag Zero",
-                                                    width: 140,
-                                                    height: 40,
-                                                    loading:
+                                                            .setflagZeroLoading(
+                                                                true);
+                                                        DateModel flagZeroDate =
+                                                            DateModel(
+                                                                id: product.id,
+                                                                date:
+                                                                    "${DateTime.now().day}-${DateTime.now().month}-${DateTime.now().year}",
+                                                                sellTag:
+                                                                    "Flag Zero",
+                                                                quantity: product
+                                                                        .availableQuantity ??
+                                                                    0);
+                                                        ProductModel
+                                                            setZeroFlag =
+                                                            ProductModel(
+                                                                id: product.id,
+                                                                time: product
+                                                                    .time,
+                                                                availableQuantity:
+                                                                    0,
+                                                                productName: product
+                                                                    .productName,
+                                                                skuCode: product
+                                                                    .skuCode,
+                                                                weight: product
+                                                                    .weight,
+                                                                packaging: product
+                                                                    .packaging,
+                                                                cost: product
+                                                                    .cost,
+                                                                wholesalePrice:
+                                                                    product
+                                                                        .wholesalePrice,
+                                                                mrp: product
+                                                                    .mrp);
                                                         productControllerProvider
-                                                            .flagZeroLoading,
-                                                    color: AppColor.yellow,
-                                                    onPress: () {
-                                                      productControllerProvider
-                                                          .setflagZeroLoading(
-                                                              true);
-                                                      DateModel flagZeroDate =
-                                                          DateModel(
-                                                              id: product.id,
-                                                              date:
-                                                                  "${DateTime.now().day}-${DateTime.now().month}-${DateTime.now().year}",
-                                                              sellTag:
-                                                                  "Flag Zero",
-                                                              quantity: product
-                                                                      .availableQuantity ??
-                                                                  0);
-                                                      ProductModel setZeroFlag =
-                                                          ProductModel(
-                                                              id: product.id,
-                                                              time:
-                                                                  product.time,
-                                                              availableQuantity:
-                                                                  0,
-                                                              productName: product
-                                                                  .productName,
-                                                              skuCode: product
-                                                                  .skuCode,
-                                                              weight: product
-                                                                  .weight,
-                                                              packaging: product
-                                                                  .packaging,
-                                                              cost:
-                                                                  product.cost,
-                                                              wholesalePrice:
-                                                                  product
-                                                                      .wholesalePrice,
-                                                              mrp: product.mrp);
-                                                      productControllerProvider
-                                                          .flagZero(setZeroFlag,
-                                                              flagZeroDate);
-                                                    }),
-                                                FlexiableRectangularButton(
-                                                    title: "delete",
-                                                    width: 140,
-                                                    height: 40,
-                                                    loading:
+                                                            .flagZero(
+                                                                setZeroFlag,
+                                                                flagZeroDate);
+                                                      }),
+                                                  FlexiableRectangularButton(
+                                                      title: "delete",
+                                                      width: 140,
+                                                      height: 40,
+                                                      loading:
+                                                          productControllerProvider
+                                                              .deleteProductLoading,
+                                                      color: AppColor.brownRed,
+                                                      onPress: () {
                                                         productControllerProvider
-                                                            .deleteProductLoading,
-                                                    color: AppColor.brownRed,
-                                                    onPress: () {
-                                                      productControllerProvider
-                                                          .setDeleteProductLoading(
-                                                              true);
-                                                      productControllerProvider
-                                                          .deleteProduct(
-                                                              product.id);
-                                                    })
-                                              ],
+                                                            .setDeleteProductLoading(
+                                                                true);
+                                                        productControllerProvider
+                                                            .deleteProduct(
+                                                                product.id);
+                                                      })
+                                                ],
+                                              ),
                                             ),
-                                          ),
-                                        );
+                                          );
+                                        });
                                       });
-                                    });
-                              },
-                              onTap: () {
-                                showDateSheet(product);
-                              },
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 3),
-                                margin: const EdgeInsets.only(top: 15),
-                                decoration: BoxDecoration(
-                                    border: Border.all(),
-                                    color: product.availableQuantity! > 0
-                                        ? Theme.of(context)
-                                            .colorScheme
-                                            .secondary
-                                        : Colors.red.shade100,
-                                    borderRadius: BorderRadius.circular(8)),
+                                },
+                                onTap: () {
+                                  showDateSheet(product);
+                                },
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   mainAxisAlignment:
@@ -821,6 +830,7 @@ class _StockRecordScreenState extends State<StockRecordScreen>
           final dateCollectionDetails = dateCollection
               .doc(productData.id)
               .collection("stockDateList")
+              .orderBy("date", descending: true)
               .snapshots();
 
           return Column(

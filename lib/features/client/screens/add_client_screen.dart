@@ -5,8 +5,8 @@ import 'package:girdhari/features/client/controller/client_controller.dart';
 import 'package:girdhari/features/client/model/client_model.dart';
 import 'package:girdhari/features/dashboard_screen.dart';
 import 'package:girdhari/utils/utils.dart';
-import 'package:girdhari/widgets/flexiable_rectangular_button.dart';
-import 'package:girdhari/widgets/k_text_form_field.dart';
+import 'package:girdhari/widgets/common/flexiable_rectangular_button.dart';
+import 'package:girdhari/widgets/common/k_text_form_field.dart';
 import 'package:girdhari/resource/app_color.dart';
 import 'package:girdhari/resource/k_text_style.dart';
 import 'package:uuid/uuid.dart';
@@ -100,16 +100,16 @@ class _AddClientScreenState extends State<AddClientScreen> {
                 KTextFormField(
                     validator: (value) {
                       if (phoneNumberController.text.isEmpty) {
-                        return "enter phone number";
+                        return "Enter phone number";
                       }
                       return null;
                     },
                     controller: phoneNumberController,
-                    hintText: "phone Number"),
+                    hintText: "Phone Number"),
                 KTextFormField(
                     validator: (value) {
                       if (addressController.text.isEmpty) {
-                        return "enter adress";
+                        return "Enter address";
                       }
                       return null;
                     },
