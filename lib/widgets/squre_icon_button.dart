@@ -5,7 +5,7 @@ class SqureIconButton extends StatelessWidget {
   final Color color;
   final VoidCallback onPress;
 
-   SqureIconButton(
+   const SqureIconButton(
       {super.key,
       required this.icon,
       required this.color,
