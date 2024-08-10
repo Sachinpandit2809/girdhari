@@ -127,14 +127,15 @@ class _OrdersDetailsScreenState extends State<OrdersDetailsScreen> {
                     child: ListView.builder(
                         itemCount: modifyBillProduct.modifiedProductList.length,
                         itemBuilder: (context, index) {
+                          
                           return InkWell(
                             onTap: () {
-                              // if(widget.orderProductList[index].availableQuantity! -int.parse (qtyController.text)<0){
-                              //                     Utils().toastErrorMessage(
-                              //                         "Not sufficient stock Only ${widget.orderProductList[index].availableQuantity}");
-                              //                     Get.back();
-                              //                     return;
-                              //                   }
+                              if(widget.orderProductList[index].availableQuantity! -int.parse (qtyController.text)<0){
+                                                  Utils().toastErrorMessage(
+                                                      "Not sufficient stock Only ${widget.orderProductList[index].availableQuantity}");
+                                                  Get.back();
+                                                  return;
+                                                }
 
                               if (modifyBillProduct.orderModel.status.name ==
                                   'Completed') {
@@ -354,6 +355,8 @@ class _OrdersDetailsScreenState extends State<OrdersDetailsScreen> {
                           color: AppColor.brown,
                           loading: modifyBillProduct.isLoading,
                           onPress: () {
+  
+
                             if (modifyBillProduct.orderModel.status.name ==
                                 'Completed') {
                               Utils().toastErrorMessage(
@@ -364,6 +367,8 @@ class _OrdersDetailsScreenState extends State<OrdersDetailsScreen> {
                             modifyBillProduct.setLoading(true);
                             modifyBillProduct.uploadBillToFireBase(context);
                           }),
+//////////////////////////////////  printer button  /////////////////////////////
+
                       SqureIconButton(
                           icon: const Icon(Icons.print, color: AppColor.white),
                           color: AppColor.brown,
@@ -372,6 +377,7 @@ class _OrdersDetailsScreenState extends State<OrdersDetailsScreen> {
                                 modifyBillProduct.clientModel.toString());
                             debugPrint(modifyBillProduct.modifiedProductList
                                 .toString());
+                                // this is printer myHomePage 
                             Get.to(() => const MyHomePage());
                            
                           })
