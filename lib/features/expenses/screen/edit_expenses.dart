@@ -8,8 +8,8 @@ import 'package:girdhari/features/expenses/model/expenses_model.dart';
 import 'package:girdhari/resource/app_color.dart';
 import 'package:girdhari/resource/k_text_style.dart';
 import 'package:girdhari/utils/utils.dart';
-import 'package:girdhari/widgets/flexiable_rectangular_button.dart';
-import 'package:girdhari/widgets/k_text_form_field.dart';
+import 'package:girdhari/widgets/common/flexiable_rectangular_button.dart';
+import 'package:girdhari/widgets/common/k_text_form_field.dart';
 import 'package:provider/provider.dart';
 
 class EditExpenses extends StatefulWidget {
@@ -125,7 +125,7 @@ class _EditExpensesState extends State<EditExpenses> {
                     KTextFormField(
                         validator: (value) {
                           if (expenseTitleController.text.isEmpty) {
-                            return "enter expenses title";
+                            return "Enter expenses title";
                           }
                           return null;
                         },

@@ -41,47 +41,46 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBbjJ4t5xlVrqO0qafkMOS30g2YhzbtRqk',
-    appId: '1:909193162517:android:3c159d9c6145f1860e831c',
-    messagingSenderId: '909193162517',
-    projectId: 'girdharidb',
-    storageBucket: 'girdharidb.appspot.com',
+    apiKey: 'AIzaSyBkaRnP3uYye2lr4KPJQW-eddfaC8tH6J4',
+    appId: '1:99387092651:android:b18ad09d2b68ec50b551ee',
+    messagingSenderId: '99387092651',
+    projectId: 'girdharipos',
+    storageBucket: 'girdharipos.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBuCY7d8ABhR2yp09daqvIipoMLQ6S5Tcc',
-    appId: '1:909193162517:ios:b1f05a39c25b08490e831c',
-    messagingSenderId: '909193162517',
-    projectId: 'girdharidb',
-    storageBucket: 'girdharidb.appspot.com',
+    apiKey: 'AIzaSyCYKPvQJnH3UkkOJDqyrDQnmirY6F1DylE',
+    appId: '1:99387092651:ios:e93b824f60b92477b551ee',
+    messagingSenderId: '99387092651',
+    projectId: 'girdharipos',
+    storageBucket: 'girdharipos.appspot.com',
     iosBundleId: 'com.example.girdhari',
   );
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyCksLRNtaSvq8K7CkL9zRNcAGgaav3BjhI',
-    appId: '1:909193162517:web:8f22774f543787f30e831c',
-    messagingSenderId: '909193162517',
-    projectId: 'girdharidb',
-    authDomain: 'girdharidb.firebaseapp.com',
-    storageBucket: 'girdharidb.appspot.com',
+    apiKey: 'AIzaSyBfZckq1J32XakCWtTvox7yomG359ZO364',
+    appId: '1:99387092651:web:e4ad74448ac9a947b551ee',
+    messagingSenderId: '99387092651',
+    projectId: 'girdharipos',
+    authDomain: 'girdharipos.firebaseapp.com',
+    storageBucket: 'girdharipos.appspot.com',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyBuCY7d8ABhR2yp09daqvIipoMLQ6S5Tcc',
-    appId: '1:909193162517:ios:b1f05a39c25b08490e831c',
-    messagingSenderId: '909193162517',
-    projectId: 'girdharidb',
-    storageBucket: 'girdharidb.appspot.com',
+    apiKey: 'AIzaSyCYKPvQJnH3UkkOJDqyrDQnmirY6F1DylE',
+    appId: '1:99387092651:ios:e93b824f60b92477b551ee',
+    messagingSenderId: '99387092651',
+    projectId: 'girdharipos',
+    storageBucket: 'girdharipos.appspot.com',
     iosBundleId: 'com.example.girdhari',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyCksLRNtaSvq8K7CkL9zRNcAGgaav3BjhI',
-    appId: '1:909193162517:web:1401424e7e9cf9cc0e831c',
-    messagingSenderId: '909193162517',
-    projectId: 'girdharidb',
-    authDomain: 'girdharidb.firebaseapp.com',
-    storageBucket: 'girdharidb.appspot.com',
+    apiKey: 'AIzaSyBfZckq1J32XakCWtTvox7yomG359ZO364',
+    appId: '1:99387092651:web:427db9959078ad02b551ee',
+    messagingSenderId: '99387092651',
+    projectId: 'girdharipos',
+    authDomain: 'girdharipos.firebaseapp.com',
+    storageBucket: 'girdharipos.appspot.com',
   );
-
 }
