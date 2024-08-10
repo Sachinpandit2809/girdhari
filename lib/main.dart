@@ -35,13 +35,15 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => OrderProvider()),
         ChangeNotifierProvider(create: (_) => SelectedProductProvider()),
         ChangeNotifierProvider(create: (_) => ModifyBillProduct()),
-        ChangeNotifierProvider(create: (_)=>ClientProviderController()),
-        ChangeNotifierProvider(create: (_) => ProductControllerProvider()), 
-        StreamProvider<List<ExpensesModel>>(create: (_) => ExpensesProvider().fetchExpenses(), initialData: const []),
+        ChangeNotifierProvider(create: (_) => ClientProviderController()),
+        ChangeNotifierProvider(create: (_) => ProductControllerProvider()),
+        StreamProvider<List<ExpensesModel>>(
+            create: (_) => ExpensesProvider().fetchExpenses(),
+            initialData: const []),
       ],
       child: Builder(builder: (BuildContext context) {
         return GetMaterialApp(
-            title: 'Girdhari-pos',
+            title: 'Girdhari',
             debugShowCheckedModeBanner: false,
             theme: lightTheme,
             darkTheme: darkTheme,
