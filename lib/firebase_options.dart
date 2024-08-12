@@ -42,7 +42,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyBkaRnP3uYye2lr4KPJQW-eddfaC8tH6J4',
-    appId: '1:99387092651:android:b18ad09d2b68ec50b551ee',
+    appId: '1:99387092651:android:1cc0ae1f7b4bffc0b551ee',
     messagingSenderId: '99387092651',
     projectId: 'girdharipos',
     storageBucket: 'girdharipos.appspot.com',
@@ -83,4 +83,5 @@ class DefaultFirebaseOptions {
     authDomain: 'girdharipos.firebaseapp.com',
     storageBucket: 'girdharipos.appspot.com',
   );
+
 }

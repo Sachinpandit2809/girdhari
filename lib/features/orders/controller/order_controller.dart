@@ -15,10 +15,10 @@ class OrderController {
             "////////////////////////////////////Failed to add order: $error"));
   }
 
-  Future<void> deleteOrder(String id) {
+  Future<void> deleteOrder(OrderModel order) {
     return orderCollection
-        .doc(id)
-        .delete()
+        .doc(order.id)
+        .update(order.toJson())
         .then((value) =>
             debugPrint("...............................order deleted"))
         .catchError((error) => debugPrint(

@@ -63,7 +63,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title:  Text(
           "Edit Product",
           style: KTextStyle.K_20,
         ),
@@ -78,8 +78,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
+                   Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 15, 0, 15),
                     child: Text(
                       "Enter details",
                       style: KTextStyle.K_14,
@@ -164,6 +164,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                 .setEditproductLoading(true);
                             ProductModel product = ProductModel(
                               id: widget.product.id,
+                            totalPrice:double.parse(wholesalePriceController.text) ,
+
                               time: widget.product.time,
                               availableQuantity:
                                   widget.product.availableQuantity,

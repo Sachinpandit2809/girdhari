@@ -54,7 +54,7 @@ class ExpenseCard extends StatelessWidget {
               });
         },
         onTap: () {
-          debugPrint("....................triggred");
+        
 
           Get.to(() => EditExpenses(expenseData: expense));
         },

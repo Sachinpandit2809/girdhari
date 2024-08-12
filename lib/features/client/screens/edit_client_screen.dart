@@ -87,7 +87,7 @@ class _EditClientScreenState extends State<EditClientScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title:  Text(
           "Edit Client",
           style: KTextStyle.K_20,
         ),
@@ -100,8 +100,8 @@ class _EditClientScreenState extends State<EditClientScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Padding(
-                  padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
+                 Padding(
+                  padding:const EdgeInsets.fromLTRB(0, 15, 0, 15),
                   child: Text(
                     "Enter details",
                     style: KTextStyle.K_14,

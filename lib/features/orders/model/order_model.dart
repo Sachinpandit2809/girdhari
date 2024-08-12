@@ -58,16 +58,17 @@ class OrderModel {
   ClientModel client;
   List<BillingProductModel> orderList;
   DateTime date;
+  bool is_deleted;
 
   double totalAmount = 0.0;
 
   OrderModel(
-      {
-      required this.id,
-       this.status = OrderStatus.pending,
+      {required this.id,
+      this.status = OrderStatus.pending,
       required this.client,
       required this.orderList,
-      required this.date})  {  
+      this.is_deleted = false,
+      required this.date}) {
     calculateTotalAmount();
   }
 
@@ -90,6 +91,7 @@ class OrderModel {
       orderList: (json['orderList'] as List)
           .map((e) => BillingProductModel.fromJson(e))
           .toList(),
+      is_deleted: json['is_deleted'],
       date: DateTime.parse(json['date']),
     );
   }
@@ -110,18 +112,15 @@ class OrderModel {
     );
   }
 
-
-
-  Map<String , dynamic> toJson() {
+  Map<String, dynamic> toJson() {
     return {
       'id': id,
       'status': status.name,
       'client': client.toJson(),
       'orderList': orderList.map((e) => e.toJson()).toList(),
       'date': date.toIso8601String(),
-      'totalAmount': totalAmount
+      'totalAmount': totalAmount,
+      'is_deleted': is_deleted
     };
   }
-
-  
 }

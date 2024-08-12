@@ -7,7 +7,7 @@ import 'package:girdhari/features/client/screens/client_screen.dart';
 import 'package:girdhari/features/orders/screens/orders_screen.dart';
 import 'package:girdhari/features/product/screens/stock_record_screen.dart';
 import 'package:girdhari/resource/k_text_style.dart';
-import 'package:girdhari/widgets/flexiable_rectangular_button.dart';
+import 'package:girdhari/widgets/common/flexiable_rectangular_button.dart';
 
 class DashBoardScreen extends StatefulWidget {
   const DashBoardScreen({super.key});
@@ -25,8 +25,8 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
     StockRecordScreen(),
     //second bottom bar
     ClientScreen(),
-    //third dcreen
-    BillingScreen(),
+    // //third dcreen
+    // BillingScreen(),
     //fourth bottom bar
     OrdersScreen(),
     //fifth screen bar
@@ -48,7 +48,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
           builder: (context) {
             return AlertDialog(
               title: const Text("exit app"),
-              content: const Text(
+              content:  Text(
                 "do you want to exit?",
                 style: KTextStyle.K_15,
               ),
@@ -68,7 +68,6 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                     color: AppColor.brown,
                     onPress: () {
                       SystemNavigator.pop();
-                      
                     })
               ],
             );
@@ -96,10 +95,10 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
               icon: Icon(Icons.person_outlined),
               label: '',
             ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.currency_rupee),
-              label: '',
-            ),
+            // BottomNavigationBarItem(
+            //   icon: Icon(Icons.currency_rupee),
+            //   label: '',
+            // ),
             BottomNavigationBarItem(
               icon: Icon(Icons.settings),
               label: '',

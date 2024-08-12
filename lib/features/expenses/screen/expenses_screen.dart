@@ -67,7 +67,7 @@ class _ExpensesScreenState extends State<ExpensesScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title:  Text(
           "Expenses",
           style: KTextStyle.K_20,
         ),
@@ -116,12 +116,13 @@ class _ExpensesScreenState extends State<ExpensesScreen>
                                   return ExpenseCard(
                                       expense: expense,
                                       expenseProvider: expenseProvider);
-                                } else
-                                  return SizedBox();
+                                } else {
+                                  return const SizedBox();
+                                }
                               }),
                         );
 
-                  ;
+                  
                 },
               )
             ],

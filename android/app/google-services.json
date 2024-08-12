@@ -7,6 +7,25 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:99387092651:android:1cc0ae1f7b4bffc0b551ee",
+        "android_client_info": {
+          "package_name": "com.example.girdhari"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBkaRnP3uYye2lr4KPJQW-eddfaC8tH6J4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:99387092651:android:b18ad09d2b68ec50b551ee",
         "android_client_info": {
           "package_name": "com.girdhari.pos"

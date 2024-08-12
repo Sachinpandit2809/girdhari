@@ -8,7 +8,6 @@ import 'package:girdhari/features/product/model/add_product_model.dart';
 import 'package:girdhari/features/product/model/date_model.dart';
 import 'package:girdhari/utils/utils.dart';
 
-
 class ProductControllerProvider with ChangeNotifier {
   bool _addproductLoading = false;
   bool _editproductLoading = false;
@@ -63,23 +62,11 @@ class ProductControllerProvider with ChangeNotifier {
     });
   }
 
-  void flagZero(ProductModel product,DateModel flagZero) async {
+  void softDelete(ProductModel product, DateModel flagZero) async {
     await ProductController().editProduct(product).then((value) {
-      setflagZeroLoading(false);
-      Utils().toastSuccessMessage('Product Edited Successfully!');
-      ProductDateController().addProductDate(flagZero);
-      Get.back();
-    }).catchError((error) {
-      setflagZeroLoading(false);
-      Get.back();
-      Utils().toastErrorMessage('Failed to Edit Product!');
-    });
-  }
-
-  void deleteProduct(String product) async {
-    await ProductController().deleteProduct(product).then((value) {
       setDeleteProductLoading(false);
       Utils().toastSuccessMessage('Product Deleted Successfully!');
+      ProductDateController().addProductDate(flagZero);
       Get.back();
     }).catchError((error) {
       setDeleteProductLoading(false);
@@ -87,4 +74,16 @@ class ProductControllerProvider with ChangeNotifier {
       Utils().toastErrorMessage('Failed to Delete Product!');
     });
   }
+
+  // void deleteProduct(String product) async {
+  //   await ProductController().deleteProduct(product).then((value) {
+  //     setDeleteProductLoading(false);
+  //     Utils().toastSuccessMessage('Product Deleted Successfully!');
+  //     Get.back();
+  //   }).catchError((error) {
+  //     setDeleteProductLoading(false);
+  //     Get.back();
+  //     Utils().toastErrorMessage('Failed to Delete Product!');
+  //   });
+  // }
 }

@@ -54,9 +54,12 @@ class _AddClientScreenState extends State<AddClientScreen> {
         loading = false;
       });
       Utils().toastSuccessMessage("Client added SucCesfully!");
-      Get.to(const DashBoardScreen());
+      Get.back();
+      // Get.to(const DashBoardScreen());
     }).onError(
       (error, stackTrace) {
+        Get.back();
+
         Utils().toastErrorMessage(" Failed to Add Client!");
       },
     );
@@ -68,7 +71,7 @@ class _AddClientScreenState extends State<AddClientScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           "Add Client",
           style: KTextStyle.K_20,
         ),
@@ -81,8 +84,8 @@ class _AddClientScreenState extends State<AddClientScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Padding(
-                  padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 15, 0, 15),
                   child: Text(
                     "Enter details",
                     style: KTextStyle.K_14,

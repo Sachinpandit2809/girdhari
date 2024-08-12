@@ -12,6 +12,8 @@ import 'package:girdhari/features/product/model/date_model.dart';
 import 'package:girdhari/features/product/provider/product_controller_provider.dart';
 import 'package:girdhari/features/product/provider/remove_stock_provider.dart';
 import 'package:girdhari/features/product/screens/edit_product_screen.dart';
+import 'package:girdhari/printer/lib/formatter.dart';
+import 'package:girdhari/theme/theme_changer_screen.dart';
 import 'package:girdhari/utils/utils.dart';
 
 import 'package:girdhari/widgets/common/flexiable_rectangular_button.dart';
@@ -23,6 +25,7 @@ import 'package:girdhari/widgets/common/stock_show_date_sheet.dart';
 import 'package:girdhari/resource/app_color.dart';
 import 'package:girdhari/resource/k_text_style.dart';
 import 'package:girdhari/features/product/screens/add_product_screen.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -79,10 +82,17 @@ class _StockRecordScreenState extends State<StockRecordScreen>
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Text(
-          "Stock Report",
-          style: KTextStyle.K_20,
-        ),
+        title: Text("Stock Report", style: KTextStyle.K_20),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 18.0),
+            child: IconButton(
+                onPressed: () {
+                  Get.to(() => const ThemeChangerScreen());
+                },
+                icon: const Icon(Icons.more_vert_rounded)),
+          )
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -137,7 +147,10 @@ class _StockRecordScreenState extends State<StockRecordScreen>
                                   vertical: 10, horizontal: 3),
                               margin: const EdgeInsets.only(top: 15),
                               decoration: BoxDecoration(
-                                  border: Border.all(),
+                                  border: Border.all(
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                  ),
                                   color: product.availableQuantity! > 0
                                       ? Theme.of(context).colorScheme.secondary
                                       : Colors.red.shade100,
@@ -162,6 +175,8 @@ class _StockRecordScreenState extends State<StockRecordScreen>
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.center,
                                                 children: [
+                                                  const Text(
+                                                      "Do you want to edit product?"),
                                                   FlexiableRectangularButton(
                                                       title: "edit Product",
                                                       width: 140,
@@ -176,36 +191,48 @@ class _StockRecordScreenState extends State<StockRecordScreen>
                                                                 product:
                                                                     product));
                                                       }),
+                                                  const Divider(),
+                                                  const Text(
+                                                      "Do you want to delete product?"),
                                                   FlexiableRectangularButton(
-                                                      title: "flag Zero",
+                                                      title: 'delete',
                                                       width: 140,
                                                       height: 40,
                                                       loading:
                                                           productControllerProvider
-                                                              .flagZeroLoading,
-                                                      color: AppColor.yellow,
+                                                              .deleteProductLoading,
+                                                      color: AppColor.brownRed,
                                                       onPress: () {
                                                         productControllerProvider
-                                                            .setflagZeroLoading(
+                                                            .setDeleteProductLoading(
                                                                 true);
-                                                        DateModel flagZeroDate =
+                                                        DateModel
+                                                            softDeleteDate =
                                                             DateModel(
                                                                 id: product.id,
-                                                                date:
-                                                                    "${DateTime.now().day}-${DateTime.now().month}-${DateTime.now().year}",
+                                                                date: DateTime
+                                                                        .now()
+                                                                    .toIso8601String(),
                                                                 sellTag:
-                                                                    "Flag Zero",
+                                                                    "deleted",
                                                                 quantity: product
                                                                         .availableQuantity ??
                                                                     0);
-                                                        ProductModel
-                                                            setZeroFlag =
+                                                        ProductModel softDelete =
                                                             ProductModel(
+                                                                totalPrice: product
+                                                                    .wholesalePrice,
                                                                 id: product.id,
                                                                 time: product
                                                                     .time,
+                                                                is_deleted:
+                                                                    true,
+                                                                // if we need  to send current quantity
                                                                 availableQuantity:
-                                                                    0,
+                                                                    product
+                                                                        .availableQuantity,
+                                                                // availableQuantity:
+                                                                //     0,
                                                                 productName: product
                                                                     .productName,
                                                                 skuCode: product
@@ -222,26 +249,10 @@ class _StockRecordScreenState extends State<StockRecordScreen>
                                                                 mrp: product
                                                                     .mrp);
                                                         productControllerProvider
-                                                            .flagZero(
-                                                                setZeroFlag,
-                                                                flagZeroDate);
+                                                            .softDelete(
+                                                                softDelete,
+                                                                softDeleteDate);
                                                       }),
-                                                  FlexiableRectangularButton(
-                                                      title: "delete",
-                                                      width: 140,
-                                                      height: 40,
-                                                      loading:
-                                                          productControllerProvider
-                                                              .deleteProductLoading,
-                                                      color: AppColor.brownRed,
-                                                      onPress: () {
-                                                        productControllerProvider
-                                                            .setDeleteProductLoading(
-                                                                true);
-                                                        productControllerProvider
-                                                            .deleteProduct(
-                                                                product.id);
-                                                      })
                                                 ],
                                               ),
                                             ),
@@ -315,124 +326,127 @@ class _StockRecordScreenState extends State<StockRecordScreen>
                               .toLowerCase()
                               .contains(
                                   searchProductController.text.toLowerCase())) {
-                            return InkWell(
-                              onTap: () {
-                                showDateSheet(product);
-                              },
-                              onLongPress: () {
-                                debugPrint("....................triggred");
-                                showDialog(
-                                    context: context,
-                                    builder: (context) {
-                                      return Consumer<
-                                              ProductControllerProvider>(
-                                          builder: (context,
-                                              productControllerProvider, _) {
-                                        return AlertDialog(
-                                          content: SizedBox(
-                                            height: 250,
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceEvenly,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                                FlexiableRectangularButton(
-                                                    title: "edit Product",
-                                                    width: 140,
-                                                    height: 40,
-                                                    loading:
+                            return Container(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 3),
+                              margin: const EdgeInsets.only(top: 15),
+                              decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                  ),
+                                  color: product.availableQuantity! > 0
+                                      ? Theme.of(context).colorScheme.secondary
+                                      : Colors.red.shade100,
+                                  borderRadius: BorderRadius.circular(8)),
+                              child: InkWell(
+                                onLongPress: () {
+                                  debugPrint("....................triggred");
+                                  showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return Consumer<
+                                                ProductControllerProvider>(
+                                            builder: (context,
+                                                productControllerProvider, _) {
+                                          return AlertDialog(
+                                            content: SizedBox(
+                                              height: 250,
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceEvenly,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  const Text(
+                                                      "Do you want to edit product?"),
+                                                  FlexiableRectangularButton(
+                                                      title: "edit Product",
+                                                      width: 140,
+                                                      height: 40,
+                                                      loading:
+                                                          productControllerProvider
+                                                              .editproductLoading,
+                                                      color: AppColor.green,
+                                                      onPress: () {
+                                                        Get.to(() =>
+                                                            EditProductScreen(
+                                                                product:
+                                                                    product));
+                                                      }),
+                                                  const Divider(),
+                                                  const Text(
+                                                      "Do you want to delete product?"),
+                                                  FlexiableRectangularButton(
+                                                      title: 'delete',
+                                                      width: 140,
+                                                      height: 40,
+                                                      loading:
+                                                          productControllerProvider
+                                                              .deleteProductLoading,
+                                                      color: AppColor.brownRed,
+                                                      onPress: () {
                                                         productControllerProvider
-                                                            .editproductLoading,
-                                                    color: AppColor.green,
-                                                    onPress: () {
-                                                      Get.to(() =>
-                                                          EditProductScreen(
-                                                              product:
-                                                                  product));
-                                                    }),
-                                                FlexiableRectangularButton(
-                                                    title: "flag Zero",
-                                                    width: 140,
-                                                    height: 40,
-                                                    loading:
+                                                            .setDeleteProductLoading(
+                                                                true);
+                                                        DateModel
+                                                            softDeleteDate =
+                                                            DateModel(
+                                                                id: product.id,
+                                                                date: DateTime
+                                                                        .now()
+                                                                    .toIso8601String(),
+                                                                sellTag:
+                                                                    "deleted",
+                                                                quantity: product
+                                                                        .availableQuantity ??
+                                                                    0);
+                                                        ProductModel softDelete =
+                                                            ProductModel(
+                                                                totalPrice: product
+                                                                    .wholesalePrice,
+                                                                id: product.id,
+                                                                time: product
+                                                                    .time,
+                                                                is_deleted:
+                                                                    true,
+                                                                // if we need  to send current quantity
+                                                                availableQuantity:
+                                                                    product
+                                                                        .availableQuantity,
+                                                                // availableQuantity:
+                                                                //     0,
+                                                                productName: product
+                                                                    .productName,
+                                                                skuCode: product
+                                                                    .skuCode,
+                                                                weight: product
+                                                                    .weight,
+                                                                packaging: product
+                                                                    .packaging,
+                                                                cost: product
+                                                                    .cost,
+                                                                wholesalePrice:
+                                                                    product
+                                                                        .wholesalePrice,
+                                                                mrp: product
+                                                                    .mrp);
                                                         productControllerProvider
-                                                            .flagZeroLoading,
-                                                    color: AppColor.yellow,
-                                                    onPress: () {
-                                                      productControllerProvider
-                                                          .setflagZeroLoading(
-                                                              true);
-                                                      DateModel flagZeroDate =
-                                                          DateModel(
-                                                              id: product.id,
-                                                              date:
-                                                                  "${DateTime.now().day}-${DateTime.now().month}-${DateTime.now().year}",
-                                                              sellTag:
-                                                                  "Flag Zero",
-                                                              quantity: product
-                                                                      .availableQuantity ??
-                                                                  0);
-                                                      ProductModel setZeroFlag =
-                                                          ProductModel(
-                                                              id: product.id,
-                                                              time:
-                                                                  product.time,
-                                                              availableQuantity:
-                                                                  0,
-                                                              productName: product
-                                                                  .productName,
-                                                              skuCode: product
-                                                                  .skuCode,
-                                                              weight: product
-                                                                  .weight,
-                                                              packaging: product
-                                                                  .packaging,
-                                                              cost:
-                                                                  product.cost,
-                                                              wholesalePrice:
-                                                                  product
-                                                                      .wholesalePrice,
-                                                              mrp: product.mrp);
-                                                      productControllerProvider
-                                                          .flagZero(setZeroFlag,
-                                                              flagZeroDate);
-                                                    }),
-                                                FlexiableRectangularButton(
-                                                    title: "delete",
-                                                    width: 140,
-                                                    height: 40,
-                                                    loading:
-                                                        productControllerProvider
-                                                            .deleteProductLoading,
-                                                    color: AppColor.brownRed,
-                                                    onPress: () {
-                                                      productControllerProvider
-                                                          .setDeleteProductLoading(
-                                                              true);
-                                                      productControllerProvider
-                                                          .deleteProduct(
-                                                              product.id);
-                                                    })
-                                              ],
+                                                            .softDelete(
+                                                                softDelete,
+                                                                softDeleteDate);
+                                                      }),
+                                                ],
+                                              ),
                                             ),
-                                          ),
-                                        );
+                                          );
+                                        });
                                       });
-                                    });
-                              },
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 3),
-                                margin: const EdgeInsets.only(top: 15),
-                                decoration: BoxDecoration(
-                                    border: Border.all(),
-                                    color: product.availableQuantity! > 0
-                                        ? Theme.of(context)
-                                            .colorScheme
-                                            .secondary
-                                        : Colors.red.shade100,
-                                    borderRadius: BorderRadius.circular(8)),
+                                },
+                                onTap: () {
+                                  showDateSheet(product);
+                                },
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   mainAxisAlignment:
@@ -543,7 +557,7 @@ class _StockRecordScreenState extends State<StockRecordScreen>
                         borderRadius: BorderRadius.all(Radius.circular(20)),
                         color: AppColor.yellowButton,
                       ),
-                      tabs: const <Widget>[
+                      tabs: <Widget>[
                         Text(
                           "Add",
                           style: KTextStyle.K_14,
@@ -591,8 +605,7 @@ class _StockRecordScreenState extends State<StockRecordScreen>
                                 int newAvailableQuantity =
                                     (data.availableQuantity ?? 0) + addQuantity;
                                 String id = data.id;
-                                String date =
-                                    "${DateTime.now().day}-${DateTime.now().month}-${DateTime.now().year}";
+                                String date = DateTime.now().toIso8601String();
                                 String sellTag = "created";
                                 int quantity = addQuantity;
                                 // Create a new DateModel instance with the updated
@@ -604,6 +617,7 @@ class _StockRecordScreenState extends State<StockRecordScreen>
 
                                 // Create a new ProductModel instance with the updated quantity
                                 ProductModel updatedProduct = ProductModel(
+                                  totalPrice: (data.wholesalePrice),
                                   id: data.id,
                                   time: data.time,
                                   availableQuantity: newAvailableQuantity,
@@ -633,10 +647,12 @@ class _StockRecordScreenState extends State<StockRecordScreen>
                                     .then((onValue) {
                                   Utils().toastSuccessMessage(
                                       "$addQuantity stock updated");
+                                  addQuantiyController.text = "";
                                 }).onError(
                                   (error, stackTrace) {
                                     Utils().toastErrorMessage(
                                         "error in Stock update");
+                                    addQuantiyController.text = "";
                                   },
                                 );
                                 Get.back();
@@ -763,8 +779,9 @@ class _StockRecordScreenState extends State<StockRecordScreen>
                                 //.....................
 
                                 String id = data.id;
-                                String date =
-                                    "${DateTime.now().day}-${DateTime.now().month}-${DateTime.now().year}";
+
+                                String date = DateTime.now().toIso8601String();
+
                                 final rem = Provider.of<RemoveStockProvider>(
                                     context,
                                     listen: false);
@@ -791,6 +808,7 @@ class _StockRecordScreenState extends State<StockRecordScreen>
                                 //......................
                                 // Create a new ProductModel instance with the updated quantity
                                 ProductModel updatedProduct = ProductModel(
+                                  totalPrice: data.wholesalePrice,
                                   id: data.id,
                                   time: data.time,
                                   availableQuantity: newAvailableQuantity,
@@ -857,8 +875,9 @@ class _StockRecordScreenState extends State<StockRecordScreen>
                           snapshot.data!.docs[index].data()
                               as Map<String, dynamic>);
 
+                      DateTime datef = DateTime.parse(date.date);
                       return StockShowDateSheet(
-                          date: date.date,
+                          date: DateFormat('dd-MM-yy').format(datef),
                           buttonTitle: date.sellTag,
                           count: date.quantity.toString());
                     },

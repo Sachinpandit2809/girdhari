@@ -5,6 +5,7 @@ class ClientModel {
   String address;
   String? referredBy;
   double? dueAmount;
+  bool is_deleted;
 
   ClientModel(
       {required this.id,
@@ -12,6 +13,7 @@ class ClientModel {
       required this.phoneNumber,
       required this.address,
       required this.referredBy,
+      this.is_deleted = false,
       this.dueAmount = 0.0});
 
   Map<String, dynamic> toJson() {
@@ -21,7 +23,8 @@ class ClientModel {
       'phoneNumber': phoneNumber,
       'address': address,
       'referredBy': referredBy,
-      'dueAmount': dueAmount
+      'dueAmount': dueAmount,
+      'is_deleted': is_deleted
     };
   }
 
@@ -33,5 +36,30 @@ class ClientModel {
         address: json['address'],
         referredBy: json['referredBy'],
         dueAmount: json['dueAmount']);
+  }
+}
+
+// class ClientPaymentModel {
+//   DateTime date;
+//   double amount;
+//   ClientPaymentModel({required this.amount, this.date = DateTime.now()});
+// }
+
+class ClientPaymentModel {
+  String paymentDate;
+  double paymentAmount;
+
+  ClientPaymentModel({
+    required this.paymentAmount,
+    required this.paymentDate,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {'paymentDate': paymentDate, 'paymentAmount': paymentAmount};
+  }
+
+  factory ClientPaymentModel.fromJson(Map<String, dynamic> json) {
+    return ClientPaymentModel(
+        paymentAmount: json['paymentAmount'], paymentDate: json['paymentDate']);
   }
 }

@@ -98,7 +98,7 @@ class _EditExpensesState extends State<EditExpenses> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title:  Text(
           "Edit Expenses",
           style: KTextStyle.K_20,
         ),

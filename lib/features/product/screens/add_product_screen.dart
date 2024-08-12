@@ -50,7 +50,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title:  Text(
           "Add Product",
           style: KTextStyle.K_20,
         ),
@@ -65,8 +65,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
+                   Padding(
+                    padding:const EdgeInsets.fromLTRB(0, 15, 0, 15),
                     child: Text(
                       "Enter details",
                       style: KTextStyle.K_14,
@@ -147,9 +147,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
                         if (_addProductFormKey.currentState!.validate()) {
                           productControllerProvider.setAddProductLoading(true);
                           String id = const Uuid().v4();
-                          String time =
-                              "${DateTime.now().day}-${DateTime.now().month}-${DateTime.now().year}";
+                          String time = DateTime.now().toIso8601String();
                           ProductModel product = ProductModel(
+                            totalPrice:double.parse(wholesalePriceController.text) ,
                             id: id,
                             time: time,
                             availableQuantity: 0,

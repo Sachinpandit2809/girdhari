@@ -29,13 +29,13 @@ class ClientController {
             "////////////////////////////////////Failed to add client: $error"));
   }
 
-  Future<void> deleteClient(String id) {
-    return clientsCollection
-        .doc(id)
-        .delete()
-        .then((value) =>
-            debugPrint("...............................client deleted"))
-        .catchError((error) => debugPrint(
-            "////////////////////////////////////Failed to deleted client: $error"));
-  }
+  // Future<void> deleteClient(String id) {
+  //   return clientsCollection
+  //       .doc(id)
+  //       .delete()
+  //       .then((value) =>
+  //           debugPrint("...............................client deleted"))
+  //       .catchError((error) => debugPrint(
+  //           "////////////////////////////////////Failed to deleted client: $error"));
+  // }
 }

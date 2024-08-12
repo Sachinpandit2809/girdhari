@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:girdhari/features/client/model/client_model.dart';
@@ -39,14 +40,16 @@ class OrderProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void deleteOrder(String id) {
-    OrderController().deleteOrder(id).then((onValue) {
+  void deleteOrder(OrderModel order) {
+    OrderController().deleteOrder(order).then((onValue) {
       Utils().toastSuccessMessage("order has been deleted");
+      setDelLoading(false);
       Get.back();
     }).onError(
       (error, stackTrace) {
         Utils().toastSuccessMessage("order has been deleted");
         Get.back();
+        setDelLoading(false);
       },
     );
   }
@@ -202,7 +205,7 @@ class ModifyBillProduct with ChangeNotifier {
     }
   }
 
-// seted the value of the order details
+// seted the value of the order details for order Screen
   void setModifiedProductList(OrderModel order) {
     _modifiedProductList = order.orderList;
     _clientModel = order.client;
@@ -214,11 +217,24 @@ class ModifyBillProduct with ChangeNotifier {
   void updateInMainProduct() async {
     // final ref = FirebaseFirestore.instance.collection("productStock");
     for (BillingProductModel product in _modifiedProductList) {
-      await ProductController().editProduct(product);
-      DateModel dateModel = DateModel(
+      ProductModel newProduct = ProductModel(
+          totalPrice: product.wholesalePrice,
           id: product.id,
-          date:
-              '${DateTime.now().day}-${DateTime.now().month}-${DateTime.now().year}',
+          time: product.time,
+          availableQuantity:
+              product.availableQuantity! - product.selectedQuantity,
+          productName: product.productName,
+          skuCode: product.skuCode,
+          weight: product.weight,
+          packaging: product.packaging,
+          cost: product.cost,
+          wholesalePrice: product.wholesalePrice,
+          mrp: product.mrp);
+
+      await ProductController().editProduct(newProduct);
+      DateModel dateModel = DateModel(
+          id: newProduct.id,
+          date: DateTime.now().toIso8601String(),
           sellTag: "Retail",
           quantity: product.selectedQuantity);
       await ProductDateController().addProductDate(dateModel);
@@ -234,6 +250,12 @@ class ModifyBillProduct with ChangeNotifier {
         client: _clientModel,
         orderList: _modifiedProductList,
         date: time);
+// this is the section for uploading the bill in ClientStore
+    FirebaseFirestore.instance
+        .collection('clientStore')
+        .doc(orderModel.client.id)
+        .collection("clientOrders")
+        .add(billing.toJson());
 
     BillController().addBill(billing).then((onValue) {
       orderModel.status = OrderStatus.completed;
