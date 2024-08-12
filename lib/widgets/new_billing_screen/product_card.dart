@@ -59,9 +59,9 @@ class ProductCard extends StatelessWidget {
                       title: product.packaging, color: AppColor.skyBlueButton),
                   RectangularButton(
                       title: product.weight, color: AppColor.yellowButton),
-                  SmallSquareButton(
-                      title: product.wholesalePrice.toString(),
-                      color: AppColor.yellow),
+                  // SmallSquareButton(
+                  //     title: product.wholesalePrice.toString(),
+                  //     color: AppColor.yellow),
                   SmallSquareButton(
                       title: product.availableQuantity.toString(),
                       color: AppColor.green),
