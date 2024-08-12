@@ -42,6 +42,7 @@ class _PasswordScreenState extends State<PasswordScreen> {
             }
             var lock = snapshot.data!.docs.first['password'];
             debugPrint(
+                // ignore: prefer_interpolation_to_compose_strings
                 ".............." + snapshot.data!.docs.first['password']);
 
             return Center(
@@ -79,7 +80,7 @@ class _PasswordScreenState extends State<PasswordScreen> {
                         ),
                         Consumer<AppPasswordController>(
                             builder: (context, appPasswordController, _) {
-                          return FlexiableRectangularButton(
+                          return ConfermRectangularButton(
                               title: "varify",
                               width: 200,
                               height: 40,
@@ -96,17 +97,20 @@ class _PasswordScreenState extends State<PasswordScreen> {
                                     Get.to(() => const DashBoardScreen());
                                     // appPasswordController
                                     //     .setAppPasswordLoading(false);
+                                    lockController.text = '';
                                     setState(() {
                                       loading = false;
                                     });
                                   } else {
+                                    setState(() {
+                                      loading = false;
+                                    });
+                                    lockController.text = '';
+
                                     Utils().toastErrorMessage(
                                         " please enter correct password");
                                     // appPasswordController
                                     //     .setAppPasswordLoading(false);
-                                    setState(() {
-                                      loading = false;
-                                    });
                                   }
                                 }
                               });

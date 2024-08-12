@@ -108,7 +108,7 @@ class ProductCard extends StatelessWidget {
                                           keyBoard: TextInputType.number,
                                           hintText: "Enter new quantity"),
                                       FlexiableRectangularButton(
-                                        title: "CHANGE",
+                                        title: "ADD",
                                         width: 120,
                                         height: 44,
                                         // loading: loading,
@@ -128,8 +128,8 @@ class ProductCard extends StatelessWidget {
                                                   double.parse(
                                                       wholesellPriceController
                                                           .text);
-                                          debugPrint("changed price " +
-                                              changedPrice.toString());
+                                          debugPrint(
+                                              "changed price $changedPrice");
                                           BillingProductModel addProduct =
                                               BillingProductModel(
                                                   totalPrice: changedPrice,

@@ -71,6 +71,13 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   //////////////////////////////// search client ////////////////////////////////////
+                  Text(
+                    "click button for select Client",
+                    style: KTextStyle.K_16,
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
                   FlexiableRectangularButton(
                       title: "search client",
                       width: 200,
@@ -160,6 +167,13 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
                   ////////////////////////////////// SEARCH PRODUCT ////////////////////////////////
                   const SizedBox(
                     height: 20,
+                  ),
+                  Text(
+                    "click button for select Products",
+                    style: KTextStyle.K_16,
+                  ),
+                  const SizedBox(
+                    height: 5,
                   ),
                   FlexiableRectangularButton(
                       title: "search product",
