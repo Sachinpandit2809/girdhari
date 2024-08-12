@@ -20,6 +20,7 @@ class PasswordScreen extends StatefulWidget {
 class _PasswordScreenState extends State<PasswordScreen> {
   TextEditingController lockController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  bool loading = false;
   @override
   void dispose() {
     // TODO: implement dispose
@@ -83,20 +84,29 @@ class _PasswordScreenState extends State<PasswordScreen> {
                               width: 200,
                               height: 40,
                               color: AppColor.brown,
-                              loading: appPasswordController.appPasswordLoading,
+                              loading: loading,
                               onPress: () {
                                 if (_formKey.currentState!.validate()) {
-                                  appPasswordController
-                                      .setAppPasswordLoading(true);
+                                  // appPasswordController
+                                  //     .setAppPasswordLoading(true);
+                                  setState(() {
+                                    loading = true;
+                                  });
                                   if (lock == lockController.text) {
                                     Get.to(() => const DashBoardScreen());
-                                    appPasswordController
-                                        .setAppPasswordLoading(false);
+                                    // appPasswordController
+                                    //     .setAppPasswordLoading(false);
+                                    setState(() {
+                                      loading = false;
+                                    });
                                   } else {
                                     Utils().toastErrorMessage(
                                         " please enter correct password");
-                                    appPasswordController
-                                        .setAppPasswordLoading(false);
+                                    // appPasswordController
+                                    //     .setAppPasswordLoading(false);
+                                    setState(() {
+                                      loading = false;
+                                    });
                                   }
                                 }
                               });

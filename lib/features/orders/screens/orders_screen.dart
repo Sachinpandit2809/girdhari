@@ -4,9 +4,9 @@ import 'package:get/get_core/get_core.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:girdhari/features/orders/controller/order_provider.dart';
 import 'package:girdhari/features/orders/model/order_model.dart';
-import 'package:girdhari/features/orders/screens/billing_screen.dart';
 import 'package:girdhari/features/orders/screens/new_billing_screen.dart';
 import 'package:girdhari/features/orders/screens/orders_details_screen.dart';
+import 'package:girdhari/theme/theme_changer_screen.dart';
 import 'package:girdhari/utils/utils.dart';
 import 'package:girdhari/widgets/common/flexiable_rectangular_button.dart';
 
@@ -48,15 +48,16 @@ class _OrdersScreenState extends State<OrdersScreen> {
           "Order",
           style: KTextStyle.K_20,
         ),
-        // actions: [
-        //   FlexiableRectangularButton(
-        //       title: "\u{20B9} 5,00,00",
-        //       textColor: Colors.black,
-        //       width: 130,
-        //       height: 30,
-        //       color: AppColor.skyBlueButton,
-        //       onPress: () {})
-        // ],
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 10.0),
+            child: IconButton(
+                onPressed: () {
+                  Get.to(() => const ThemeChangerScreen());
+                },
+                icon: const Icon(Icons.more_vert_rounded)),
+          )
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

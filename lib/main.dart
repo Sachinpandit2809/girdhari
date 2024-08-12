@@ -57,7 +57,7 @@ class MyApp extends StatelessWidget {
             theme: lightTheme,
             darkTheme: darkTheme,
             themeMode: themeChanger.themeMode,
-            home: const PasswordScreen());
+            home: const SplashScreen());
       }),
     );
   }

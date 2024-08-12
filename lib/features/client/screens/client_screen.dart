@@ -5,6 +5,7 @@ import 'package:get/get_core/get_core.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:girdhari/features/client/controller/client_provider_controller.dart';
 import 'package:girdhari/features/client/model/client_model.dart';
+import 'package:girdhari/theme/theme_changer_screen.dart';
 import 'package:girdhari/utils/utils.dart';
 import 'package:girdhari/widgets/client_screen/client_screen_widgets.dart';
 
@@ -41,10 +42,20 @@ class _ClientScreenState extends State<ClientScreen> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title:  Text(
+        title: Text(
           "Client ",
           style: KTextStyle.K_20,
         ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 10.0),
+            child: IconButton(
+                onPressed: () {
+                  Get.to(() => const ThemeChangerScreen());
+                },
+                icon: const Icon(Icons.more_vert_rounded)),
+          )
+        ],
       ),
       body: Consumer<ClientProviderController>(
           builder: (context, clientProviderController, _) {

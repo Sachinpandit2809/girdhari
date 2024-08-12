@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/get_navigation.dart';
-import 'package:get/get_utils/get_utils.dart';
 
 import 'package:girdhari/features/product/controller/product_controller.dart';
 import 'package:girdhari/features/product/controller/product_date_controller.dart';
@@ -12,7 +11,6 @@ import 'package:girdhari/features/product/model/date_model.dart';
 import 'package:girdhari/features/product/provider/product_controller_provider.dart';
 import 'package:girdhari/features/product/provider/remove_stock_provider.dart';
 import 'package:girdhari/features/product/screens/edit_product_screen.dart';
-import 'package:girdhari/printer/lib/formatter.dart';
 import 'package:girdhari/theme/theme_changer_screen.dart';
 import 'package:girdhari/utils/utils.dart';
 
@@ -25,7 +23,6 @@ import 'package:girdhari/widgets/common/stock_show_date_sheet.dart';
 import 'package:girdhari/resource/app_color.dart';
 import 'package:girdhari/resource/k_text_style.dart';
 import 'package:girdhari/features/product/screens/add_product_screen.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -85,7 +82,7 @@ class _StockRecordScreenState extends State<StockRecordScreen>
         title: Text("Stock Report", style: KTextStyle.K_20),
         actions: [
           Padding(
-            padding: const EdgeInsets.only(right: 18.0),
+            padding: const EdgeInsets.only(right: 10.0),
             child: IconButton(
                 onPressed: () {
                   Get.to(() => const ThemeChangerScreen());

@@ -48,7 +48,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
           builder: (context) {
             return AlertDialog(
               title: const Text("exit app"),
-              content:  Text(
+              content: Text(
                 "do you want to exit?",
                 style: KTextStyle.K_15,
               ),
@@ -100,11 +100,11 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
             //   label: '',
             // ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.settings),
+              icon: Icon(Icons.business_rounded),
               label: '',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.attach_money_outlined),
+              icon: Icon(Icons.settings),
               label: '',
             ),
           ],
