@@ -7,10 +7,9 @@ import 'package:girdhari/features/orders/controller/order_controller.dart';
 import 'package:girdhari/features/orders/model/order_model.dart';
 import 'package:girdhari/features/product/model/add_product_model.dart';
 import 'package:girdhari/utils/utils.dart';
-import 'package:uuid/uuid.dart';
 
 class BillProvider with ChangeNotifier {
-  int orderNo = 1;
+  // int orderNo = 1;
   List<ProductModel> _products = [];
   List<ClientModel> _clients = [];
   List<BillingProductModel> _selectedProductList = [];
@@ -39,7 +38,7 @@ class BillProvider with ChangeNotifier {
         phoneNumber: 0000000000,
         address: "dummy",
         referredBy: "dummy");
-    
+
     debugPrint(selectedClient.toString());
     notifyListeners();
   }
@@ -47,8 +46,8 @@ class BillProvider with ChangeNotifier {
   void addInProductList(BillingProductModel product) {
     if (!_selectedProductList.contains(product)) {
       _selectedProductList.add(product);
-      debugPrint("..............................................." +
-          product.totalPrice.toString());
+      debugPrint(
+          "...............................................${product.totalPrice}");
       debugPrint(_selectedProductList.toString());
       notifyListeners();
     }
@@ -98,8 +97,28 @@ class BillProvider with ChangeNotifier {
     }
   }
 
+  int orderBillNo = 0;
+  Future<void> fetchOrderBillNo() async {
+    try {
+      // Fetch the document from the "OrderBillNo" collection
+      DocumentSnapshot snapshot = await FirebaseFirestore.instance
+          .collection('OrderBillNo')
+          .doc('billNo') // replace with your document ID
+          .get();
+
+      // Extract the data (assuming the field is named 'billNumber')
+
+      orderBillNo = snapshot['orderBillNo'];
+      debugPrint(orderBillNo.toString());
+    } catch (e) {
+      debugPrint('Error fetching order bill number: $e');
+    }
+  }
+
   void createOrder() async {
+    await fetchOrderBillNo();
     setConfermLoading(true);
+    //fetchOrderBill();
 
     if (selectedClient.clientName == 'dummy') {
       Utils().toastErrorMessage("please select client");
@@ -113,11 +132,10 @@ class BillProvider with ChangeNotifier {
       return;
     }
 
-    String orderId = "ws00$orderNo";
-    String date = DateTime.now().toIso8601String();
-    // ClientModel client = ClientModel(id: selectedClient.id, clientName:selectedClient.clientName, phoneNumber:selectedClient.phoneNumber, address:selectedClient.address, referredBy:selectedClient.referredBy)
+    //String orderId = "WS00+${orderBillNumberList[0].orderBillNo}";
+    String orderId = 'ws00$orderBillNo';
+    // String date = DateTime.now().toIso8601String();
     OrderModel order = OrderModel(
-        // id: Uuid().v4(),
         id: orderId,
         client: selectedClient,
         orderList: _selectedProductList,
@@ -125,9 +143,11 @@ class BillProvider with ChangeNotifier {
     OrderController().addOrder(order).then((onValue) {
       Utils().toastSuccessMessage("order added");
       setConfermLoading(false);
-      orderNo += 1;
+      orderBillNo += 1;
       emptyProductList();
       removeClient();
+      OrderBillNo orderNos = OrderBillNo(orderBillNo: orderBillNo);
+      OrderBillNoController().addBill(orderNos);
       Get.back();
     }).onError(
       (error, stackTrace) {

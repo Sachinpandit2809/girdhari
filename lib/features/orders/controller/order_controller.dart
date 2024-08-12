@@ -38,3 +38,15 @@ class BillController {
         .catchError((error) => debugPrint("Failed to add Bill: $error"));
   }
 }
+
+class OrderBillNoController {
+  final orderNoCollection =
+      FirebaseFirestore.instance.collection("OrderBillNo");
+  Future<void> addBill(OrderBillNo billNo) {
+    return orderNoCollection
+        .doc('billNo')
+        .set(billNo.toJson())
+        .then((value) => debugPrint("..........Bill Added"))
+        .catchError((error) => debugPrint("Failed to add Bill: $error"));
+  }
+}

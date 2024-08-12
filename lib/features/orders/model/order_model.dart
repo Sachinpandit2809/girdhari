@@ -1,37 +1,3 @@
-// class OrderModel {
-//   String id;
-//   String clientId;
-//   String clientName;
-//   List<dynamic> orders;
-//   String date;
-
-//   OrderModel(
-//       {required this.id,
-//       required this.clientId,
-//       required this.clientName,
-//       required this.orders,
-//       required this.date});
-
-//   Map<String, dynamic> toJson() {
-//     return {
-//       'id': id,
-//       'clientId': clientId,
-//       'clientName': clientName,
-//       'orders': orders,
-//       'date': date
-//     };
-//   }
-
-//   factory OrderModel.fromJson(Map<dynamic, dynamic> json) {
-//     return OrderModel(
-//         id: json['id'],
-//         clientId: json['clientId'],
-//         clientName: json['clientName'],
-//         orders: json['orders'],
-//         date: json['date']);
-//   }
-// }
-
 import 'package:girdhari/features/client/model/client_model.dart';
 import 'package:girdhari/features/product/model/add_product_model.dart';
 
@@ -122,5 +88,17 @@ class OrderModel {
       'totalAmount': totalAmount,
       'is_deleted': is_deleted
     };
+  }
+}
+
+class OrderBillNo {
+  int orderBillNo;
+  OrderBillNo({required this.orderBillNo});
+  Map<String, dynamic> toJson() {
+    return {'orderBillNo': orderBillNo};
+  }
+
+  factory OrderBillNo.fromJson(Map<String, dynamic> json) {
+    return OrderBillNo(orderBillNo: json['orderBillNo']);
   }
 }
